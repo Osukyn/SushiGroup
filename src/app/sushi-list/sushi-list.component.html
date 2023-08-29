@@ -1,0 +1,84 @@
+<div style="display: flex; padding-bottom: 3.5rem">
+  <ng-container *ngIf="sushiList">
+    <tui-accordion class="container" style="width: 100%">
+      <tui-accordion-item *ngFor="let item of sushiList; let i = index">
+        {{ item.code }}
+        <div tuiAccordionItemContent>
+          <tui-carousel
+            class="carousel"
+            [(index)]="indexes[i]"
+          >
+            <ng-container *ngFor="let sushi of item.produits">
+              <div *tuiItem
+                   style="display: flex; flex-direction: column; justify-content: center; align-items: center; margin-bottom: 1rem; width: 80vw;">
+                <img [src]="'https://83.easysushi.fr/images/commander/' + sushi.img" [alt]="sushi.nom"
+                     style="height: 8rem; ">
+                <h3
+                  style="margin-bottom: auto; text-align: center" [innerHTML]="sushi.nom"></h3>
+                <p>{{ sushi.cdt }} - Prix:
+                  <tui-money [value]="sushi.prix" currency="EUR"></tui-money>
+                </p>
+                <div>
+                  <button
+                    tuiButton
+                    appearance="primary"
+                    type="button"
+                    shape="rounded"
+                    size="m"
+                    style="width: 10rem"
+                    *ngIf="getQte(sushi.code) === 0"
+                    (click)="add(sushi.code)"
+                  >
+                    Ajouter
+                  </button>
+                  <div
+                    tuiGroup
+                    class="group"
+                    [collapsed]="true"
+                    [rounded]="true"
+                    style="width: 10rem"
+                    *ngIf="getQte(sushi.code) > 0">
+                    <button
+                      tuiButton
+                      [icon]="tuiIconMinus"
+                      appearance="accent"
+                      type="button"
+                      size="m"
+                      style="border-top-left-radius: 2em; border-bottom-left-radius: 2em; margin-right: 0;"
+                      (click)="remove(sushi.code)"
+                    ></button>
+                    <tui-input-number
+                    [tuiTextfieldSize]="'m'"
+                    [ngModel]="getQte(sushi.code)"
+                    [readOnly]="true">
+                      <input
+                        tuiTextfield
+                        style="text-align: center; display: flex; justify-content: center; align-items: center; padding: 0; font-size: 1.5rem;"
+                      />
+                    </tui-input-number>
+                    <button
+                      tuiButton
+                      [icon]="tuiIconPlus"
+                      appearance="primary"
+                      type="button"
+                      size="m"
+                      style="border-top-right-radius: 2em; border-bottom-right-radius: 2em; margin-right: 0;"
+                      (click)="add(sushi.code)"
+                    ></button>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+          </tui-carousel>
+          <tui-pagination
+            size="s"
+            class="pagination"
+            [length]="sushiList[i].produits.length"
+            [(index)]="indexes[i]"
+            style="margin-top: 1rem"
+          ></tui-pagination>
+        </div>
+      </tui-accordion-item>
+    </tui-accordion>
+  </ng-container>
+</div>
