@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {AuthService} from "@auth0/auth0-angular";
+import {Router} from "@angular/router";
 
 interface Item {
   text: string;
@@ -53,6 +54,9 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
-
+    this.activeItemIndex = this.items.findIndex(item => item.link === window.location.pathname);
+    if (this.activeItemIndex === -1) {
+      this.activeItemIndex = 0;
+    }
   }
 }
