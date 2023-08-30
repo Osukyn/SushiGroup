@@ -18,6 +18,12 @@ export class AppComponent implements OnInit {
 
   readonly items = [
     {
+      text: 'Accueil',
+      icon: 'tuiIconHomeLarge',
+      badge: 0,
+      link: '/'
+    },
+    {
       text: 'Commande',
       icon: 'tuiIconFileTextLarge',
       badge: 0,
