@@ -1,0 +1,22 @@
+/* Un style basique pour la démonstration. Vous pouvez le personnaliser davantage. */
+:host {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+}
+
+h2 {
+  margin: 1rem 0;
+}
+
+#avatar {
+  align-self: center;
+}
+
+#user {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 1rem 0;
+}

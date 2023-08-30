@@ -1,0 +1,33 @@
+.welcome-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  padding: 1rem;
+  text-align: center;
+}
+
+button {
+  margin-top: 2rem;
+}
+
+.emoji-container {
+  margin-top: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.emoji {
+  font-size: 2rem;
+  margin: 0.5rem;
+}
+
+@media (max-width: 600px) {
+  .welcome-container {
+    font-size: 1.2rem; /* Ajustez cette valeur selon vos préférences. */
+    line-height: 1.5; /* Augmentez l'espacement des lignes pour éviter le chevauchement. */
+  }
+}
+

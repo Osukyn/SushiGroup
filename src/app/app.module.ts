@@ -9,7 +9,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { HelloComponent } from './hello/hello.component';
 import { SushiListComponent } from './sushi-list/sushi-list.component';
 import {
-  TuiAccordionModule, TuiBadgeModule,
+  TuiAccordionModule, TuiAvatarModule, TuiBadgeModule,
   TuiCarouselModule, TuiInputNumberModule,
   TuiIslandModule,
   TuiMarkerIconModule,
@@ -21,12 +21,17 @@ import {of} from "rxjs";
 import {TUI_LANGUAGE, TUI_FRENCH_LANGUAGE} from "@taiga-ui/i18n";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {TuiTabBarModule} from "@taiga-ui/addon-mobile";
+import {AuthModule} from "@auth0/auth0-angular";
+import { LoginComponent } from './login/login.component';
+import { ProfileComponent } from './profile/profile.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HelloComponent,
-    SushiListComponent
+    SushiListComponent,
+    LoginComponent,
+    ProfileComponent
   ],
   imports: [
     BrowserModule,
@@ -53,6 +58,15 @@ import {TuiTabBarModule} from "@taiga-ui/addon-mobile";
     TuiTextfieldControllerModule,
     FormsModule,
     TuiTabBarModule,
+    AuthModule.forRoot({
+      domain: 'dev-s3aabk78qzffvec5.eu.auth0.com',
+      clientId: 'OQu1qUxKX45MA6OJ4kTV8jy4NnrKAZU8',
+      authorizationParams: {
+        redirect_uri: 'http://localhost:4200/profile',
+      }
+    }),
+    BrowserAnimationsModule,
+    TuiAvatarModule,
   ],
   providers: [
     {

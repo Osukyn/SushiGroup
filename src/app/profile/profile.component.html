@@ -1,0 +1,22 @@
+<div *ngIf="auth.isAuthenticated$ | async" id="user">
+  <tui-avatar
+    id="avatar"
+    [avatarUrl]="profile.picture"
+    [rounded]="true"
+    [size]="'xxl'"
+  ></tui-avatar>
+
+  <h1>{{ profile.name }}</h1>
+  <p>{{ profile.email }}</p>
+  <!-- Vous pouvez ajouter plus de détails du profil ici -->
+</div>
+
+<button
+  appearance="accent"
+  tuiButton
+  type="button"
+  class="tui-space_bottom-3"
+  (click)="logout()"
+>
+  Se déconnecter
+</button>

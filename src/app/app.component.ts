@@ -1,9 +1,11 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {AuthService} from "@auth0/auth0-angular";
 
 interface Item {
   text: string;
   icon: string;
   badge?: number;
+  link: string;
 }
 
 @Component({
@@ -11,30 +13,40 @@ interface Item {
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {
-  activeItemIndex = 1;
+export class AppComponent implements OnInit {
+  activeItemIndex = 0;
 
   readonly items = [
     {
       text: 'Commande',
       icon: 'tuiIconFileTextLarge',
       badge: 0,
+      link: '/order'
     },
     {
       text: 'Récent',
       icon: 'tuiIconClockLarge',
       badge: 0,
+      link: '/recent'
     },
     {
       text: 'Panier',
       icon: 'tuiIconShoppingCartLarge',
       badge: 0,
+      link: '/cart'
     },
     {
       text: 'Profil',
       icon: 'tuiIconUserLarge',
       badge: 0,
+      link: '/profile'
     }
   ];
-  title = 'SushiGroup';
+
+  constructor(public auth: AuthService) {
+  }
+
+  ngOnInit() {
+
+  }
 }

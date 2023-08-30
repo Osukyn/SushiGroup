@@ -1,1 +1,34 @@
-<p>hello works!</p>
+<div class="welcome-container">
+  <!-- Message pour le mercredi -->
+  <div *ngIf="isWednesday">
+    <h1>🍱 Coucou les collègues!</h1>
+    <p>Mercredi = Sushis. Préparez-vous pour notre commande groupée habituelle. C'est presque l'heure !</p>
+  </div>
+
+  <!-- Message pour les autres jours -->
+  <div *ngIf="!isWednesday">
+    <h1>🍣 Salut l'équipe!</h1>
+    <p>Envie de sushis aujourd'hui ? Rejoignez-nous pour une commande groupée !</p>
+  </div>
+
+  <div class="emoji-container">
+    <span class="emoji">🍚</span>
+    <span class="emoji">🍙</span>
+    <span class="emoji">🍤</span>
+    <span class="emoji">🥟</span>
+  </div>
+
+  <div *ngIf="!isWednesday && countdown">
+    <p>
+      Prochaine commande de sushis dans : <br>
+      <strong>
+        {{ countdown.days }}j
+        {{ countdown.hours }}h
+        {{ countdown.minutes }}m
+        {{ countdown.seconds }}s 🍣
+      </strong>
+    </p>
+  </div>
+
+  <button tuiButton [routerLink]="['/login']">Se connecter</button>
+</div>
