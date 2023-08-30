@@ -62,7 +62,7 @@ import { ProfileComponent } from './profile/profile.component';
       domain: 'dev-s3aabk78qzffvec5.eu.auth0.com',
       clientId: 'OQu1qUxKX45MA6OJ4kTV8jy4NnrKAZU8',
       authorizationParams: {
-        redirect_uri: 'http://localhost:4200/profile',
+        redirect_uri: window.location.origin + '/authentication-callback',
       }
     }),
     BrowserAnimationsModule,
