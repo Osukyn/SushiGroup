@@ -3,7 +3,7 @@
     <tui-accordion class="container" style="width: 100%">
       <tui-accordion-item *ngFor="let item of sushiList; let i = index">
         {{ item.code }}
-        <div tuiAccordionItemContent>
+        <ng-template tuiAccordionItemContent>
           <tui-carousel
             class="carousel"
             [(index)]="indexes[i]"
@@ -11,14 +11,12 @@
             <ng-container *ngFor="let sushi of item.produits">
               <div *tuiItem
                    style="display: flex; flex-direction: column; justify-content: center; align-items: center; margin-bottom: 1rem; width: 80vw;">
-                <img [src]="'https://83.easysushi.fr/images/commander/' + sushi.img" [alt]="sushi.nom"
-                     style="height: 8rem; ">
-                <h3
-                  style="margin-bottom: auto; text-align: center" [innerHTML]="sushi.nom"></h3>
-                <p>{{ sushi.cdt }} - Prix:
+                <img [src]="'https://83.easysushi.fr/images/commander/' + sushi.img" [alt]="sushi.nom" style="height: 8rem; box-shadow: 2px 2px 5px rgba(0,0,0,0.2);">
+                <h3 style="margin: 0.5rem 0; text-align: center" [innerHTML]="sushi.nom"></h3>
+                <p style="margin: 0.5rem 0;">{{ sushi.cdt }} - Prix:
                   <tui-money [value]="sushi.prix" currency="EUR"></tui-money>
                 </p>
-                <div>
+                <div style="margin-top: 0.5rem;">
                   <button
                     tuiButton
                     appearance="primary"
@@ -26,8 +24,8 @@
                     shape="rounded"
                     size="m"
                     style="width: 10rem"
-                    *ngIf="getQte(sushi.code) === 0"
-                    (click)="add(sushi.code)"
+                    *ngIf="orderService.getQte(sushi.code) === 0"
+                    (click)="orderService.add(sushi.code)"
                   >
                     Ajouter
                   </button>
@@ -37,7 +35,7 @@
                     [collapsed]="true"
                     [rounded]="true"
                     style="width: 10rem"
-                    *ngIf="getQte(sushi.code) > 0">
+                    *ngIf="orderService.getQte(sushi.code) > 0">
                     <button
                       tuiButton
                       [icon]="tuiIconMinus"
@@ -45,12 +43,12 @@
                       type="button"
                       size="m"
                       style="border-top-left-radius: 2em; border-bottom-left-radius: 2em; margin-right: 0;"
-                      (click)="remove(sushi.code)"
+                      (click)="orderService.remove(sushi.code)"
                     ></button>
                     <tui-input-number
-                    [tuiTextfieldSize]="'m'"
-                    [ngModel]="getQte(sushi.code)"
-                    [readOnly]="true">
+                      [tuiTextfieldSize]="'m'"
+                      [ngModel]="orderService.getQte(sushi.code)"
+                      [readOnly]="true">
                       <input
                         tuiTextfield
                         style="text-align: center; display: flex; justify-content: center; align-items: center; padding: 0; font-size: 1.5rem;"
@@ -63,7 +61,7 @@
                       type="button"
                       size="m"
                       style="border-top-right-radius: 2em; border-bottom-right-radius: 2em; margin-right: 0;"
-                      (click)="add(sushi.code)"
+                      (click)="orderService.add(sushi.code)"
                     ></button>
                   </div>
                 </div>
@@ -77,7 +75,7 @@
             [(index)]="indexes[i]"
             style="margin-top: 1rem"
           ></tui-pagination>
-        </div>
+        </ng-template>
       </tui-accordion-item>
     </tui-accordion>
   </ng-container>

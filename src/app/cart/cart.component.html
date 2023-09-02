@@ -1,0 +1,36 @@
+<h1 class="header-title">Commande de Groupe</h1>
+
+<div class="cart">
+  <tui-accordion class="container">
+    <tui-accordion-item *ngFor="let order of orderList">
+      <div class="order-header">
+        <div class="order-pic">
+          <tui-avatar class="order-icon" [rounded]="true" [avatarUrl]="currentUser.picture || ''"></tui-avatar>
+        </div>
+        <div class="order-user">
+          <div class="order-title">{{ currentUser.name }}</div>
+          <div class="order-status">Commande confirmée</div>
+        </div>
+        <tui-money class="order-amount" [value]="getSubTotal()" [currency]="'EUR'"></tui-money>
+      </div>
+
+      <ng-template tuiAccordionItemContent>
+        <div *ngFor="let products of order">
+          <div class="product-info">
+            <div class="product-details">
+              <span class="product-quantity"><strong>{{ products.qte }}</strong></span>
+              <tui-line-clamp class="product-name" [content]="getName(products.code)" [linesLimit]="1"></tui-line-clamp>
+              <tui-money class="product-price" [value]="getTotalForProduct(products)" [currency]="'EUR'"></tui-money>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+
+    </tui-accordion-item>
+  </tui-accordion>
+
+  <div class="total">
+    Total:
+    <tui-money class="total-amount" [value]="getTotalCost() || 0" [currency]="'EUR'"></tui-money>
+  </div>
+</div>

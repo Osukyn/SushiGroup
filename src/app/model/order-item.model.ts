@@ -1,4 +1,4 @@
-export class Order {
+export class OrderItem {
   code: string;
   qte: number;
   constructor(code: string, qte: number) {

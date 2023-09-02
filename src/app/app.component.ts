@@ -54,9 +54,13 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
+    console.log(window.location.pathname);
     this.activeItemIndex = this.items.findIndex(item => item.link === window.location.pathname);
-    if (this.activeItemIndex === -1) {
+    console.log(this.activeItemIndex);
+    if (this.activeItemIndex === -1 && window.location.pathname !== '/authentication-callback') {
       this.activeItemIndex = 0;
+    } else if (window.location.pathname === '/authentication-callback') {
+      this.activeItemIndex = 1;
     }
   }
 }

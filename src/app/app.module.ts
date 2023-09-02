@@ -10,8 +10,8 @@ import { HelloComponent } from './hello/hello.component';
 import { SushiListComponent } from './sushi-list/sushi-list.component';
 import {
   TuiAccordionModule, TuiAvatarModule, TuiBadgeModule,
-  TuiCarouselModule, TuiInputNumberModule,
-  TuiIslandModule,
+  TuiCarouselModule, TuiInputModule, TuiInputNumberModule,
+  TuiIslandModule, TuiLineClampModule,
   TuiMarkerIconModule,
   TuiPaginationModule
 } from "@taiga-ui/kit";
@@ -24,6 +24,8 @@ import {TuiTabBarModule} from "@taiga-ui/addon-mobile";
 import {AuthModule} from "@auth0/auth0-angular";
 import { LoginComponent } from './login/login.component';
 import { ProfileComponent } from './profile/profile.component';
+import { RecentComponent } from './recent/recent.component';
+import { CartComponent } from './cart/cart.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +33,9 @@ import { ProfileComponent } from './profile/profile.component';
     HelloComponent,
     SushiListComponent,
     LoginComponent,
-    ProfileComponent
+    ProfileComponent,
+    RecentComponent,
+    CartComponent
   ],
   imports: [
     BrowserModule,
@@ -67,6 +71,8 @@ import { ProfileComponent } from './profile/profile.component';
     }),
     BrowserAnimationsModule,
     TuiAvatarModule,
+    TuiInputModule,
+    TuiLineClampModule,
   ],
   providers: [
     {

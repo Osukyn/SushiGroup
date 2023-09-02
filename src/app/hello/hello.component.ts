@@ -1,4 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
+import {AuthService} from "@auth0/auth0-angular";
 
 @Component({
   selector: 'app-hello',
@@ -18,7 +19,7 @@ export class HelloComponent implements OnDestroy, OnInit {
 
   private intervalId: any;
 
-  constructor() {
+  constructor(public authService: AuthService) {
     this.updateCountdown();
   }
 
@@ -67,5 +68,4 @@ export class HelloComponent implements OnDestroy, OnInit {
       seconds: Math.floor((diff % (1000 * 60)) / 1000),
     };
   }
-
 }

@@ -20,7 +20,7 @@
 
   <div *ngIf="!isWednesday && countdown">
     <p>
-      Prochaine commande de sushis dans : <br>
+      Prochaine commande "mercredi sushi" dans : <br>
       <strong>
         {{ countdown.days }}j
         {{ countdown.hours }}h
@@ -30,5 +30,13 @@
     </p>
   </div>
 
-  <button tuiButton [routerLink]="['/login']">Se connecter</button>
+  <!-- Si l'utilisateur est authentifié -->
+  <ng-container *ngIf="authService.isAuthenticated$ | async; else signup">
+    <button tuiButton [routerLink]="['/order']">Commander</button>
+  </ng-container>
+  <ng-template #signup>
+    <!-- Si l'utilisateur n'est pas authentifié -->
+    <button tuiButton [routerLink]="['/login']">Se connecter</button>
+  </ng-template>
+
 </div>
