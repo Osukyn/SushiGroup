@@ -23,7 +23,14 @@
 
 .order-status {
   font-size: 0.75rem;
-  color: limegreen;
+}
+
+.order-status-pending {
+  color: #9e9e9e;
+}
+
+.order-status-confirmed {
+  color: #4caf50;
 }
 
 .order-user {

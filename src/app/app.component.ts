@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {AuthService} from "@auth0/auth0-angular";
 import {Router} from "@angular/router";
+import {OrderService} from "./order.service";
 
 interface Item {
   text: string;
@@ -50,7 +51,8 @@ export class AppComponent implements OnInit {
     }
   ];
 
-  constructor(public auth: AuthService) {
+  constructor(public auth: AuthService, private orderService: OrderService, private router: Router) {
+    this.orderService.getMenuObservable();
   }
 
   ngOnInit() {

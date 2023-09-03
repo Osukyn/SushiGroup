@@ -26,6 +26,10 @@ import { LoginComponent } from './login/login.component';
 import { ProfileComponent } from './profile/profile.component';
 import { RecentComponent } from './recent/recent.component';
 import { CartComponent } from './cart/cart.component';
+import {UserService} from "./user.service";
+import {OrderService} from "./order.service";
+import {InfosService} from "./infos.service";
+import {SocketService} from "./socket.service";
 
 @NgModule({
   declarations: [

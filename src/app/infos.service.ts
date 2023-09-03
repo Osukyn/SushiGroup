@@ -10,7 +10,7 @@ export class InfosService {
 
   constructor(private http: HttpClient) { }
 
-  apiURL = 'https://sushi.lnicolas.fr';
+  apiURL = 'http://localhost:3000';
 
   getMenu(): Observable<Categorie[]> {
     return this.http.get<Categorie[]>(this.apiURL+ '/api/menu');
