@@ -1,5 +1,17 @@
 import { NgDompurifySanitizer } from "@tinkoff/ng-dompurify";
-import { TuiRootModule, TuiDialogModule, TuiAlertModule, TuiButtonModule, TuiLoaderModule, TuiModeModule, TuiThemeNightModule, TuiGroupModule, TuiTextfieldControllerModule, TUI_SANITIZER } from "@taiga-ui/core";
+import {
+  TuiRootModule,
+  TuiDialogModule,
+  TuiAlertModule,
+  TuiButtonModule,
+  TuiLoaderModule,
+  TuiModeModule,
+  TuiThemeNightModule,
+  TuiGroupModule,
+  TuiTextfieldControllerModule,
+  TUI_SANITIZER,
+  TuiLinkModule
+} from "@taiga-ui/core";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
@@ -77,6 +89,7 @@ import {SocketService} from "./socket.service";
     TuiAvatarModule,
     TuiInputModule,
     TuiLineClampModule,
+    TuiLinkModule,
   ],
   providers: [
     {

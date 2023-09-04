@@ -67,3 +67,8 @@
     </div>
     <h2 *ngIf="getTotalCost() === 0">Panier vide</h2>
 </div>
+
+<div class="actions">
+    <button tuiButton (click)="confirmOrder()" [disabled]="orderService.getCurrentOrder()?.status !== OrderStatus.EN_COURS">Confirmer</button>
+    <button tuiButton appearance="secondary-destructive" (click)="cancelOrder()" [disabled]="orderService.getCurrentOrder()?.status !== OrderStatus.CONFIRMEE">Annuler</button>
+</div>

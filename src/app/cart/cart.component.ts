@@ -1,10 +1,11 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import { OrderService } from '../order.service';
-import {AuthService, User} from "@auth0/auth0-angular";
+import {AuthService} from "@auth0/auth0-angular";
 import {OrderItem} from "../model/order-item.model";
 import {Order, OrderStatus} from "../model/order.model";
 import {reduce, Subscription} from "rxjs";
 import {UserService} from "../user.service";
+import {User} from "../model/user.model";
 
 @Component({
   selector: 'app-cart',
@@ -12,7 +13,6 @@ import {UserService} from "../user.service";
   styleUrls: ['./cart.component.css']
 })
 export class CartComponent implements OnInit, OnDestroy {
-  public currentUser: any;
   orders: Order[] = [];
   private subscription: Subscription | undefined;  // Pour garder une référence à la souscription
 
@@ -72,4 +72,12 @@ export class CartComponent implements OnInit, OnDestroy {
   }
 
   protected readonly OrderStatus = OrderStatus;
+
+  confirmOrder() {
+    this.orderService.confirmOrder();
+  }
+
+  cancelOrder() {
+    this.orderService.cancelOrder();
+  }
 }
