@@ -14,7 +14,7 @@
         <div style="height: 1rem"></div>
         <h2 style="padding-left: 1rem">{{ item.code }}</h2>
         <div class="product" *ngFor="let sushi of item.produits">
-            <img [src]="'https://83.easysushi.fr/images/commander/' + sushi.img" [alt]="sushi.nom">
+            <img [src]="'https://83.easysushi.fr/images/commander/' + sushi.img" [alt]="sushi.nom" loading="lazy">
             <div class="product-details">
                 <h3 [innerHTML]="sushi.nom" style="margin: 0"></h3>
                 <div style="display: flex; flex-direction: column">

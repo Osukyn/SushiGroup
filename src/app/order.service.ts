@@ -1,8 +1,8 @@
-import {Injectable} from '@angular/core';
+import {EventEmitter, Injectable} from '@angular/core';
 import {OrderItem} from "./model/order-item.model";
 import {Categorie} from "./model/categorie.model";
 import {InfosService} from "./infos.service";
-import {BehaviorSubject, catchError, Observable, take, throwError} from "rxjs";
+import {BehaviorSubject, catchError, EMPTY, Observable, take, throwError} from "rxjs";
 import {Order, OrderStatus} from "./model/order.model";
 import {SocketService} from "./socket.service";
 import {UserService} from "./user.service";
@@ -17,7 +17,8 @@ export class OrderService {
     private _onlineOrders: Order[] = [];
     private orders: Order[] = [];
     private _orders$ = new BehaviorSubject<Order[]>([]); // Créer un BehaviorSubject pour les commandes
-
+    private loaded = false;
+    private loading: EventEmitter<void> = new EventEmitter<void>();
 
     constructor(
         private infosService: InfosService,
@@ -38,43 +39,50 @@ export class OrderService {
             } else if (index === -1) {
                 data.forEach((user: any) => this.updateOrders(user));
             }
+
         });
     }
 
-    public ordersObservable(): Observable<Order[]> {  // Expose the observable
-        return this._orders$.asObservable();
+    // order.service.ts
+    public ordersObservable(): Observable<Order[]> {
+        return this._orders$.pipe(
+            catchError(error => {
+                console.error('Erreur lors de la récupération des commandes :', error);
+                return EMPTY;
+            })
+        );
     }
+
 
     private updateOrders(data: any): void {
         if (!this.userService.isOnline(data)) this.userService.addOnlineUser(data);
-        const index = this._onlineOrders.findIndex(order => order.email === data.email);
-        if (index !== -1) {
-            this._onlineOrders[index] = data.order;
-        } else {
+
+        let existingOrder = this._onlineOrders.find(order => order.email === data.email);
+        if (existingOrder) {
+            Object.assign(existingOrder, data.order);
+        } else if (data.order){
             this._onlineOrders.push(data.order);
         }
+
         this._orders$.next(this._onlineOrders);
     }
 
-    // Méthode pour initialiser ou obtenir la commande en cours
+
     public getOrder(email: string): Order {
-        if (!this.currentOrder) {
-            this.currentOrder = new Order(email);
-        }
-        return this.currentOrder;
+        return this.currentOrder ?? (this.currentOrder = new Order(email));
     }
 
     public add(code: string): void {
-        if (this.currentOrder === null) this.getOrder(this.userService.userEmail);
+        if (!this.currentOrder) this.getOrder(this.userService.userEmail);
+
         const item = this.currentOrder?.items.find(item => item.code === code);
-        if (!item) {
-            console.log(this.currentOrder);
-            this.currentOrder?.addOrderItem(new OrderItem(code, 1));
-        } else {
+        if (item) {
             item.qte++;
+        } else {
+            this.currentOrder?.addOrderItem(new OrderItem(code, 1));
         }
-        // Notifier les autres utilisateurs de la mise à jour de la commande
-        if (this.currentOrder) this.socketService.sendOrderUpdate(this.currentOrder);
+
+        this.socketService.sendOrderUpdate(this.currentOrder!);  // Assuming sendOrderUpdate accepts potentially null values
     }
 
     public getLocalOrder(): Order {
@@ -148,7 +156,7 @@ export class OrderService {
         }
     }
 
-    public cancelOrder(): void {
+    public resumeOrder(): void {
         if (this.currentOrder) {
             this.currentOrder.status = OrderStatus.EN_COURS;
             this.socketService.sendOrderUpdate(this.currentOrder);
@@ -157,5 +165,25 @@ export class OrderService {
 
     public getCurrentOrder(): Order | null {
         return this.currentOrder;
+    }
+
+    public cancelOrder() {
+        if (this.currentOrder) {
+            this.currentOrder.items = [];
+            this.currentOrder.status = OrderStatus.EN_COURS;
+            this.socketService.sendOrderUpdate(this.currentOrder);
+        }
+    }
+
+    public isLoaded(): boolean {
+        return this.loaded;
+    }
+
+    setUp() {
+        this.getMenuObservable().subscribe(() => {
+            this.loaded = true;
+            this.loading.emit();
+        });
+        return this.loading;
     }
 }

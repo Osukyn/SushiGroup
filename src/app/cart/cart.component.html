@@ -1,12 +1,12 @@
-<h1 class="header-title">Commande de Groupe</h1>
+<h1 class="header-title">Panier</h1>
 
-<div class="cart">
-    <tui-accordion class="container">
-        <tui-accordion-item *ngIf="orderService.getLocalOrder().items.length > 0">
+<div class="cart" *ngIf="userService.user && loaded">
+    <tui-accordion class="container" [closeOthers]="false">
+        <tui-accordion-item *ngIf="orderService.getLocalOrder().items.length > 0" [open]="true" [disabled]="true">
             <div class="order-header">
                 <div class="order-pic">
                     <tui-avatar class="order-icon" [rounded]="true"
-                                [avatarUrl]="getLocalUser()?.picture || ''"></tui-avatar>
+                                [avatarUrl]="getLocalUser()?.picture || ''" [text]="getLocalUser()?.name || ''"></tui-avatar>
                 </div>
                 <div class="order-user">
                     <div class="order-title">{{ getLocalUser()?.name }}</div>
@@ -29,10 +29,15 @@
                         </div>
                     </div>
                 </div>
+                <div class="actions">
+                    <button tuiButton (click)="resumeOrder()" size="s" *ngIf="orderService.getLocalOrder().status === OrderStatus.CONFIRMEE">Reprendre</button>
+                    <button tuiButton (click)="confirmOrder()" size="s" *ngIf="orderService.getLocalOrder().status === OrderStatus.EN_COURS">Confirmer</button>
+                    <button tuiButton appearance="secondary-destructive" (click)="onClick()" size="s">Supprimer</button>
+                </div>
             </ng-template>
 
         </tui-accordion-item>
-        <tui-accordion-item *ngFor="let order of orders">
+        <tui-accordion-item *ngFor="let order of getOrders() | async">
             <div class="order-header">
                 <div class="order-pic">
                     <tui-avatar class="order-icon" [rounded]="true"
@@ -65,10 +70,16 @@
         Total:
         <tui-money class="total-amount" [value]="getTotalCost() || 0" [currency]="'EUR'"></tui-money>
     </div>
-    <h2 *ngIf="getTotalCost() === 0">Panier vide</h2>
-</div>
+    <tui-block-status *ngIf="getTotalCost() === 0" [card]="true" style="height: 100%; display: flex; justify-content: center; align-items: center">
+        <img
+                alt="not found"
+                src="./assets/images/empty-cart.svg"
+                tuiSlot="top"
+                class="image"
+        />
 
-<div class="actions">
-    <button tuiButton (click)="confirmOrder()" [disabled]="orderService.getCurrentOrder()?.status !== OrderStatus.EN_COURS">Confirmer</button>
-    <button tuiButton appearance="secondary-destructive" (click)="cancelOrder()" [disabled]="orderService.getCurrentOrder()?.status !== OrderStatus.CONFIRMEE">Annuler</button>
+        <h4>Panier vide</h4>
+
+        Essayez d'ajouter des produits au panier
+    </tui-block-status>
 </div>

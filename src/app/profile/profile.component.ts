@@ -9,7 +9,7 @@ import {DOCUMENT} from "@angular/common";
 })
 export class ProfileComponent {
   profile: any;
-  constructor(public auth: AuthService, @Inject(DOCUMENT) private doc: Document,) {
+  constructor(public auth: AuthService) {
     auth.user$.subscribe(user => {
       this.profile = user;
       console.log(user);
@@ -18,6 +18,6 @@ export class ProfileComponent {
 
   logout(): void {
     // @ts-ignore
-    this.auth.logout({ returnTo: this.doc.location.origin });
+    this.auth.logout({ returnTo: window.location.origin });
   }
 }

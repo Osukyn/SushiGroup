@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {EventEmitter, Injectable} from '@angular/core';
 import {AuthService} from "@auth0/auth0-angular";
 import {SocketService} from "./socket.service";
 import {User} from "./model/user.model";
@@ -11,13 +11,10 @@ import {Subject} from "rxjs";
 export class UserService {
     private _user: any;
     private _onlineUsers: any[] = [];
+    private loading: EventEmitter<void> = new EventEmitter<void>();
 
     constructor(private authService: AuthService, private socketService: SocketService) {
-        this.authService.user$.subscribe(user => {
-            this._user = user;
-            this.socketService.setUser(this.userEmail, this.userName, this.userPicture);
-            this.socketService.setData();
-        });
+
     }
 
     get user(): any {
@@ -64,15 +61,25 @@ export class UserService {
         if (index !== -1) {
             return this._onlineUsers[index];
         } else {
-            if (email === this.userEmail)
+            if (email === this.userEmail) {
                 return {
                     id: this.userId,
                     email: this.userEmail,
                     name: this.userName,
                     picture: this.userPicture,
-                    order: undefined
+                    order: new Order(this.userEmail, [])
                 };
-             else return null;
+            } else {
+                return null;
+            }
         }
+    }
+
+    public setUp() {
+        this.authService.user$.subscribe(user => {
+            this._user = user;
+            this.socketService.setUser(this.userEmail, this.userName, this.userPicture, this.loading);
+        });
+        return this.loading;
     }
 }

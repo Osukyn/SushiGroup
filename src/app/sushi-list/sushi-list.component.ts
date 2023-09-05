@@ -1,7 +1,5 @@
-import {Component, OnInit} from '@angular/core';
-import {InfosService} from "../infos.service";
+import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {Categorie} from "../model/categorie.model";
-import {OrderItem} from "../model/order-item.model";
 import {tuiIconMinus, tuiIconPlus} from "@taiga-ui/icons";
 import {OrderService} from "../order.service";
 import {ViewportScroller} from "@angular/common";
@@ -9,7 +7,8 @@ import {ViewportScroller} from "@angular/common";
 @Component({
     selector: 'app-sushi-list',
     templateUrl: './sushi-list.component.html',
-    styleUrls: ['./sushi-list.component.css']
+    styleUrls: ['./sushi-list.component.css'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SushiListComponent implements OnInit {
     public indexes: number[] = [];
@@ -84,13 +83,11 @@ export class SushiListComponent implements OnInit {
                 setTimeout(() => {
                     if (hElement) {
                         let target = document.getElementsByClassName('cat-active')[0];
-                        console.log(target);
                         if (target) {
                             hElement.scrollTo({left: (target as HTMLElement).offsetLeft - this.getRem(3), behavior: 'smooth'});
                         }
                     }
                 });
-                console.log(element.id);
                 return;
             }
         }
