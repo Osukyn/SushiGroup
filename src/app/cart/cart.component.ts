@@ -20,6 +20,7 @@ export class CartComponent implements OnInit, OnDestroy {
     private subscription: Subscription | undefined;  // Pour garder une référence à la souscription
     public loaded = false;
     private _orders$ = new BehaviorSubject<Order[]>([]); // Créer un BehaviorSubject pour les commandes
+    private dialog: any;
 
     constructor(
         public orderService: OrderService,
@@ -34,6 +35,13 @@ export class CartComponent implements OnInit, OnDestroy {
             this.orders = orders.filter(order => order.items.length !== 0);
             this._orders$.next(this.orders);
             this.loaded = true;
+        });
+
+        this.orderService.getRestaurantList().subscribe(restaurants => {
+            console.log(restaurants[3]);
+            this.orderService.getHoraires(restaurants[0].id, "06%2F09%2F2023").subscribe(horaires => {
+                console.log(horaires);
+            });
         });
     }
 
@@ -94,6 +102,7 @@ export class CartComponent implements OnInit, OnDestroy {
     }
 
     onClick(): void {
+        this.cancelOrder();
         const data: TuiPromptData = {
             content:
                 'Êtes-vous sûr de vouloir annuler votre commande ?',
@@ -101,7 +110,7 @@ export class CartComponent implements OnInit, OnDestroy {
             no: 'Non',
         };
 
-        this.dialogs
+        this.dialog = this.dialogs
             .open<boolean>(TUI_PROMPT, {
                 label: 'Attention !',
                 size: 's',

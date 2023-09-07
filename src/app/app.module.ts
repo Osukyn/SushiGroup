@@ -55,7 +55,7 @@ import { ServiceWorkerModule } from '@angular/service-worker';
     ProfileComponent,
     RecentComponent,
     CartComponent,
-    LoaderComponent
+    LoaderComponent,
   ],
   imports: [
     BrowserModule,

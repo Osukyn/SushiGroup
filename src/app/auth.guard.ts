@@ -30,7 +30,7 @@ export class AuthGuard implements CanActivate {
         tap((loggedIn) => {
           if (!loggedIn) {
             // redirect to the angular hello route with router state
-            this.router.navigate(['']).then(r => console.log(r));
+            this.router.navigate(['/login']).then(r => console.log(r));
           }
         }),
         tap(() => this.loaderService.hide())  // Masquez le loader à la fin, que l'utilisateur soit connecté ou non

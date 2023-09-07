@@ -11,7 +11,7 @@ import {RecentComponent} from "./recent/recent.component";
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
-  { path: '', component: HelloComponent },
+  { path: '', component: HelloComponent, canActivate: [AuthGuard] },
   { path: 'cart', component: CartComponent, canActivate: [AuthGuard] },
   { path: 'recent', component: RecentComponent, canActivate: [AuthGuard] },
   { path: 'logout', component: HelloComponent, canActivate: [AuthGuard] },

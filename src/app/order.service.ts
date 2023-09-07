@@ -6,6 +6,8 @@ import {BehaviorSubject, catchError, EMPTY, Observable, take, throwError} from "
 import {Order, OrderStatus} from "./model/order.model";
 import {SocketService} from "./socket.service";
 import {UserService} from "./user.service";
+import {HttpClient} from "@angular/common/http";
+import {environment} from "../environments/environment";
 
 @Injectable({
     providedIn: 'root'
@@ -19,11 +21,13 @@ export class OrderService {
     private _orders$ = new BehaviorSubject<Order[]>([]); // Créer un BehaviorSubject pour les commandes
     private loaded = false;
     private loading: EventEmitter<void> = new EventEmitter<void>();
+    apiURL = environment.baseUrl + environment.restPort;
 
     constructor(
         private infosService: InfosService,
         private socketService: SocketService,
-        private userService: UserService
+        private userService: UserService,
+        private http: HttpClient
     ) {
         // Écoute des mises à jour des commandes depuis les autres utilisateurs
         this.socketService.orderUpdates.subscribe(data => this.updateOrders(data));
@@ -185,5 +189,13 @@ export class OrderService {
             this.loading.emit();
         });
         return this.loading;
+    }
+
+    public getRestaurantList(): Observable<any> {
+        return this.http.get(this.apiURL + '/api/lieux');
+    }
+
+    public getHoraires(id: string, date: string): Observable<any> {
+        return this.http.get(this.apiURL + '/api/horaires?id=' + id + '&date=' + date);
     }
 }

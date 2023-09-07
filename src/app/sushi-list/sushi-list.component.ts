@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, HostListener, OnInit} from '@angular/core';
 import {Categorie} from "../model/categorie.model";
 import {tuiIconMinus, tuiIconPlus} from "@taiga-ui/icons";
 import {OrderService} from "../order.service";
@@ -8,7 +8,6 @@ import {ViewportScroller} from "@angular/common";
     selector: 'app-sushi-list',
     templateUrl: './sushi-list.component.html',
     styleUrls: ['./sushi-list.component.css'],
-    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SushiListComponent implements OnInit {
     public indexes: number[] = [];
@@ -19,22 +18,62 @@ export class SushiListComponent implements OnInit {
     isProgrammaticScroll = false;
     timeoutId: any;
 
-    constructor(public orderService: OrderService, private viewportScroller: ViewportScroller) {
+    @HostListener('window:scroll', ['$event']) onScrollEvent($event: Event) {
+        if (!this.isProgrammaticScroll) {
+            const elements: HTMLElement[] = Array.from(document.querySelectorAll('.cat-container'));
+
+            for (let i = 0; i < elements.length; i++) {
+                const element = elements[i];
+                const rect = element.getBoundingClientRect();
+
+                // Vérifiez si l'élément est complètement à l'extérieur du viewport
+                const isOutsideViewport = (
+                    rect.bottom < this.getRem(6) ||
+                    rect.top > this.getRem(7) ||
+                    rect.left > document.documentElement.clientLeft ||
+                    rect.right < 0
+                );
+
+                if (!isOutsideViewport && this.activeCategory !== element.id) {
+                    this.activeCategory = element.id;
+                    let hElement = document.getElementById('categories-container');
+
+                    setTimeout(() => {
+                        if (hElement) {
+                            let target = document.getElementsByClassName('cat-active')[0];
+                            if (target) {
+                                hElement.scrollTo({left: (target as HTMLElement).offsetLeft - this.getRem(3), behavior: 'smooth'});
+                            }
+                        }
+                    });
+                    return;
+                }
+            }
+        }
+    }
+
+    constructor(public orderService: OrderService) {
     }
 
     ngOnInit() {
-        this.orderService.getMenuObservable().subscribe(data => {
-            this.indexes = Array(data.length).fill(0);
-            this.sushiList = data;
+        console.log('init');
+        if (this.orderService.gotSushiList()) {
+            this.indexes = Array(this.orderService.getSushiList().length).fill(0);
+            this.sushiList = this.orderService.getSushiList();
             this.activeCategory = this.sushiList[0].code;
-        });
-        document.onscroll = ($event: Event) => {
-            this.onScroll($event);
+        } else {
+            this.orderService.getMenuObservable().subscribe(data => {
+                this.indexes = Array(data.length).fill(0);
+                this.sushiList = data;
+                this.activeCategory = this.sushiList[0].code;
+            });
         }
+
     }
 
     scrollToCategory(code: string, $event: MouseEvent) {
         let element = document.getElementById(code);
+
         if (element) {
             window.scrollTo({top: element.offsetTop - this.getRem(5), behavior: 'smooth'});
         }
@@ -57,39 +96,4 @@ export class SushiListComponent implements OnInit {
         return rem * parseFloat(getComputedStyle(document.documentElement).fontSize);
     }
 
-    onScroll($event: Event) {
-        if (!this.isProgrammaticScroll) this.checkNextElementInView();
-    }
-
-    checkNextElementInView() {
-        const elements: HTMLElement[] = Array.from(document.querySelectorAll('.cat-container'));
-
-        for (let i = 0; i < elements.length; i++) {
-            const element = elements[i];
-            const rect = element.getBoundingClientRect();
-
-            // Vérifiez si l'élément est complètement à l'extérieur du viewport
-            const isOutsideViewport = (
-                rect.bottom < this.getRem(6) ||
-                rect.top > this.getRem(7) ||
-                rect.left > document.documentElement.clientLeft ||
-                rect.right < 0
-            );
-
-            if (!isOutsideViewport && this.activeCategory !== element.id) {
-                this.activeCategory = element.id;
-                let hElement = document.getElementById('categories-container');
-
-                setTimeout(() => {
-                    if (hElement) {
-                        let target = document.getElementsByClassName('cat-active')[0];
-                        if (target) {
-                            hElement.scrollTo({left: (target as HTMLElement).offsetLeft - this.getRem(3), behavior: 'smooth'});
-                        }
-                    }
-                });
-                return;
-            }
-        }
-    }
 }
