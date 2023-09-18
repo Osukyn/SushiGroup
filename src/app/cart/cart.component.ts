@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, Inject, OnDestroy, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, OnDestroy, OnInit} from '@angular/core';
 import {OrderService} from '../order.service';
 import {AuthService} from "@auth0/auth0-angular";
 import {OrderItem} from "../model/order-item.model";
@@ -13,7 +13,6 @@ import {TUI_PROMPT, TuiPromptData} from "@taiga-ui/kit";
     selector: 'app-cart',
     templateUrl: './cart.component.html',
     styleUrls: ['./cart.component.css'],
-    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CartComponent implements OnInit, OnDestroy {
     orders: Order[] = [];
@@ -21,12 +20,14 @@ export class CartComponent implements OnInit, OnDestroy {
     public loaded = false;
     private _orders$ = new BehaviorSubject<Order[]>([]); // Créer un BehaviorSubject pour les commandes
     private dialog: any;
+    title = 'Panier';
 
     constructor(
         public orderService: OrderService,
         public userService: UserService,
         @Inject(TuiDialogService) private readonly dialogs: TuiDialogService,
         @Inject(TuiAlertService) private readonly alerts: TuiAlertService,
+        private ref: ChangeDetectorRef,
     ) {
     }
 
@@ -103,7 +104,7 @@ export class CartComponent implements OnInit, OnDestroy {
 
     onClick(): void {
         this.cancelOrder();
-        const data: TuiPromptData = {
+        /*const data: TuiPromptData = {
             content:
                 'Êtes-vous sûr de vouloir annuler votre commande ?',
             yes: 'Oui',
@@ -120,6 +121,6 @@ export class CartComponent implements OnInit, OnDestroy {
                 this.cancelOrder();
                 this.alerts.open('Votre commande a été annulée.', { status: 'success', hasCloseButton: false, hasIcon: false }).subscribe();
             }
-        });
+        });*/
     }
 }

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
 
 @Component({
   selector: 'app-recent',
@@ -6,5 +6,5 @@ import { Component } from '@angular/core';
   styleUrls: ['./recent.component.css']
 })
 export class RecentComponent {
-
+  title = 'Commandes récentes';
 }

@@ -1,13 +1,13 @@
 <div class="welcome-container">
   <!-- Message pour le mercredi -->
   <div *ngIf="isWednesday">
-    <h1>🍱 Coucou les collègues!</h1>
+    <h1 class="title-sushi">🍱 Coucou les collègues!</h1>
     <p>Mercredi = Sushis. Préparez-vous pour notre commande groupée habituelle. C'est presque l'heure !</p>
   </div>
 
   <!-- Message pour les autres jours -->
   <div *ngIf="!isWednesday">
-    <h1>🍣 Salut l'équipe!</h1>
+    <h1 class="title-sushi">🍣 Salut l'équipe!</h1>
     <p>Envie de sushis aujourd'hui ? Rejoignez-nous pour une commande groupée !</p>
   </div>
 
@@ -30,13 +30,7 @@
     </p>
   </div>
 
-  <!-- Si l'utilisateur est authentifié -->
-  <ng-container *ngIf="authService.isAuthenticated$ | async; else signup">
+  <div style="position: fixed; bottom: 3rem; left: 0; right: 0; display: flex; justify-content: center;">
     <button tuiButton [routerLink]="['/order']">Commander</button>
-  </ng-container>
-  <ng-template #signup>
-    <!-- Si l'utilisateur n'est pas authentifié -->
-    <button tuiButton [routerLink]="['/login']">Se connecter</button>
-  </ng-template>
-
+  </div>
 </div>

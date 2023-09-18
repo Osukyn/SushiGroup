@@ -17,6 +17,7 @@ export class SushiListComponent implements OnInit {
     public activeCategory: string = '';
     isProgrammaticScroll = false;
     timeoutId: any;
+    title = 'Commande';
 
     @HostListener('window:scroll', ['$event']) onScrollEvent($event: Event) {
         if (!this.isProgrammaticScroll) {

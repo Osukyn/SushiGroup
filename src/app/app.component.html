@@ -1,21 +1,27 @@
 <tui-theme-night></tui-theme-night>
 <tui-root tuiMode="onDark">
   <app-loader></app-loader>
-  <router-outlet></router-outlet>
-  <nav
-    tuiTabBar
-    [(activeItemIndex)]="activeItemIndex"
-    style="position: fixed; bottom: 0; left: 0; right: 0;"
-    *ngIf="auth.isAuthenticated$ | async"
-  >
-    <a
-      *ngFor="let item of items"
-      tuiTabBarItem
-      [icon]="item.icon"
-      [badge]="item.badge"
-      [routerLink]="item.link"
+  <tui-app-bar class="app-bar" *ngIf="loaderService.loaded">
+    <h1 style="font-size: 1.75em">{{ title }}</h1>
+  </tui-app-bar>
+  <router-outlet (activate)="onRouterOutletActivate($event)"></router-outlet>
+  <div style="position: fixed; bottom: 0; left: 0; right: 0; padding-bottom: 0;">
+    <nav
+      tuiTabBar
+      [(activeItemIndex)]="activeItemIndex"
+
+      *ngIf="auth.isAuthenticated$ | async"
     >
-      {{ item.text }}
-    </a>
-  </nav>
+      <a
+        *ngFor="let item of items"
+        tuiTabBarItem
+        [icon]="item.icon"
+        [badge]="item.badge"
+        [routerLink]="item.link"
+      >
+        {{ item.text }}
+      </a>
+    </nav>
+    <div style="background-color: var(--tui-base-01); height: 1rem; width: 100%"></div>
+  </div>
 </tui-root>

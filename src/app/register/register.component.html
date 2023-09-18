@@ -1,0 +1,111 @@
+<div style="display: flex; flex-direction: column; justify-content: center; align-items: center; padding-bottom: 4rem">
+  <form [formGroup]="registrationForm" (ngSubmit)="onSubmit()" style="width: 100%; margin: 3rem">
+    <div
+      style="display: flex; flex-direction: column; justify-content: center; align-items: center; margin-top: 1rem; margin-bottom: 3rem">
+      <tui-avatar
+        size="xl"
+        [text]="registrationForm.get('name')?.value"
+        [rounded]="true"
+        [avatarUrl]="registrationForm.get('profilePicture')?.value"
+        style="margin-bottom: 1rem"
+      ></tui-avatar>
+      <a
+        [mode]="'negative'"
+        tuiLink
+        (click)="removePhoto()"
+        *ngIf="registrationForm.get('profilePicture')?.value !== ''"
+      >
+        Supprimer la photo
+      </a>
+    </div>
+
+    <div>
+      <!-- Nom -->
+      <tui-input
+        class="inputs"
+        formControlName="name"
+      >
+        Nom
+      </tui-input>
+
+      <!-- E-mail -->
+      <tui-input formControlName="email" class="inputs" [readOnly]="true">
+        Email
+        <input
+          tuiTextfield
+          type="email"
+        />
+      </tui-input>
+
+      <!-- Numéro de téléphone -->
+      <tui-input-phone
+        formControlName="phone"
+        [countryCode]="''"
+        [phoneMaskAfterCountryCode]="'## ## ## ## ##'"
+        class="inputs"
+      >
+        Numéro de téléphone
+      </tui-input-phone>
+
+      <h2 style="margin-top: 3rem; margin-left: 2rem">Adresses enregistrées</h2>
+
+      <!-- Combos restaurant -> adresse -->
+      <div formArrayName="deliveriesInfos" style="margin: 1rem 2rem">
+        <tui-accordion>
+          <tui-accordion-item *ngFor="let restaurant of restaurants.controls; let i = index" [formGroupName]="i"
+                              [(open)]="opens[i]">
+            {{ restaurant.value.name || 'Nouvelle adresse' }}
+            <div tuiAccordionItemContent>
+              <tui-input class="inputs1" formControlName="name">Label de l'adresse</tui-input>
+              <tui-select
+                class="inputs1"
+                [stringify]="stringify"
+                [formControlName]="'restaurant'"
+              >
+                Selectionner un restaurant
+                <tui-data-list *tuiDataList>
+                  <button
+                    *ngFor="let resto of restaurantsList"
+                    tuiOption
+                    class="option"
+                    [value]="resto.id"
+                  >
+                    {{ resto.libelle }}
+                  </button>
+                </tui-data-list>
+              </tui-select>
+              <tui-select [formControlName]="'sousLieux'" *ngIf="findSousLieux(restaurant.value.restaurant).length > 0">
+                Selectionner un sous lieu
+                <tui-data-list *tuiDataList>
+                  <button
+                    *ngFor="let sousLieu of findSousLieux(restaurant.value.restaurant)"
+                    tuiOption
+                    class="option"
+                    [value]="sousLieu"
+                  >
+                    {{ sousLieu }}
+                  </button>
+                </tui-data-list>
+              </tui-select>
+              <tui-input class="inputs1" formControlName="address">Adresse</tui-input>
+              <tui-input class="inputs1" formControlName="address2">Complément de l'adresse</tui-input>
+              <button tuiButton class="inputs1" appearance="secondary-destructive" (click)="removeRestaurant(i)">
+                Retirer
+              </button>
+            </div>
+          </tui-accordion-item>
+        </tui-accordion>
+      </div>
+
+      <button style="margin-left: 2rem" type="button" tuiButton (click)="addRestaurant()">Ajouter un restaurant</button>
+    </div>
+
+    <div
+      style="display: flex; width: auto; position: fixed; bottom: 0; left: 0; right: 0; background: var(--tui-base-01); z-index: 100">
+      <button tuiButton type="submit" style="margin: 1rem; flex-grow: 1">
+        S'inscrire
+      </button>
+    </div>
+
+  </form>
+</div>

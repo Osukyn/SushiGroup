@@ -13,11 +13,14 @@
 
 .category-link {
   text-decoration: none;
-  color: #333;
   padding: 10px;
   border-radius: 5px;
   margin-right: 10px;
   transition: background-color 0.2s ease-out;
+}
+
+.category-link:focus, .category-link:active, .category-link:hover {
+  color: var(--tui-text-03-night) !important;
 }
 
 .category-list {
@@ -37,7 +40,8 @@
   scrollbar-width: none;  /* Firefox */
 }
 
-.cat-active {
+.cat-active, .cat-active:active, .cat-active:hover, .cat-active:focus {
+  font-weight: bold;
   color: white !important;
   border-bottom: solid 0.2rem white;
   border-radius: 0;

@@ -1,5 +1,3 @@
-<h1 class="header-title">Panier</h1>
-
 <div class="cart" *ngIf="userService.user && loaded">
     <tui-accordion class="container" [closeOthers]="false">
         <tui-accordion-item *ngIf="orderService.getLocalOrder().items.length > 0" [open]="true" [disabled]="true">

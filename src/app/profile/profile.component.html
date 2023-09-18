@@ -1,13 +1,15 @@
-<div *ngIf="auth.isAuthenticated$ | async" id="user">
+<div *ngIf="loaded" id="user">
   <tui-avatar
     id="avatar"
-    [avatarUrl]="profile.picture"
+    [avatarUrl]="profilePicture"
+    [text]="name"
     [rounded]="true"
-    [size]="'xxl'"
+    [size]="'xl'"
   ></tui-avatar>
 
-  <h1>{{ profile.name }}</h1>
-  <p>{{ profile.email }}</p>
+  <h1>{{ name }}</h1>
+  <p>{{ email }}</p>
+  <p>{{ phone }}</p>
   <!-- Vous pouvez ajouter plus de détails du profil ici -->
 </div>
 

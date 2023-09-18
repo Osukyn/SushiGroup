@@ -1,13 +1,7 @@
-.header-title {
-    width: 100%;
-    text-align: center;
-    margin-top: 2rem;
-}
-
 .cart {
     padding: 1rem;
     max-width: 600px;
-    margin: auto;
+    margin: 4rem auto auto;
 }
 
 .order-header {

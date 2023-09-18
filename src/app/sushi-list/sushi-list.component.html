@@ -1,5 +1,4 @@
-<div style="width: 100%; position: fixed; top: 0; background: var(--tui-base-01); z-index: 100">
-    <h1 style="width: 100%; text-align: center;">Easy Sushi</h1>
+<div style="width: 100%; position: fixed; top: 2.75rem; background: var(--tui-base-01); z-index: 100">
     <!-- Liste des catégories en haut -->
     <div class="category-list" id="categories-container">
         <a tuiLink *ngFor="let item of sushiList" (click)="scrollToCategory(item.code, $event)" class="category-link" [class.cat-active]="item.code === activeCategory">

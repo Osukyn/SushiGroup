@@ -3,6 +3,7 @@ import {AuthService} from "@auth0/auth0-angular";
 import {Router} from "@angular/router";
 import {OrderService} from "./order.service";
 import {UserService} from "./user.service";
+import {LoaderService} from "./loader.service";
 
 interface Item {
   text: string;
@@ -18,6 +19,7 @@ interface Item {
 })
 export class AppComponent implements OnInit {
   activeItemIndex = 0;
+  title = 'Easy Sushi'
 
   readonly items = [
     {
@@ -52,9 +54,19 @@ export class AppComponent implements OnInit {
     }
   ];
 
-  constructor(public auth: AuthService, private orderService: OrderService, private userService: UserService, private router: Router) {
+  constructor(public auth: AuthService, private orderService: OrderService, private userService: UserService, private router: Router, public loaderService: LoaderService) {
+    this.loaderService.show();
     this.orderService.getMenuObservable();
-    this.userService.setUp();
+    this.userService.setUp().subscribe(() => {
+      this.userService.isUserConnected().subscribe(value => {
+        if (!value) {
+          this.router.navigate(['/register']).finally(() => this.loaderService.hide());
+        } else {
+          if (this.router.url === '/register') this.router.navigate(['/']).finally(() => this.loaderService.hide());
+        }
+
+      });
+    });
   }
 
   ngOnInit() {
@@ -66,5 +78,9 @@ export class AppComponent implements OnInit {
     } else if (window.location.pathname === '/authentication-callback') {
       this.activeItemIndex = 1;
     }
+  }
+
+  public onRouterOutletActivate(event : any) {
+    this.title = event.title ? event.title : 'Easy Sushi';
   }
 }
