@@ -8,8 +8,6 @@
   <div style="position: fixed; bottom: 0; left: 0; right: 0; padding-bottom: 0;">
     <nav
       tuiTabBar
-      [(activeItemIndex)]="activeItemIndex"
-
       *ngIf="auth.isAuthenticated$ | async"
     >
       <a

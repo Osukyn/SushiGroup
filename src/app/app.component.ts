@@ -18,7 +18,6 @@ interface Item {
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-  activeItemIndex = 0;
   title = 'Easy Sushi'
 
   readonly items = [
@@ -26,36 +25,31 @@ export class AppComponent implements OnInit {
       text: 'Accueil',
       icon: 'tuiIconHomeLarge',
       badge: 0,
-      link: '/',
-      disabled: false
+      link: '/'
     },
     {
       text: 'Commande',
       icon: 'tuiIconFileTextLarge',
       badge: 0,
-      link: '/order',
-      disabled: false
+      link: '/order'
     },
     {
       text: 'Récent',
       icon: 'tuiIconClockLarge',
       badge: 0,
-      link: '/recent',
-      disabled: false
+      link: '/recent'
     },
     {
       text: 'Panier',
       icon: 'tuiIconShoppingCartLarge',
       badge: 0,
-      link: '/cart',
-      disabled: false
+      link: '/cart'
     },
     {
       text: 'Profil',
       icon: 'tuiIconUserLarge',
       badge: 0,
-      link: '/profile',
-      disabled: false
+      link: '/profile'
     }
   ];
 
@@ -69,20 +63,12 @@ export class AppComponent implements OnInit {
         } else {
           if (this.router.url === '/register') this.router.navigate(['/']).finally(() => this.loaderService.hide());
         }
-
       });
     });
   }
 
   ngOnInit() {
     console.log(window.location.pathname);
-    this.activeItemIndex = this.items.findIndex(item => item.link === window.location.pathname);
-    console.log(this.activeItemIndex);
-    if (this.activeItemIndex === -1 && window.location.pathname !== '/authentication-callback') {
-      this.activeItemIndex = 0;
-    } else if (window.location.pathname === '/authentication-callback') {
-      this.activeItemIndex = 1;
-    }
   }
 
   public onRouterOutletActivate(event : any) {

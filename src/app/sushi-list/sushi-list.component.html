@@ -1,19 +1,19 @@
-<div style="width: 100%; position: fixed; top: 2.75rem; background: var(--tui-base-01); z-index: 100">
+<div style="width: 100%; position: fixed; top: 3rem; background: var(--tui-base-01); z-index: 100" [style.--tui-skeleton-radius.px]="10">
     <!-- Liste des catégories en haut -->
     <div class="category-list" id="categories-container">
-        <a tuiLink *ngFor="let item of sushiList" (click)="scrollToCategory(item.code, $event)" class="category-link" [class.cat-active]="item.code === activeCategory">
+        <a tuiLink *ngFor="let item of sushiList" (click)="scrollToCategory(item.code, $event)" class="category-link" [class.cat-active]="item.code === activeCategory" [class.tui-skeleton]="skeletonVisible" @fade>
             {{ item.code }}
         </a>
     </div>
 </div>
 
-<div style="padding-top: 5rem; padding-bottom: 3rem">
+<div style="padding-top: 5rem; padding-bottom: 3rem" [style.--tui-skeleton-radius.px]="10">
     <!-- Liste des produits -->
     <div *ngFor="let item of sushiList" [id]="item.code" class="cat-container">
         <div style="height: 1rem"></div>
-        <h2 style="padding-left: 1rem">{{ item.code }}</h2>
-        <div class="product" *ngFor="let sushi of item.produits">
-            <img [src]="'https://83.easysushi.fr/images/commander/' + sushi.img" [alt]="sushi.nom">
+        <h2 style="padding-left: 1rem" [class.tui-skeleton]="skeletonVisible">{{ item.code }}</h2>
+        <div class="product" *ngFor="let sushi of item.produits" [class.tui-skeleton]="skeletonVisible">
+            <img [src]="'./assets/images/food/' + sushi.img" [alt]="sushi.nom">
             <div class="product-details">
                 <h3 [innerHTML]="sushi.nom" style="margin: 0"></h3>
                 <div style="display: flex; flex-direction: column">
