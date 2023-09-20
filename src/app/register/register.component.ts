@@ -9,6 +9,7 @@ import {TuiStringHandler} from "@taiga-ui/cdk";
 import {HttpClient} from "@angular/common/http";
 import {Router} from "@angular/router";
 import {LoaderService} from "../loader.service";
+import {environment} from "../../environments/environment";
 
 export interface Restaurant {
   id: number;
@@ -87,7 +88,7 @@ export class RegisterComponent {
   onSubmit(): void {
     if (this.registrationForm.valid) {
       console.log(this.registrationForm.value);
-      this.http.post('http://localhost:3000/api/register', this.registrationForm.value).subscribe(value => {
+      this.http.post(`${environment.baseUrl}${environment.restPort}/api/register`, this.registrationForm.value).subscribe(value => {
         console.log(value);
         this.userService.setFullUser(value);
         this.router.navigate(['/']);
