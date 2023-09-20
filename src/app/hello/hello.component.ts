@@ -1,5 +1,11 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {AuthService} from "@auth0/auth0-angular";
+import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
+import {UserService} from "../user.service";
+import {TuiStringHandler} from "@taiga-ui/cdk";
+import {Restaurant} from "../register/register.component";
+import {OrderService} from "../order.service";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-hello',
@@ -9,6 +15,7 @@ import {AuthService} from "@auth0/auth0-angular";
 export class HelloComponent implements OnDestroy, OnInit {
   today: number = new Date().getDay();
   isWednesday: boolean = this.today === 3;
+  restoForm: FormControl = new FormControl(null, Validators.required);
 
   countdown: {
     days: number;
@@ -19,8 +26,9 @@ export class HelloComponent implements OnDestroy, OnInit {
 
   private intervalId: any;
 
-  constructor(public authService: AuthService) {
+  constructor(public authService: AuthService, private fb: FormBuilder, public userService: UserService, private orderService: OrderService, private router: Router) {
     this.updateCountdown();
+    this.orderService.getRestaurantAddress() ? this.restoForm.setValue(this.orderService.getRestaurantAddress()) : this.restoForm.setValue('');
   }
 
   ngOnInit(): void {
@@ -67,5 +75,15 @@ export class HelloComponent implements OnDestroy, OnInit {
       minutes: Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)),
       seconds: Math.floor((diff % (1000 * 60)) / 1000),
     };
+  }
+
+  stringify: TuiStringHandler<any> = restaurant => restaurant.name;
+
+  onClick(): void {
+    console.log(this.restoForm.value);
+    if (this.restoForm.valid) {
+      this.orderService.setRestaurantAddress(this.restoForm.value);
+      this.router.navigate(['/order']);
+    }
   }
 }

@@ -22,6 +22,7 @@ export class OrderService {
     private loaded = false;
     private loading: EventEmitter<void> = new EventEmitter<void>();
     apiURL = environment.baseUrl + environment.restPort;
+    private address: string = '';
 
     constructor(
         private infosService: InfosService,
@@ -197,5 +198,13 @@ export class OrderService {
 
     public getHoraires(id: string, date: string): Observable<any> {
         return this.http.get(this.apiURL + '/api/horaires?id=' + id + '&date=' + date);
+    }
+
+    public setRestaurantAddress(address: any): void {
+      this.address = address;
+    }
+
+    public getRestaurantAddress(): any {
+      return this.address;
     }
 }

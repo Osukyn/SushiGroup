@@ -26,31 +26,36 @@ export class AppComponent implements OnInit {
       text: 'Accueil',
       icon: 'tuiIconHomeLarge',
       badge: 0,
-      link: '/'
+      link: '/',
+      disabled: false
     },
     {
       text: 'Commande',
       icon: 'tuiIconFileTextLarge',
       badge: 0,
-      link: '/order'
+      link: '/order',
+      disabled: false
     },
     {
       text: 'Récent',
       icon: 'tuiIconClockLarge',
       badge: 0,
-      link: '/recent'
+      link: '/recent',
+      disabled: false
     },
     {
       text: 'Panier',
       icon: 'tuiIconShoppingCartLarge',
       badge: 0,
-      link: '/cart'
+      link: '/cart',
+      disabled: false
     },
     {
       text: 'Profil',
       icon: 'tuiIconUserLarge',
       badge: 0,
-      link: '/profile'
+      link: '/profile',
+      disabled: false
     }
   ];
 

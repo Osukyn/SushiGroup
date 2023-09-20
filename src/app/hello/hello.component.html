@@ -11,15 +11,8 @@
     <p>Envie de sushis aujourd'hui ? Rejoignez-nous pour une commande groupée !</p>
   </div>
 
-  <div class="emoji-container">
-    <span class="emoji">🍚</span>
-    <span class="emoji">🍙</span>
-    <span class="emoji">🍤</span>
-    <span class="emoji">🥟</span>
-  </div>
-
   <div *ngIf="!isWednesday && countdown">
-    <p>
+    <p style="text-align: center">
       Prochaine commande "mercredi sushi" dans : <br>
       <strong>
         {{ countdown.days }}j
@@ -30,7 +23,20 @@
     </p>
   </div>
 
-  <div style="position: fixed; bottom: 3rem; left: 0; right: 0; display: flex; justify-content: center;">
-    <button tuiButton [routerLink]="['/order']">Commander</button>
+  <div style="display: flex; justify-content: center; align-items: center; flex-direction: column">
+    <tui-select [formControl]="restoForm" [stringify]="stringify">
+      Selectionner un restaurant
+      <tui-data-list *tuiDataList>
+        <button
+          *ngFor="let resto of userService.fullUser.deliveriesInfos"
+          tuiOption
+          class="option"
+          [value]="resto"
+        >
+          {{ resto.name }}
+        </button>
+      </tui-data-list>
+    </tui-select>
+    <button tuiButton (click)="onClick()">Commander</button>
   </div>
 </div>
