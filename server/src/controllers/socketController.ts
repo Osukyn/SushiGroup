@@ -1,8 +1,9 @@
 import { Server } from 'socket.io';
 import { User } from '../models/User';
-import { OrderStatus } from '../models/Order';
+import {GroupOrder, OrderStatus} from '../models/Order';
 
 let onlineUsers: User[] = [];
+let groups: GroupOrder[] = [];
 
 export const initializeSocket = (server: any) => {
     const io = new Server(server, {
@@ -26,6 +27,18 @@ export const initializeSocket = (server: any) => {
 
         socket.on('getOnlineUsers', () => {
             socket.emit('onlineUsers', onlineUsers);
+        });
+
+        socket.on('getGroups', () => {
+            socket.emit('groups', groups);
+        });
+
+        socket.on('createGroup', (data: any) => {
+            let index = onlineUsers.findIndex(user => user.id === socket.id);
+            if (index !== -1) {
+                groups.push(new GroupOrder(onlineUsers[index]));
+                socket.broadcast.emit('groupCreated', groups[groups.length - 1]);
+            }
         });
 
         socket.on('updateOrder', (data: any) => {
