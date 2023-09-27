@@ -1,4 +1,5 @@
 import {User} from "./User";
+import {Delivery} from "./Delivery";
 
 export class Order {
   items: OrderItem[];
@@ -32,10 +33,12 @@ export class GroupOrder {
   host: User;
   users: User[];
   status: OrderStatus = OrderStatus.EN_COURS;
+  deliveryInfos: Delivery;
 
-  constructor(host: User) {
+  constructor(host: User, deliveryInfos: Delivery) {
     this.host = host;
     this.users = [];
+    this.deliveryInfos = deliveryInfos;
   }
 
   addUser(user: User) {
