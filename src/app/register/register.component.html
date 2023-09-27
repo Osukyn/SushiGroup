@@ -4,9 +4,9 @@
       style="display: flex; flex-direction: column; justify-content: center; align-items: center; margin-top: 1rem; margin-bottom: 3rem">
       <tui-avatar
         size="xl"
-        [text]="registrationForm.get('name')?.value"
-        [rounded]="true"
-        [avatarUrl]="registrationForm.get('profilePicture')?.value"
+        [src]="registrationForm.get('profilePicture')?.value ? registrationForm.get('profilePicture')?.value : registrationForm.get('name')?.value | tuiInitials"
+        [style.background]="registrationForm.get('name')?.value | tuiAutoColor"
+        [round]="true"
         style="margin-bottom: 1rem"
       ></tui-avatar>
       <a

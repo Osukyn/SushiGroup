@@ -3,8 +3,9 @@
         <tui-accordion-item *ngIf="orderService.getLocalOrder().items.length > 0" [open]="true" [disabled]="true">
             <div class="order-header">
                 <div class="order-pic">
-                    <tui-avatar class="order-icon" [rounded]="true"
-                                [avatarUrl]="getLocalUser()?.picture || ''" [text]="getLocalUser()?.name || ''"></tui-avatar>
+                    <tui-avatar class="order-icon" [round]="true"
+                                [src]="getLocalUser()?.picture ? getLocalUser()?.picture || '' : getLocalUser()?.name || '' | tuiInitials"
+                                [style.background]="getLocalUser()?.name || '' | tuiAutoColor"></tui-avatar>
                 </div>
                 <div class="order-user">
                     <div class="order-title">{{ getLocalUser()?.name }}</div>
@@ -38,8 +39,9 @@
         <tui-accordion-item *ngFor="let order of getOrders() | async">
             <div class="order-header">
                 <div class="order-pic">
-                    <tui-avatar class="order-icon" [rounded]="true"
-                                [avatarUrl]="userService.getUser(order.email)?.picture || ''"></tui-avatar>
+                    <tui-avatar class="order-icon" [round]="true"
+                                [src]="userService.getUser(order.email)?.picture ? userService.getUser(order.email)?.picture || '' : userService.getUser(order.email)?.name || '' | tuiInitials"
+                                [style.background]="userService.getUser(order.email)?.name || '' | tuiAutoColor"></tui-avatar>
                 </div>
                 <div class="order-user">
                     <div class="order-title">{{ userService.getUser(order.email)?.name }}</div>
