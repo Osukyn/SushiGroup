@@ -30,7 +30,14 @@ export class RegisterComponent {
   oldValue = null;
   title = 'Inscription';
 
-  constructor(private fb: FormBuilder, @Inject(TuiDialogService) private readonly dialogs: TuiDialogService, private userService: UserService, private ref: ChangeDetectorRef, private orderService: OrderService, private http: HttpClient, private router: Router, private loaderService: LoaderService) {
+  constructor(private fb: FormBuilder,
+              @Inject(TuiDialogService) private readonly dialogs: TuiDialogService,
+              private userService: UserService,
+              private ref: ChangeDetectorRef,
+              private orderService: OrderService,
+              private http: HttpClient,
+              private router: Router,
+              private loaderService: LoaderService) {
     this.registrationForm = this.fb.group({
       profilePicture: [''],
       email: ['', [Validators.required, Validators.email]],
@@ -69,8 +76,8 @@ export class RegisterComponent {
     resto.get('restaurant')?.valueChanges
       .pipe(startWith(null as unknown as string), pairwise())
       .subscribe(([prev, next]: [any, any]) => {
-      if (prev) this.onRestaurantChange(prev);
-    });
+        if (prev) this.onRestaurantChange(prev);
+      });
 
     return resto;
   }
