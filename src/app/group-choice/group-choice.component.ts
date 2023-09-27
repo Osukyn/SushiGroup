@@ -1,11 +1,36 @@
-import { Component } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {SocketService} from "../socket.service";
+import {Group} from "../model/group.model";
+import {BehaviorSubject, Observable, Subscription} from "rxjs";
 
 @Component({
   selector: 'app-group-choice',
   templateUrl: './group-choice.component.html',
   styleUrls: ['./group-choice.component.css']
 })
-export class GroupChoiceComponent {
+export class GroupChoiceComponent implements OnInit, OnDestroy {
   public title =  'Groupe';
+  groups: Group[] = [];
+  private subscription: Subscription | undefined;
+  public loaded = false;
+  private _groups$ = new BehaviorSubject<Group[]>([]);
 
+  constructor(public socketService: SocketService) {}
+
+  ngOnInit(): void {
+    // Similaire à la récupération des commandes dans CartComponent
+    this.subscription = this.socketService.groupsUpdate.subscribe(groups => {
+      this.groups = groups;
+      this._groups$.next(this.groups);
+      this.loaded = true;
+    });
+  }
+
+  getGroups(): Observable<Group[]> {
+    return this._groups$;
+  }
+
+  ngOnDestroy(): void {
+    this.subscription?.unsubscribe();
+  }
 }

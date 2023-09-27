@@ -13,7 +13,7 @@ export class SocketService {
   private socket: any;
   public orderUpdates = new Subject<any>();
   public currentUserData = new Subject<any>();
-  public groups = new Subject<any>();
+  groupsUpdate = new Subject<any[]>();
 
   constructor() {
     this.socket = io(environment.baseUrl + environment.socketPort);
@@ -47,18 +47,10 @@ export class SocketService {
     this.socket.emit('createGroup', user);
   }
 
-  public getGroups() {
-    this.socket.emit('getGroups');
-  }
-
   public setGroupUpdates() {
-    this.socket.on('groupCreated', (data: any) => {
-      console.log('Group created:', data);
-      this.groups.next(data);
+    this.socket.on('groupsUpdate', (data: any) => {
+      console.log('Group update:', data);
+      this.groupsUpdate.next(data);
     });
-  }
-
-  public getGroupUpdates() {
-    return this.groups.asObservable();
   }
 }
