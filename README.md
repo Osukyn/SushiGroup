@@ -1,27 +1,24 @@
-# SushiGroup
+# 🍣 Sushi Group
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.2.0.
+"Sushi Group" est une application conçue pour faciliter les commandes groupées sur le site Easy Sushi. 🥢 Grâce à elle, plus besoin de se perdre dans les détails : vous pouvez facilement vérifier qui commande quoi et connaître le total par personne. Construite avec une combinaison de technologies puissantes, dont Node.js, Express, TypeScript, Socket.io et Angular, cette application offre une expérience utilisateur intuitive et dynamique.
 
-## Development server
+## 🌟 Fonctionnalités
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+- **📦 Commandes Groupées** : Facilité de passer des commandes groupées avec une visualisation en temps réel des commandes des autres membres du groupe.
+- **⏲️ Visualisation en Temps Réel** : Grâce à l'intégration de Socket.io, les utilisateurs peuvent voir les mises à jour de commandes en temps réel, renforçant ainsi l'expérience collaborative.
+- **🍱 Intégration avec Easy Sushi** : L'application récupère les données de menu, lieux et horaires directement depuis le site Easy Sushi pour garantir des informations à jour.
+- **👤 Gestion des Profils Utilisateurs** : Chaque utilisateur a la possibilité de créer un profil avec des informations telles que le nom, l'email, la photo de profil et les détails de livraison.
 
-## Code scaffolding
+## 📂 Structure du Projet
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+- **🖥️ Backend (Node.js & Express)** :
+  - `controllers/` : Contient la logique des contrôleurs pour gérer les routes API et la logique Socket.io.
+  - `models/` : Définitions des modèles et des types utilisés dans l'application, y compris les utilisateurs et les commandes.
+  - `index.ts` : Point d'entrée principal du backend.
+- **🖼️ Frontend (Angular)** :
+  - `src/app` : Contient les principaux composants, services et modules Angular pour la construction de l'interface utilisateur.
+  - `src/styles` : Styles globaux pour l'application.
 
-## Build
+## 📌 À Propos
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+Le projet "Sushi Group" est né de la nécessité de simplifier le processus de commande groupée pour les amateurs de sushi. 🍜 Au lieu de se faire passer un téléphone pour que chacun commande, "Sushi Group" centralise l'expérience en un seul endroit, rendant les commandes de groupe simples et rapide.
