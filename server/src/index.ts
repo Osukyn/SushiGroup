@@ -8,6 +8,7 @@ import * as fs from "fs";
 import * as http from "http";
 import mongoose from "mongoose";
 import {initializeSocket} from "./controllers/socketController";
+import * as https from "https";
 
 const app = express();
 const PORT = 3000;
@@ -22,8 +23,8 @@ const credentials = {
     ca: ca
 };
 
-//const server = https.createServer(credentials, app);
-const server = http.createServer(app);
+const server = https.createServer(credentials, app);
+//const server = http.createServer(app);
 
 app.use(bodyParser.json());
 app.use(cors({ origin: '*' }));
