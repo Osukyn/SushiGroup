@@ -46,6 +46,7 @@ import {TuiBlockStatusModule} from "@taiga-ui/layout";
 import { LoaderComponent } from './loader/loader.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { RegisterComponent } from './register/register.component';
+import { GroupChoiceComponent } from './group-choice/group-choice.component';
 
 @NgModule({
   declarations: [
@@ -58,6 +59,7 @@ import { RegisterComponent } from './register/register.component';
     CartComponent,
     LoaderComponent,
     RegisterComponent,
+    GroupChoiceComponent,
   ],
     imports: [
         BrowserModule,
