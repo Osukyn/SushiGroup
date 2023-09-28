@@ -36,8 +36,9 @@ export const initializeSocket = (server: any) => {
         socket.on('createGroup', (data: any) => {
             let index = onlineUsers.findIndex(user => user.id === socket.id);
             if (index !== -1) {
-                groups.push(new GroupOrder(onlineUsers[index]));
-                socket.broadcast.emit('groupsUpdate', groups[groups.length - 1]);
+                groups.push(new GroupOrder(onlineUsers[index], data));
+                socket.broadcast.emit('groupsUpdate', groups);
+                console.log(groups);
             }
         });
 
