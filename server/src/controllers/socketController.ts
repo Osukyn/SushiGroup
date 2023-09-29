@@ -45,6 +45,18 @@ export const initializeSocket = (server: any) => {
             }
         });
 
+        socket.on('joinGroup', (id: any) => {
+            const index = onlineUsers.findIndex(user => user.id === socket.id);
+            if (index !== -1) {
+              const group = groups.findIndex(group => group.id === id);
+              if (group !== -1) {
+                groups[group].addUser(onlineUsers[index]);
+                socket.broadcast.emit('groupsUpdate', groups);
+                console.log(groups);
+              }
+            }
+        })
+
         socket.on('updateOrder', (data: any) => {
             let index = onlineUsers.findIndex(user => user.email === data.email);
             if (index !== -1) {
@@ -74,5 +86,3 @@ export const initializeSocket = (server: any) => {
         });
     });
 }
-
-// Vous pouvez également exporter d'autres fonctions ou variables si elles doivent être accessibles depuis d'autres fichiers.
