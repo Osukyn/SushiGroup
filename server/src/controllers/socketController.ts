@@ -34,11 +34,14 @@ export const initializeSocket = (server: any) => {
         });
 
         socket.on('createGroup', (data: any) => {
-            let index = onlineUsers.findIndex(user => user.id === socket.id);
+            const index = onlineUsers.findIndex(user => user.id === socket.id);
             if (index !== -1) {
+              const group = groups.findIndex(group => group.host === onlineUsers[index]);
+              if (group === -1) {
                 groups.push(new GroupOrder(onlineUsers[index], data));
                 socket.broadcast.emit('groupsUpdate', groups);
                 console.log(groups);
+              }
             }
         });
 
