@@ -4,6 +4,7 @@ import {Router} from "@angular/router";
 import {OrderService} from "./order.service";
 import {UserService} from "./user.service";
 import {LoaderService} from "./loader.service";
+import {Location} from "@angular/common";
 
 interface Item {
   text: string;
@@ -53,7 +54,7 @@ export class AppComponent implements OnInit {
     }
   ];
 
-  constructor(public auth: AuthService, private orderService: OrderService, private userService: UserService, private router: Router, public loaderService: LoaderService) {
+  constructor(public auth: AuthService, private orderService: OrderService, private userService: UserService, public router: Router, public loaderService: LoaderService, public location: Location) {
     this.loaderService.show();
     this.orderService.getMenuObservable();
     this.userService.setUp().subscribe(() => {
