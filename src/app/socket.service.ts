@@ -22,6 +22,7 @@ export class SocketService {
       console.log('Order updated by user:', data);
       this.orderUpdates.next(data);
     });
+    this.setGroupUpdates();
   }
 
   public setUser(email: string, name: string, picture: string, event: EventEmitter<any> | undefined) {
@@ -47,12 +48,15 @@ export class SocketService {
     this.socket.emit('createGroup', data);
   }
 
-  public setGroupUpdates() {
+  public getGroups() {
     this.socket.emit('getGroups');
     this.socket.once('groups', (data: any) => {
       console.log('Groups:', data);
       this.groupsUpdate.next(data);
     });
+  }
+
+  public setGroupUpdates() {
     this.socket.on('groupsUpdate', (data: any) => {
       console.log('Group update:', data);
       this.groupsUpdate.next(data);
