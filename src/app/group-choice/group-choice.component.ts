@@ -19,7 +19,7 @@ export class GroupChoiceComponent implements OnInit, OnDestroy {
   constructor(public socketService: SocketService) {}
 
   ngOnInit(): void {
-    this.socketService.setGroupUpdates();
+    this.socketService.getGroups();
     this.subscription = this.socketService.groupsUpdate.subscribe(groups => {
       this.groups = groups;
       this._groups$.next(this.groups);
