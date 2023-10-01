@@ -2,7 +2,8 @@
   <h2>Choisir un groupe:</h2>
   <div tuiGroup style="display: flex; flex-direction: column; margin-bottom: 1rem" [collapsed]="true" orientation="vertical">
     <tui-island [size]="'s'" *ngFor="let group of groups" class="group-item">
-      <tui-avatar-stack>
+      <tui-avatar-stack
+      [direction]="'left'">
         <tui-avatar
           [round]="true"
           [src]="group.host.picture ? group.host.picture : group.host.name | tuiInitials"
