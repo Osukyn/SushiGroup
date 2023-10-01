@@ -91,3 +91,16 @@
   transform: translateX(-50%); /* Centrer horizontalement */
   z-index: 1000; /* Assurez-vous qu'il est au-dessus des autres éléments */
 }
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.avatar-stack::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.avatar-stack {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+  overflow-x: auto;
+  white-space: nowrap
+}
