@@ -50,9 +50,11 @@ export const initializeSocket = (server: any) => {
             if (index !== -1) {
               const group = groups.findIndex(group => group.id === id);
               if (group !== -1) {
-                groups[group].addUser(onlineUsers[index]);
-                socket.broadcast.emit('groupsUpdate', groups);
-                console.log(groups);
+                if (groups[group].getHost().id !== onlineUsers[index].id) {
+                  groups[group].addUser(onlineUsers[index]);
+                  socket.broadcast.emit('groupsUpdate', groups);
+                  console.log(groups);
+                }
               }
             }
         })

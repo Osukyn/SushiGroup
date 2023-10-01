@@ -1,6 +1,6 @@
 import {User} from "./User";
 import {Delivery} from "./Delivery";
-
+import crypto from 'crypto';
 export class Order {
   items: OrderItem[];
   email: string;
@@ -30,12 +30,14 @@ export class OrderItem {
 }
 
 export class GroupOrder {
+  id: string;
   host: User;
   users: User[];
   status: OrderStatus = OrderStatus.EN_COURS;
   deliveryInfos: Delivery;
 
   constructor(host: User, deliveryInfos: Delivery) {
+    this.id = crypto.randomUUID();
     this.host = host;
     this.users = [];
     this.deliveryInfos = deliveryInfos;

@@ -2,6 +2,7 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {SocketService} from "../socket.service";
 import {Group} from "../model/group.model";
 import {BehaviorSubject, Observable, Subscription} from "rxjs";
+import {TuiDialogService} from "@taiga-ui/core";
 
 @Component({
   selector: 'app-group-choice',
@@ -9,7 +10,7 @@ import {BehaviorSubject, Observable, Subscription} from "rxjs";
   styleUrls: ['./group-choice.component.css']
 })
 export class GroupChoiceComponent implements OnInit, OnDestroy {
-  public title =  'Groupe';
+  // public title =  'Groupe';
   groups: Group[] = [];
   private subscription: Subscription | undefined;
   public loaded = false;
@@ -18,11 +19,10 @@ export class GroupChoiceComponent implements OnInit, OnDestroy {
   constructor(public socketService: SocketService) {}
 
   ngOnInit(): void {
-    // Similaire à la récupération des commandes dans CartComponent
+    this.socketService.setGroupUpdates();
     this.subscription = this.socketService.groupsUpdate.subscribe(groups => {
       this.groups = groups;
       this._groups$.next(this.groups);
-      this.loaded = true;
     });
   }
 

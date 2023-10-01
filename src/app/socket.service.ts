@@ -43,14 +43,23 @@ export class SocketService {
     });
   }
 
-  public createGroup(user: any) {
-    this.socket.emit('createGroup', user);
+  public createGroup(data: any) {
+    this.socket.emit('createGroup', data);
   }
 
   public setGroupUpdates() {
+    this.socket.emit('getGroups');
+    this.socket.once('groups', (data: any) => {
+      console.log('Groups:', data);
+      this.groupsUpdate.next(data);
+    });
     this.socket.on('groupsUpdate', (data: any) => {
       console.log('Group update:', data);
       this.groupsUpdate.next(data);
     });
+  }
+
+  public joinGroup(id: string) {
+    this.socket.emit('joinGroup', id);
   }
 }

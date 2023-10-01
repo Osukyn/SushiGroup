@@ -18,7 +18,7 @@ interface Item {
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-  title = 'Easy Sushi'
+  title = null;
 
   readonly items = [
     {
@@ -72,6 +72,6 @@ export class AppComponent implements OnInit {
   }
 
   public onRouterOutletActivate(event : any) {
-    this.title = event.title ? event.title : 'Easy Sushi';
+    this.title = event.title ? event.title : null;
   }
 }
