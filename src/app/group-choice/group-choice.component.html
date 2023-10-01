@@ -26,15 +26,15 @@
 
             <!-- Avatars of the group members -->
             <div class="member-section">
-              <tui-avatar-stack [direction]="'left'">
-                <tui-avatar
-                  [round]="true"
-                  *ngFor="let user of group.users"
-                  [src]="user.picture ? user.picture : user.name | tuiInitials"
-                  [style.background]="user.name | tuiAutoColor">
-                </tui-avatar>
-              </tui-avatar-stack>
-              <span>{{ group.users.length }} membres</span>
+                <tui-avatar-stack [direction]="'left'" tuiFade [tuiFade]="'horizontal'" class="avatar-stack">
+                  <tui-avatar
+                    [round]="true"
+                    *ngFor="let user of group.users"
+                    [src]="user.picture ? user.picture : user.name | tuiInitials"
+                    [style.background]="user.name | tuiAutoColor">
+                  </tui-avatar>
+                </tui-avatar-stack>
+              <span style="white-space: nowrap">{{ group.users.length }} membres</span>
             </div>
 
             <!-- Delivery Card using tui-island -->
