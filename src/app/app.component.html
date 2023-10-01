@@ -1,7 +1,7 @@
 <tui-theme-night></tui-theme-night>
 <tui-root tuiMode="onDark">
   <app-loader></app-loader>
-  <tui-app-bar class="app-bar" *ngIf="loaderService.loaded">
+  <tui-app-bar class="app-bar" *ngIf="loaderService.loaded && title">
     <h1 style="font-size: 1.75em">{{ title }}</h1>
   </tui-app-bar>
   <router-outlet (activate)="onRouterOutletActivate($event)"></router-outlet>
