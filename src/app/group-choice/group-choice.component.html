@@ -1,32 +1,72 @@
-<div class="group-list">
-  <h2>Choisir un groupe:</h2>
-  <div tuiGroup style="display: flex; flex-direction: column; margin-bottom: 1rem" [collapsed]="true" orientation="vertical">
-    <tui-island [size]="'s'" *ngFor="let group of groups" class="group-item">
-      <tui-avatar-stack
-      [direction]="'left'">
-        <tui-avatar
-          [round]="true"
-          [src]="group.host.picture ? group.host.picture : group.host.name | tuiInitials"
-          [style.background]="group.host.name | tuiAutoColor"
-        ></tui-avatar>
-        <tui-avatar
-          [round]="true"
-          *ngFor="let user of group.users"
-          [src]="user.picture ? user.picture : user.name | tuiInitials"
-          [style.background]="user.name | tuiAutoColor"
-        ></tui-avatar>
-      </tui-avatar-stack>
-      <div class="group-details">
-        <h3 style="margin: 0 0 0.5rem;">Groupe de {{ group.host.name }}</h3>
-        <tui-badge [value]="group.status" [status]="group.status === 'En cours' ? 'neutral' : 'success'"></tui-badge>
-      </div>
-      <button tuiButton size="s" (click)="socketService.joinGroup(group.id)">
-        Rejoindre
-      </button>
-    </tui-island>
-  </div>
-  <!-- ... Autre code ... -->
-  <a routerLink="/create-group" tuiButton size="m">Créer un groupe</a>
-  <!-- ... Autre code ... -->
+<div class="group-list-container">
+  <h2 class="choose-text">Choisir un groupe:</h2>
+  <div class="group-list">
 
+    <tui-accordion>
+
+      <tui-accordion-item *ngFor="let group of groups">
+        <div class="order-header">
+          <div class="order-pic">
+            <tui-avatar
+              [round]="true"
+              [src]="group.host.picture ? group.host.picture : group.host.name | tuiInitials"
+              [style.background]="group.host.name | tuiAutoColor">
+            </tui-avatar>
+          </div>
+          <div class="order-user">
+            <div class="order-title">{{ group.host.name }}</div>
+            <div class="order-subtitle">
+              <span>{{ group.deliveryInfos.address }}</span>
+            </div>
+          </div>
+        </div>
+
+        <ng-template tuiAccordionItemContent>
+          <div class="accordion-content">
+
+            <!-- Avatars of the group members -->
+            <div class="member-section">
+              <tui-avatar-stack [direction]="'left'">
+                <tui-avatar
+                  [round]="true"
+                  *ngFor="let user of group.users"
+                  [src]="user.picture ? user.picture : user.name | tuiInitials"
+                  [style.background]="user.name | tuiAutoColor">
+                </tui-avatar>
+              </tui-avatar-stack>
+              <span>{{ group.users.length }} membres</span>
+            </div>
+
+            <!-- Delivery Card using tui-island -->
+            <tui-island class="delivery-card">
+              <div class="card-icon">
+                <tui-svg [src]="'tuiIconTruckLarge'"></tui-svg>
+              </div>
+              <div class="card-details">
+                <h4>Adresse de livraison</h4>
+                <p>{{ group.deliveryInfos.address }}</p>
+                <p>{{ group.deliveryInfos.address2 }}</p>
+                <span>Restaurant: {{ group.deliveryInfos.idRestaurant }}</span>
+              </div>
+            </tui-island>
+
+            <!-- Join Group Button -->
+            <div class="join-button-section">
+              <button tuiButton (click)="socketService.joinGroup(group.id)">
+                Rejoindre
+              </button>
+            </div>
+          </div>
+        </ng-template>
+
+      </tui-accordion-item>
+    </tui-accordion>
+
+    <div class="create-group-button-section">
+      <a routerLink="/create-group" tuiButton>Créer un groupe</a>
+    </div>
+  </div>
+  <div class="create-group-button-section">
+    <a routerLink="/create-group" tuiButton>Créer un groupe</a>
+  </div>
 </div>
