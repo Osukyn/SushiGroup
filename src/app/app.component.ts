@@ -58,6 +58,7 @@ export class AppComponent implements OnInit {
     this.loaderService.show();
     this.orderService.getMenuObservable();
     this.userService.setUp().subscribe(() => {
+      console.log('User set up', this.userService.user);
       this.userService.isUserConnected().subscribe(value => {
         if (!value) {
           this.router.navigate(['/register']).finally(() => this.loaderService.hide());

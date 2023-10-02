@@ -10,23 +10,19 @@ import {environment} from "../environments/environment";
   providedIn: 'root'
 })
 export class SocketService {
-  private socket: any;
+  private readonly socket: any;
   public orderUpdates = new Subject<any>();
-  public currentUserData = new Subject<any>();
   groupsUpdate = new Subject<any[]>();
 
   constructor() {
     this.socket = io(environment.baseUrl + environment.socketPort);
 
-    this.socket.on('orderUpdated', (data: any) => {
-      console.log('Order updated by user:', data);
-      this.orderUpdates.next(data);
-    });
-    this.setGroupUpdates();
+    this.setGroupsUpdates();
   }
 
-  public setUser(email: string, name: string, picture: string, event: EventEmitter<any> | undefined) {
-    this.socket.emit('setUser', { email, name, picture });
+  public setUser(email: string, event: EventEmitter<any> | undefined) {
+    console.log('Setting user:', email);
+    this.socket.emit('setUser', { email });
     this.socket.on('userSet', (data: any) => this.setData(event));
   }
 
@@ -40,7 +36,6 @@ export class SocketService {
     this.socket.on('onlineUsers', (data: any) => {
       console.log('Online users:', data);
       event?.emit();
-      this.currentUserData.next(data);
     });
   }
 
@@ -56,7 +51,14 @@ export class SocketService {
     });
   }
 
-  public setGroupUpdates() {
+  public setGroupUpdates(groupId: any) {
+    this.socket.on(`groupUpdate/${groupId}`, (data: any) => {
+      console.log('Order updated by user:', data);
+      this.orderUpdates.next(data);
+    });
+  }
+
+  public setGroupsUpdates() {
     this.socket.on('groupsUpdate', (data: any) => {
       console.log('Group update:', data);
       this.groupsUpdate.next(data);
@@ -65,5 +67,9 @@ export class SocketService {
 
   public joinGroup(id: string) {
     this.socket.emit('joinGroup', id);
+  }
+
+  public getSocket(): any {
+    return this.socket;
   }
 }

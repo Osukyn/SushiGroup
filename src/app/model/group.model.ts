@@ -7,5 +7,6 @@ export interface Group {
   host: User;
   users: User[];
   status: OrderStatus;
+  orders: Map<string, Order>;
   deliveryInfos: any;
 }

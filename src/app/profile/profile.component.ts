@@ -16,13 +16,13 @@ export class ProfileComponent {
   constructor(public userService: UserService, public auth: AuthService, private loaderService: LoaderService) {
     this.loaderService.show();
     if (!this.userService.loaded) this.userService.loadingObservable().subscribe(() => {
-      console.log(this.userService.fullUser);
-      this.profile = this.userService.fullUser;
+      console.log(this.userService.user);
+      this.profile = this.userService.user;
       this.loaderService.hide();
       this.loaded = true;
     });
     else {
-      this.profile = this.userService.fullUser;
+      this.profile = this.userService.user;
       this.loaderService.hide();
       this.loaded = true;
     }

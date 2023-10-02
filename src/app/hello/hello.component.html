@@ -28,7 +28,7 @@
       Selectionner un restaurant
       <tui-data-list *tuiDataList>
         <button
-          *ngFor="let resto of userService.fullUser.deliveriesInfos"
+          *ngFor="let resto of userService.user.deliveriesInfos"
           tuiOption
           class="option"
           [value]="resto"
