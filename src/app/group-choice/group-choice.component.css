@@ -22,7 +22,9 @@
   flex-grow: 1;
 }
 
-.order-subtitle span {
+.order-subtitle {
+  color: #cccccc; /* Light gray for dark mode */
+  font-size: small;
   margin-right: 5px;
 }
 
@@ -103,4 +105,41 @@
   scrollbar-width: none; /* Firefox */
   overflow-x: auto;
   white-space: nowrap
+}
+
+.group-creation-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* Espacement entre les éléments */
+}
+
+.description-text {
+  font-size: 1rem;
+  color: #AAA;  /* Une couleur légèrement grise pour le texte descriptif */
+  margin-bottom: 20px;
+}
+
+.select-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.select-placeholder {
+  font-size: 0.9rem;
+  margin-bottom: 10px;
+}
+
+.submit-button-section {
+  display: flex;
+  justify-content: space-between; /* Espacer les boutons */
+  margin-top: 20px;
+}
+
+
+.option {
+  padding: 10px;
+  display: block;
+  width: 100%;
+  text-align: left;
 }

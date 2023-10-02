@@ -45,16 +45,11 @@ import { LoginComponent } from './login/login.component';
 import { ProfileComponent } from './profile/profile.component';
 import { RecentComponent } from './recent/recent.component';
 import { CartComponent } from './cart/cart.component';
-import {UserService} from "./user.service";
-import {OrderService} from "./order.service";
-import {InfosService} from "./infos.service";
-import {SocketService} from "./socket.service";
 import {TuiBlockStatusModule} from "@taiga-ui/layout";
 import { LoaderComponent } from './loader/loader.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { RegisterComponent } from './register/register.component';
 import { GroupChoiceComponent } from './group-choice/group-choice.component';
-import { CreateGroupComponent } from './create-group/create-group.component';
 
 @NgModule({
   declarations: [
@@ -68,7 +63,6 @@ import { CreateGroupComponent } from './create-group/create-group.component';
     LoaderComponent,
     RegisterComponent,
     GroupChoiceComponent,
-    CreateGroupComponent,
   ],
   imports: [
     BrowserModule,
