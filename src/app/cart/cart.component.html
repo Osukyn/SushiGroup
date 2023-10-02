@@ -4,7 +4,7 @@
             <div class="order-header">
                 <div class="order-pic">
                     <tui-avatar class="order-icon" [round]="true"
-                                [src]="getLocalUser()?.picture ? getLocalUser()?.picture || '' : getLocalUser()?.name || '' | tuiInitials"
+                                [src]="getLocalUser()?.profilePicture ? getLocalUser()?.profilePicture || '' : getLocalUser()?.name || '' | tuiInitials"
                                 [style.background]="getLocalUser()?.name || '' | tuiAutoColor"></tui-avatar>
                 </div>
                 <div class="order-user">
@@ -40,7 +40,7 @@
             <div class="order-header">
                 <div class="order-pic">
                     <tui-avatar class="order-icon" [round]="true"
-                                [src]="userService.getUser(order.email)?.picture ? userService.getUser(order.email)?.picture || '' : userService.getUser(order.email)?.name || '' | tuiInitials"
+                                [src]="userService.getUser(order.email)?.profilePicture ? userService.getUser(order.email)?.profilePicture || '' : userService.getUser(order.email)?.name || '' | tuiInitials"
                                 [style.background]="userService.getUser(order.email)?.name || '' | tuiAutoColor"></tui-avatar>
                 </div>
                 <div class="order-user">

@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, OnDestroy} from '@angular/core';
 import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {TuiDialogService} from "@taiga-ui/core";
 import {TUI_PROMPT, tuiItemsHandlersProvider, TuiPromptData} from "@taiga-ui/kit";
@@ -22,7 +22,7 @@ export interface Restaurant {
   styleUrls: ['./register.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class RegisterComponent {
+export class RegisterComponent implements OnDestroy{
   registrationForm: FormGroup;
   opens: boolean[] = [];
   restaurantsList: any[] = [];
@@ -97,7 +97,6 @@ export class RegisterComponent {
       console.log(this.registrationForm.value);
       this.http.post(`${environment.baseUrl}${environment.restPort}/api/register`, this.registrationForm.value).subscribe(value => {
         console.log(value);
-        this.userService.setFullUser(value);
         this.router.navigate(['/']);
       });
       // Faites quelque chose avec les données du formulaire, par exemple les envoyer à une API.
@@ -155,5 +154,9 @@ export class RegisterComponent {
     const found = this.restaurants.controls.find(c => c.value.restaurant === id);
     if (found) return found.get('sousLieux');
     else return null;
+  }
+
+  ngOnDestroy(): void {
+    //this.loaderService.isLoading.unsubscribe();
   }
 }

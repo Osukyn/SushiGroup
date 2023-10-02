@@ -9,7 +9,7 @@
           <div class="order-pic">
             <tui-avatar
               [round]="true"
-              [src]="group.host.picture ? group.host.picture : group.host.name | tuiInitials"
+              [src]="group.host.profilePicture ? group.host.profilePicture : group.host.name | tuiInitials"
               [style.background]="group.host.name | tuiAutoColor">
             </tui-avatar>
           </div>
@@ -28,7 +28,7 @@
                   <tui-avatar
                     [round]="true"
                     *ngFor="let user of group.users"
-                    [src]="user.picture ? user.picture : user.name | tuiInitials"
+                    [src]="user.profilePicture ? user.profilePicture : user.name | tuiInitials"
                     [style.background]="user.name | tuiAutoColor">
                   </tui-avatar>
                 </tui-avatar-stack>
@@ -50,7 +50,7 @@
 
             <!-- Join Group Button -->
             <div class="join-button-section">
-              <button tuiButton (click)="socketService.joinGroup(group.id)">
+              <button tuiButton (click)="joinGroup(group)">
                 Rejoindre
               </button>
             </div>
@@ -86,7 +86,7 @@
         <span class="select-placeholder">Sélectionner un restaurant</span>
         <tui-data-list *tuiDataList>
           <button
-            *ngFor="let resto of userService.fullUser.deliveriesInfos"
+            *ngFor="let resto of userService.user.deliveriesInfos"
             tuiOption
             class="option"
             [value]="resto"

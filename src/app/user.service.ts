@@ -11,112 +11,57 @@ import {environment} from "../environments/environment";
   providedIn: 'root'
 })
 export class UserService {
-  private _user: any;
+  private _user: User | undefined;
   private _onlineUsers: any[] = [];
   private loading: EventEmitter<void> = new EventEmitter<void>();
-  private _fullUser: any;
   loaded = false;
 
   constructor(private authService: AuthService, private socketService: SocketService, private http: HttpClient) {
     this.loading.subscribe(() => {
       this.loaded = true;
     });
+
+    this.socketService.getSocket().on('userUpdate', (data: any) => {
+      console.log('User updated:', data);
+      this._user = data;
+    });
   }
 
   get user(): any {
-    if (!this._user) return null;
     return this._user;
   }
 
-  get userId(): string {
-    if (!this._user) return '';
-    return this._user.sub;
-  }
-
   get userName(): string {
-    if (!this._user) return '';
-    return this._user.name;
+    return this._user?.name || '';
   }
 
   get userEmail(): string {
-    if (!this._user) return '';
-    return this._user.email;
+    return this._user?.email || '';
   }
 
   get userPicture(): string {
-    if (!this._user) return '';
-    return this._user.picture;
+    return this._user?.profilePicture || '';
   }
 
-  getOnlineUsers(): any[] {
+  getOnlineUsers(): User[] {
     return this._onlineUsers;
   }
 
-  addOnlineUser(user: any): void {
-    this._onlineUsers.push(user);
-  }
-
-  removeOnlineUser(user: any): void {
-    const index = this._onlineUsers.findIndex(u => u.email === user.email);
-    if (index !== -1) {
-      this._onlineUsers.splice(index, 1);
-    }
-  }
-
   isOnline(user: User): boolean {
-    return this._onlineUsers.findIndex(u => u.email === user.email) !== -1;
+    return this._onlineUsers.some(u => u.email === user.email);
   }
 
   getUser(email: string): User | null {
-    const index = this._onlineUsers.findIndex(u => u.email === email);
-    if (index !== -1) {
-      return this._onlineUsers[index];
-    } else {
-      if (email === this.userEmail) {
-        return {
-          id: this.userId,
-          email: this.userEmail,
-          name: this.userName,
-          picture: this.userPicture,
-          order: new Order(this.userEmail, [])
-        };
-      } else {
-        return null;
-      }
-    }
-  }
-
-  get fullUser(): any {
-    return this._fullUser;
-  }
-
-  getFullUser(): Observable<any> {
-    if (!this.userEmail) {
-      const subject = new Subject<any>();
-      setTimeout(() => {
-        subject.next(null);
-        subject.complete();
-      });
-      return subject.asObservable();
-    }
-    if (this._fullUser) return new Observable<any>(observer => {
-      observer.next(this._fullUser);
-      observer.complete();
-    });
-    return this.http.get(environment.baseUrl + environment.restPort + '/api/user?email=' + this.userEmail).pipe(
-      map((user: any) => {
-        console.log(user);
-        this._fullUser = user;
-        return user;
-      })
-    );
-  }
-
-  setFullUser(fullUser: any): void {
-    this._fullUser = fullUser;
+    const foundUser = this._onlineUsers.find(u => u.email === email);
+    return foundUser || (email === this.userEmail ? {
+      email: this.userEmail,
+      name: this.userName,
+      profilePicture: this.userPicture,
+    } : null);
   }
 
   isUserConnected(): Observable<boolean> {
+    console.log('isUserConnected' + this.userEmail);
     return this.http.get<boolean>(environment.baseUrl + environment.restPort + '/api/isUserRegistered?email=' + this.userEmail);
   }
 
@@ -124,16 +69,19 @@ export class UserService {
     return this.loading;
   }
 
-
   public setUp() {
     this.authService.user$.subscribe(user => {
       if (!user) return;
-      this._user = user;
-      this.getFullUser().subscribe(fullUser => {
-        this._fullUser = fullUser;
-        this.socketService.setUser(this.userEmail, this.userName, this.userPicture, this.loading);
-      });
+      console.log('User:', user);
+      if (user.email)
+      this.socketService.setUser(user.email, this.loading);
     });
+
     return this.loading;
   }
+
+  isUserInGroup(email: string): Observable<boolean> {
+    return this.http.get<boolean>(environment.baseUrl + environment.restPort + '/api/isUserInGroup?email=' + email);
+  }
+
 }

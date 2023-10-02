@@ -73,4 +73,12 @@ export class GroupChoiceComponent implements OnInit, OnDestroy {
     observer.complete();
   }
 
+  joinGroup(group: Group): void {
+    this.userService.isUserInGroup(this.userService.userEmail).subscribe(value => {
+      if (!value) {
+        this.socketService.joinGroup(group.id);
+        this.orderService.setGroup(group);
+      }
+    });
+  }
 }

@@ -20,7 +20,7 @@ export const register = async (req: Request, res: Response) => {
 
 export const getUser = async (req: Request, res: Response) => {
     const email = req.query.email;
-    console.log(email);
+    console.log('getUser', email);
     try {
         mongoose.models.FullUser.findOne({email: email}).then((user) => {
             getSocketByUserEmail(user.email)?.emit('userUpdate', user);
@@ -35,7 +35,6 @@ export const getUser = async (req: Request, res: Response) => {
 
 export const isUserRegistered = async (req: Request, res: Response) => {
     const email = req.query.email;
-    console.log(email);
     try {
         mongoose.models.FullUser.findOne({email: email}).then((user) => {
             res.status(200).send(user !== null);
