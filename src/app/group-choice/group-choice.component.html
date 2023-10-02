@@ -15,9 +15,7 @@
           </div>
           <div class="order-user">
             <div class="order-title">{{ group.host.name }}</div>
-            <div class="order-subtitle">
-              <span>{{ group.deliveryInfos.address }}</span>
-            </div>
+            <div class="order-subtitle">{{ group.deliveryInfos.address }}</div>
           </div>
         </div>
 
@@ -46,7 +44,7 @@
                 <h4>Adresse de livraison</h4>
                 <p>{{ group.deliveryInfos.address }}</p>
                 <p>{{ group.deliveryInfos.address2 }}</p>
-                <span>Restaurant: {{ group.deliveryInfos.idRestaurant }}</span>
+                <span>Restaurant: {{ libelleByRestaurantId(group.deliveryInfos.restaurant) }}</span>
               </div>
             </tui-island>
 
@@ -67,6 +65,43 @@
     </div>
   </div>
   <div class="create-group-button-section">
-    <a routerLink="/create-group" tuiButton>Créer un groupe</a>
+    <button tuiButton (click)="showDialog()">Créer un groupe</button>
   </div>
 </div>
+
+<ng-template
+  let-observer
+  [tuiDialogOptions]="{label: 'Créer un groupe', dismissible: true}"
+  [(tuiDialog)]="open"
+>
+  <form
+    [formGroup]="form"
+    (ngSubmit)="createGroup(observer)"
+    class="group-creation-form"
+  >
+    <p class="description-text">Sélectionnez le restaurant pour votre groupe.</p>
+
+    <div class="select-container">
+      <tui-select [formControl]="restoForm" [stringify]="stringify">
+        <span class="select-placeholder">Sélectionner un restaurant</span>
+        <tui-data-list *tuiDataList>
+          <button
+            *ngFor="let resto of userService.fullUser.deliveriesInfos"
+            tuiOption
+            class="option"
+            [value]="resto"
+          >
+            {{ resto.name }}
+          </button>
+        </tui-data-list>
+      </tui-select>
+    </div>
+
+    <div class="submit-button-section">
+      <button tuiButton type="button" appearance="flat" (click)="closeDialog(observer)">Annuler</button>
+      <button tuiButton type="submit">Créer</button>
+    </div>
+
+  </form>
+</ng-template>
+
