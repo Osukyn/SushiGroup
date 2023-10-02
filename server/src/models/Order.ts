@@ -1,4 +1,4 @@
-import {User} from "./User";
+import {OnlineUser, User} from "./User";
 import {Delivery} from "./Delivery";
 import crypto from 'crypto';
 export class Order {
@@ -33,6 +33,7 @@ export class GroupOrder {
   id: string;
   host: User;
   users: User[];
+  orders: Map<string, Order> = new Map<string, Order>();
   status: OrderStatus = OrderStatus.EN_COURS;
   deliveryInfos: Delivery;
 
@@ -41,39 +42,36 @@ export class GroupOrder {
     this.host = host;
     this.users = [];
     this.deliveryInfos = deliveryInfos;
+    this.orders.set(host.email, new Order(host.email)); // Initialize host order
   }
 
   addUser(user: User) {
     this.users.push(user);
+    this.orders.set(user.email, new Order(user.email)); // Initialize order for the new user
   }
 
   removeUser(user: User) {
     const index = this.users.findIndex(u => u.email === user.email);
     if (index !== -1) {
       this.users.splice(index, 1);
+      this.orders.delete(user.email); // Remove order for the user
     }
   }
 
-  getUserOrder(user: User): Order | undefined {
-    const index = this.users.findIndex(u => u.email === user.email);
-    if (index !== -1) {
-      return this.users[index].order;
-    }
+  getUserOrder(email: string): Order | undefined {
+    return this.orders.get(email);
   }
 
-  setUserOrder(user: User, order: Order) {
-    const index = this.users.findIndex(u => u.email === user.email);
-    if (index !== -1) {
-      this.users[index].order = order;
-    }
+  setUserOrder(email: string, order: Order) {
+    this.orders.set(email, order);
   }
 
   getHostOrder(): Order | undefined {
-    return this.host.order;
+    return this.orders.get(this.host.email);
   }
 
   setHostOrder(order: Order) {
-    this.host.order = order;
+    this.orders.set(this.host.email, order);
   }
 
   getHost(): User {
@@ -82,6 +80,10 @@ export class GroupOrder {
 
   getUsers(): User[] {
     return this.users;
+  }
+
+  getAllUsers(): User[] {
+    return [this.host, ...this.users];
   }
 
   getStatus(): OrderStatus {
@@ -94,21 +96,18 @@ export class GroupOrder {
 
   getItems(): OrderItem[] {
     let items: OrderItem[] = [];
-    if (this.host.order) {
-      items = this.host.order.items;
-    }
-    this.users.forEach(user => {
-      if (user.order) {
-        user.order.items.forEach(item => {
-          const index = items.findIndex(i => i.code === item.code);
-          if (index !== -1) {
-            items[index].qte += item.qte;
-          } else {
-            items.push(item);
-          }
-        });
-      }
+
+    this.orders.forEach(order => {
+      order.items.forEach(item => {
+        const index = items.findIndex(i => i.code === item.code);
+        if (index !== -1) {
+          items[index].qte += item.qte;
+        } else {
+          items.push(item);
+        }
+      });
     });
+
     return items;
   }
 }
