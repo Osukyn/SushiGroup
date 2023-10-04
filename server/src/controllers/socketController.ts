@@ -102,7 +102,7 @@ export const initializeSocket = (server: any) => {
     socket.on('createGroup', (data: any) => {
       const onlineUser = onlineUsers.find(u => u.socketId === socket.id);
       if (onlineUser) {
-        const group = groups.find(group => group.host.email === onlineUser.fullUser.email);
+        const group = groups.find(group => group.host.email === onlineUser.fullUser.email || group.users.some(u => u.email === onlineUser.fullUser.email));
         if (group === undefined) {
           const newGroup = new GroupOrder(onlineUser.fullUser, data);
           groups.push(newGroup);
@@ -125,11 +125,12 @@ export const initializeSocket = (server: any) => {
     socket.on('joinGroup', (groupId: string) => {
       const onlineUser = onlineUsers.find(u => u.socketId === socket.id);
       if (onlineUser) {
-        const groupIndex = groups.findIndex(group => group.id === groupId);
+        let groupIndex = groups.findIndex(group => group.id === groupId);
         if (groupIndex !== -1) {
           if (findGroupByUserEmail(onlineUser.fullUser.email)) {
-
+            exitGroup(onlineUser.fullUser.email);
           }
+          groupIndex = groups.findIndex(group => group.id === groupId);
           groups[groupIndex].addUser(onlineUser.fullUser);
           socket.broadcast.emit('groupsUpdate', groups);
           socket.emit('groupsUpdate', groups);
