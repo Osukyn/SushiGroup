@@ -25,6 +25,7 @@ export class OrderService {
   apiURL = environment.baseUrl + environment.restPort;
   private address: string = '';
   private group: Group | undefined;
+  private groupSetEvent: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   constructor(
     private infosService: InfosService,
@@ -34,6 +35,7 @@ export class OrderService {
   ) {
     // Écoute des mises à jour des commandes depuis les autres utilisateurs
     this.socketService.orderUpdates.subscribe(data => this.updateOrders(data));
+    this.socketService.groupCreated.subscribe(group => this.setGroup(group));
   }
 
   // order.service.ts
@@ -197,5 +199,20 @@ export class OrderService {
   public setGroup(group: Group): void {
     this.group = group;
     this.socketService.setGroupUpdates(group.id);
+    this.groupSetEvent.emit(true);
+  }
+
+  deleteGroup(): void {
+    this.socketService.unsubscribeGroupUpdates(this.group?.id);
+    this.group = undefined;
+    this.groupSetEvent.emit(false);
+  }
+
+  getGroup() {
+    return this.group;
+  }
+
+  public getUserGroup(): Observable<any> {
+    return this.http.get(this.apiURL + '/api/getUserGroup?email=' + this.userService.userEmail);
   }
 }

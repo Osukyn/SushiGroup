@@ -16,41 +16,29 @@ interface Item {
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css'],
 })
 export class AppComponent implements OnInit {
   title = null;
 
-  readonly items = [
-    {
-      text: 'Accueil',
-      icon: 'tuiIconHomeLarge',
-      badge: 0,
-      link: '/'
-    },
+  items = [
     {
       text: 'Commande',
       icon: 'tuiIconFileTextLarge',
       badge: 0,
-      link: '/order'
+      link: '/order',
     },
     {
       text: 'Récent',
       icon: 'tuiIconClockLarge',
       badge: 0,
-      link: '/recent'
+      link: '/recent',
     },
     {
       text: 'Panier',
       icon: 'tuiIconShoppingCartLarge',
       badge: 0,
-      link: '/cart'
-    },
-    {
-      text: 'Profil',
-      icon: 'tuiIconUserLarge',
-      badge: 0,
-      link: '/profile'
+      link: '/cart',
     }
   ];
 
@@ -63,7 +51,18 @@ export class AppComponent implements OnInit {
         if (!value) {
           this.router.navigate(['/register']).finally(() => this.loaderService.hide());
         } else {
-          if (this.router.url === '/register') this.router.navigate(['/']).finally(() => this.loaderService.hide());
+          this.orderService.getUserGroup().subscribe((group) => {
+            if (group) {
+              console.log('Group get', group);
+              this.orderService.setGroup(group);
+            }
+            if (this.router.url === '/register') this.router.navigate([group ? '/order' : '/']).finally(() => this.loaderService.hide());
+            else if (this.router.url === '/order' && !group) this.router.navigate(['/']).finally(() => this.loaderService.hide());
+            else if (this.router.url === '/cart' && !group) this.router.navigate(['/']).finally(() => this.loaderService.hide());
+            else if (this.router.url === '/' && group) this.router.navigate(['/order']).finally(() => this.loaderService.hide());
+            else if (this.router.url === '/recent' && !group) this.router.navigate(['/']).finally(() => this.loaderService.hide());
+            else this.loaderService.hide();
+          });
         }
       });
     });

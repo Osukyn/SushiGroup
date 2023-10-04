@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
 import {SocketService} from "../socket.service";
 import {Group} from "../model/group.model";
 import {BehaviorSubject, Observable, Subscription} from "rxjs";
@@ -8,6 +8,8 @@ import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {OrderService} from "../order.service";
 import {UserService} from "../user.service";
 import {TuiStringHandler} from "@taiga-ui/cdk";
+import {TUI_PROMPT, TuiPromptData} from "@taiga-ui/kit";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-group-choice',
@@ -27,7 +29,7 @@ export class GroupChoiceComponent implements OnInit, OnDestroy {
   });
   restaurantsList: any[] = [];
 
-  constructor(public socketService: SocketService, private orderService: OrderService, public userService: UserService) {}
+  constructor(public socketService: SocketService, private orderService: OrderService, public userService: UserService, @Inject(TuiDialogService) private readonly dialogs: TuiDialogService, private router: Router) {}
 
   ngOnInit(): void {
     this.socketService.getGroups();
@@ -39,10 +41,6 @@ export class GroupChoiceComponent implements OnInit, OnDestroy {
     this.orderService.getRestaurantList().subscribe(restaurants => {
       this.restaurantsList = restaurants;
     });
-  }
-
-  getGroups(): Observable<Group[]> {
-    return this._groups$;
   }
 
   ngOnDestroy(): void {
@@ -59,8 +57,32 @@ export class GroupChoiceComponent implements OnInit, OnDestroy {
 
   createGroup(observer: any): void {
     if (this.restoForm.valid) {
-      this.socketService.createGroup(this.restoForm.value);
-      observer.complete();
+      this.userService.isUserInGroup(this.userService.userEmail).subscribe(response => {
+        if (!response) {
+          this.socketService.createGroup(this.restoForm.value);
+          observer.complete();
+          this.router.navigate(['/order']);
+        } else {
+          const data: TuiPromptData = {
+            content: "Vous faites déjà partie d'un groupe. Êtes-vous sûr de vouloir créer un autre groupe ?",
+            yes: 'Oui',
+            no: 'Non',
+          };
+
+          this.dialogs
+            .open<boolean>(TUI_PROMPT, {
+              label: 'Créer un nouveau groupe',
+              size: 's',
+              data,
+            }).subscribe(value => {
+            if (value) {
+              this.socketService.createGroup(this.restoForm.value);
+              observer.complete();
+              this.router.navigate(['/order']);
+            }
+          });
+        }
+      });
     }
   }
 
@@ -74,11 +96,35 @@ export class GroupChoiceComponent implements OnInit, OnDestroy {
   }
 
   joinGroup(group: Group): void {
-    this.userService.isUserInGroup(this.userService.userEmail).subscribe(value => {
-      if (!value) {
+    this.userService.isUserInGroup(this.userService.userEmail).subscribe(response => {
+      if (!response) {
         this.socketService.joinGroup(group.id);
         this.orderService.setGroup(group);
+        this.router.navigate(['/order']);
+      } else {
+        const data: TuiPromptData = {
+          content: "Vous faites déjà partie d'un groupe. Êtes-vous sûr de vouloir rejoindre un autre groupe ?",
+          yes: 'Oui',
+          no: 'Non',
+        };
+
+        this.dialogs
+          .open<boolean>(TUI_PROMPT, {
+            label: 'Rejoindre un nouveau groupe',
+            size: 's',
+            data,
+          }).subscribe(value => {
+          if (value) {
+            this.socketService.joinGroup(group.id);
+            this.orderService.setGroup(group);
+            this.router.navigate(['/order']);
+          }
+        });
       }
     });
+  }
+
+  isUserInGroup(group: Group): boolean {
+    return group.users.some(u => u.email === this.userService.userEmail) || group.host.email === this.userService.userEmail;
   }
 }

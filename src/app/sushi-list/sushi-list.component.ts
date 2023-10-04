@@ -5,6 +5,7 @@ import {OrderService} from "../order.service";
 import {ViewportScroller} from "@angular/common";
 import {animate, style, transition, trigger} from "@angular/animations";
 import {Router} from "@angular/router";
+import {LoaderService} from "../loader.service";
 
 @Component({
   selector: 'app-sushi-list',
@@ -13,7 +14,7 @@ import {Router} from "@angular/router";
   animations: [
     trigger('fade', [
       transition('void => *', [
-        style({ opacity: 0 }),
+        style({opacity: 0}),
         animate(100, style({opacity: 1}))
       ])
     ])
@@ -66,9 +67,7 @@ export class SushiListComponent implements OnInit {
     }
   }
 
-  constructor(public orderService: OrderService, private router: Router) {
-    if (!orderService.getRestaurantAddress()) this.router.navigate(['/']);
-  }
+  constructor(public orderService: OrderService, private router: Router, private loaderService: LoaderService) {}
 
   ngOnInit() {
     if (this.orderService.gotSushiList()) {

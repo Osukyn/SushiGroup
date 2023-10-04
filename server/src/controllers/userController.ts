@@ -50,3 +50,9 @@ export const isUserInGroup = async (req: Request, res: Response) => {
   else res.status(400).send('Missing email');
 }
 
+export const getUserGroup = async (req: Request, res: Response) => {
+  const email = req.query.email;
+  if (typeof email === 'string') res.status(200).send(findGroupByUserEmail(email));
+  else res.status(400).send('Missing email');
+}
+

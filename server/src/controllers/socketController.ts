@@ -108,12 +108,14 @@ export const initializeSocket = (server: any) => {
           groups.push(newGroup);
           socket.broadcast.emit('groupsUpdate', groups);
           socket.emit('groupsUpdate', groups);
+          socket.emit('groupCreated', newGroup);
         } else {
           exitGroup(onlineUser.fullUser.email);
           const newGroup = new GroupOrder(onlineUser.fullUser, data);
           groups.push(newGroup);
           socket.broadcast.emit('groupsUpdate', groups);
           socket.emit('groupsUpdate', groups);
+          socket.emit('groupCreated', newGroup);
         }
       }
     });

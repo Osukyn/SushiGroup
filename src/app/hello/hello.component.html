@@ -23,21 +23,9 @@
     </p>
   </div>
 
+  <div style="flex-grow: 1; height: 100%"></div>
+
   <div style="display: flex; justify-content: center; align-items: center; flex-direction: column">
-    <tui-select [formControl]="restoForm" [stringify]="stringify">
-      Selectionner un restaurant
-      <tui-data-list *tuiDataList>
-        <button
-          *ngFor="let resto of userService.user.deliveriesInfos"
-          tuiOption
-          class="option"
-          [value]="resto"
-        >
-          {{ resto.name }}
-        </button>
-      </tui-data-list>
-    </tui-select>
-    <button tuiButton (click)="onClick()">Commander</button>
-    <a tuiButton routerLink="/group">Groupes</a>
+    <a style="width: 100%;" tuiButton routerLink="/group">Commencer</a>
   </div>
 </div>

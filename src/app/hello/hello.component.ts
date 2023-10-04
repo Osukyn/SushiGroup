@@ -13,6 +13,7 @@ import {Router} from "@angular/router";
   styleUrls: ['./hello.component.css']
 })
 export class HelloComponent implements OnDestroy, OnInit {
+  title = 'Sushi Group';
   today: number = new Date().getDay();
   isWednesday: boolean = this.today === 3;
   restoForm: FormControl = new FormControl(null, Validators.required);

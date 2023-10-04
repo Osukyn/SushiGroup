@@ -24,15 +24,20 @@
 
             <!-- Avatars of the group members -->
             <div class="member-section">
-                <tui-avatar-stack [direction]="'left'" tuiFade [tuiFade]="'horizontal'" class="avatar-stack">
-                  <tui-avatar
-                    [round]="true"
-                    *ngFor="let user of group.users"
-                    [src]="user.profilePicture ? user.profilePicture : user.name | tuiInitials"
-                    [style.background]="user.name | tuiAutoColor">
-                  </tui-avatar>
-                </tui-avatar-stack>
-              <span style="white-space: nowrap">{{ group.users.length }} membres</span>
+              <tui-avatar-stack>
+                <tui-avatar
+                  [round]="true"
+                  *ngFor="let user of group.users.slice(0, 4)"
+                  [src]="user.profilePicture ? user.profilePicture : user.name | tuiInitials"
+                  [style.background]="user.name | tuiAutoColor">
+                </tui-avatar>
+                <tui-avatar
+                  [round]="true"
+                  *ngIf="group.users.length > 4">
+                  +{{ group.users.length - 4 }}
+                </tui-avatar>
+              </tui-avatar-stack>
+              <span style="white-space: nowrap">{{ group.users.length }} membre{{ group.users.length > 1 ? 's' : '' }}</span>
             </div>
 
             <!-- Delivery Card using tui-island -->
@@ -48,9 +53,11 @@
               </div>
             </tui-island>
 
+
+
             <!-- Join Group Button -->
             <div class="join-button-section">
-              <button tuiButton (click)="joinGroup(group)">
+              <button tuiButton (click)="joinGroup(group)" [disabled]="isUserInGroup(group)">
                 Rejoindre
               </button>
             </div>
@@ -65,7 +72,7 @@
     </div>
   </div>
   <div class="create-group-button-section">
-    <button tuiButton (click)="showDialog()">Créer un groupe</button>
+    <button tuiButton (click)="showDialog()" style="width: 100%;">Créer un groupe</button>
   </div>
 </div>
 
