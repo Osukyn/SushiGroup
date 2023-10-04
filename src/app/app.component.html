@@ -1,11 +1,18 @@
 <tui-theme-night></tui-theme-night>
 <tui-root tuiMode="onDark">
   <app-loader></app-loader>
-  <tui-app-bar class="app-bar" *ngIf="loaderService.loaded">
+  <tui-app-bar class="app-bar" *ngIf="loaderService.loaded && title">
+    <a
+      title="Back"
+      tuiAppBarBack
+      tuiSlot="left"
+      *ngIf="router.url === '/create-group' || router.url === '/group'"
+      (click)="location.back()"
+    ></a>
     <h1 style="font-size: 1.75em">{{ title }}</h1>
   </tui-app-bar>
   <router-outlet (activate)="onRouterOutletActivate($event)"></router-outlet>
-  <div style="position: fixed; bottom: 0; left: 0; right: 0; padding-bottom: 0;">
+  <div style="position: fixed; bottom: 0; left: 0; right: 0; padding-bottom: 0;" *ngIf="router.url !== '/create-group' && router.url !== '/group' && router.url !== '/'">
     <nav
       tuiTabBar
       *ngIf="auth.isAuthenticated$ | async"

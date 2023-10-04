@@ -10,8 +10,15 @@ import {
     TuiGroupModule,
     TuiTextfieldControllerModule,
     TUI_SANITIZER,
-    TuiLinkModule, TuiHintModule, TuiDataListModule
+    TuiLinkModule, TuiHintModule, TuiDataListModule, TuiSvgModule
 } from "@taiga-ui/core";
+import {
+  TuiAutoColorModule,
+  TuiAvatarModule,
+  TuiAvatarStackModule, TuiFadeModule,
+  TuiFallbackSrcModule,
+  TuiInitialsModule
+} from '@taiga-ui/experimental';
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { NgModule, isDevMode } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
@@ -21,7 +28,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { HelloComponent } from './hello/hello.component';
 import { SushiListComponent } from './sushi-list/sushi-list.component';
 import {
-  TuiAccordionModule, TuiAvatarModule, TuiBadgeModule,
+  TuiAccordionModule, TuiBadgeModule,
   TuiCarouselModule, TuiDataListWrapperModule, TuiInputModule, TuiInputNumberModule, TuiInputPhoneModule,
   TuiIslandModule, TuiLineClampModule,
   TuiMarkerIconModule,
@@ -38,10 +45,6 @@ import { LoginComponent } from './login/login.component';
 import { ProfileComponent } from './profile/profile.component';
 import { RecentComponent } from './recent/recent.component';
 import { CartComponent } from './cart/cart.component';
-import {UserService} from "./user.service";
-import {OrderService} from "./order.service";
-import {InfosService} from "./infos.service";
-import {SocketService} from "./socket.service";
 import {TuiBlockStatusModule} from "@taiga-ui/layout";
 import { LoaderComponent } from './loader/loader.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
@@ -61,57 +64,63 @@ import { GroupChoiceComponent } from './group-choice/group-choice.component';
     RegisterComponent,
     GroupChoiceComponent,
   ],
-    imports: [
-        BrowserModule,
-        BrowserAnimationsModule,
-        TuiRootModule,
-        TuiDialogModule,
-        TuiAlertModule,
-        AppRoutingModule,
-        TuiIslandModule,
-        TuiAccordionModule,
-        HttpClientModule,
-        TuiButtonModule,
-        TuiCarouselModule,
-        TuiMoneyModule,
-        TuiLoaderModule,
-        TuiMarkerIconModule,
-        TuiPaginationModule,
-        TuiBadgeModule,
-        TuiThemeNightModule,
-        TuiModeModule,
-        TuiGroupModule,
-        TuiInputNumberModule,
-        ReactiveFormsModule,
-        TuiTextfieldControllerModule,
-        FormsModule,
-        TuiTabBarModule,
-        AuthModule.forRoot({
-            domain: 'dev-s3aabk78qzffvec5.eu.auth0.com',
-            clientId: 'OQu1qUxKX45MA6OJ4kTV8jy4NnrKAZU8',
-            authorizationParams: {
-                redirect_uri: window.location.origin + '/authentication-callback',
-            }
-        }),
-        BrowserAnimationsModule,
-        TuiAvatarModule,
-        TuiInputModule,
-        TuiLineClampModule,
-        TuiLinkModule,
-        TuiBlockStatusModule,
-        ServiceWorkerModule.register('ngsw-worker.js', {
-            enabled: !isDevMode(),
-            // Register the ServiceWorker as soon as the application is stable
-            // or after 30 seconds (whichever comes first).
-            registrationStrategy: 'registerWhenStable:30000'
-        }),
-        TuiInputPhoneModule,
-        TuiHintModule,
-        TuiDataListModule,
-        TuiDataListWrapperModule,
-        TuiSelectModule,
-        TuiAppBarModule,
-    ],
+  imports: [
+    BrowserModule,
+    BrowserAnimationsModule,
+    TuiRootModule,
+    TuiDialogModule,
+    TuiAlertModule,
+    AppRoutingModule,
+    TuiIslandModule,
+    TuiAccordionModule,
+    HttpClientModule,
+    TuiButtonModule,
+    TuiCarouselModule,
+    TuiMoneyModule,
+    TuiLoaderModule,
+    TuiMarkerIconModule,
+    TuiPaginationModule,
+    TuiBadgeModule,
+    TuiThemeNightModule,
+    TuiModeModule,
+    TuiGroupModule,
+    TuiInputNumberModule,
+    ReactiveFormsModule,
+    TuiTextfieldControllerModule,
+    FormsModule,
+    TuiTabBarModule,
+    AuthModule.forRoot({
+      domain: 'dev-s3aabk78qzffvec5.eu.auth0.com',
+      clientId: 'OQu1qUxKX45MA6OJ4kTV8jy4NnrKAZU8',
+      authorizationParams: {
+        redirect_uri: window.location.origin + '/authentication-callback',
+      }
+    }),
+    BrowserAnimationsModule,
+    TuiAvatarModule,
+    TuiInputModule,
+    TuiLineClampModule,
+    TuiLinkModule,
+    TuiBlockStatusModule,
+    ServiceWorkerModule.register('ngsw-worker.js', {
+      enabled: !isDevMode(),
+      // Register the ServiceWorker as soon as the application is stable
+      // or after 30 seconds (whichever comes first).
+      registrationStrategy: 'registerWhenStable:30000'
+    }),
+    TuiInputPhoneModule,
+    TuiHintModule,
+    TuiDataListModule,
+    TuiDataListWrapperModule,
+    TuiSelectModule,
+    TuiAppBarModule,
+    TuiAvatarStackModule,
+    TuiInitialsModule,
+    TuiAutoColorModule,
+    TuiFallbackSrcModule,
+    TuiSvgModule,
+    TuiFadeModule,
+  ],
   providers: [
     {
       provide: TUI_LANGUAGE,

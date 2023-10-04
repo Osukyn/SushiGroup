@@ -1,3 +1,114 @@
-<div style="top: 3em">
+<div class="group-list-container">
+  <h2 class="choose-text">Choisir un groupe:</h2>
+  <div class="group-list">
 
+    <tui-accordion>
+
+      <tui-accordion-item *ngFor="let group of groups">
+        <div class="order-header">
+          <div class="order-pic">
+            <tui-avatar
+              [round]="true"
+              [src]="group.host.profilePicture ? group.host.profilePicture : group.host.name | tuiInitials"
+              [style.background]="group.host.name | tuiAutoColor">
+            </tui-avatar>
+          </div>
+          <div class="order-user">
+            <div class="order-title">{{ group.host.name }}</div>
+            <div class="order-subtitle">{{ group.deliveryInfos.address }}</div>
+          </div>
+        </div>
+
+        <ng-template tuiAccordionItemContent>
+          <div class="accordion-content">
+
+            <!-- Avatars of the group members -->
+            <div class="member-section">
+              <tui-avatar-stack>
+                <tui-avatar
+                  [round]="true"
+                  *ngFor="let user of group.users.slice(0, 4)"
+                  [src]="user.profilePicture ? user.profilePicture : user.name | tuiInitials"
+                  [style.background]="user.name | tuiAutoColor">
+                </tui-avatar>
+                <tui-avatar
+                  [round]="true"
+                  *ngIf="group.users.length > 4">
+                  +{{ group.users.length - 4 }}
+                </tui-avatar>
+              </tui-avatar-stack>
+              <span style="white-space: nowrap">{{ group.users.length }} membre{{ group.users.length > 1 ? 's' : '' }}</span>
+            </div>
+
+            <!-- Delivery Card using tui-island -->
+            <tui-island class="delivery-card">
+              <div class="card-icon">
+                <tui-svg [src]="'tuiIconTruckLarge'"></tui-svg>
+              </div>
+              <div class="card-details">
+                <h4>Adresse de livraison</h4>
+                <p>{{ group.deliveryInfos.address }}</p>
+                <p>{{ group.deliveryInfos.address2 }}</p>
+                <span>Restaurant: {{ libelleByRestaurantId(group.deliveryInfos.restaurant) }}</span>
+              </div>
+            </tui-island>
+
+
+
+            <!-- Join Group Button -->
+            <div class="join-button-section">
+              <button tuiButton (click)="joinGroup(group)" [disabled]="isUserInGroup(group)">
+                Rejoindre
+              </button>
+            </div>
+          </div>
+        </ng-template>
+
+      </tui-accordion-item>
+    </tui-accordion>
+
+    <div class="create-group-button-section">
+      <a routerLink="/create-group" tuiButton>Créer un groupe</a>
+    </div>
+  </div>
+  <div class="create-group-button-section">
+    <button tuiButton (click)="showDialog()" style="width: 100%;">Créer un groupe</button>
+  </div>
 </div>
+
+<ng-template
+  let-observer
+  [tuiDialogOptions]="{label: 'Créer un groupe', dismissible: true}"
+  [(tuiDialog)]="open"
+>
+  <form
+    [formGroup]="form"
+    (ngSubmit)="createGroup(observer)"
+    class="group-creation-form"
+  >
+    <p class="description-text">Sélectionnez le restaurant pour votre groupe.</p>
+
+    <div class="select-container">
+      <tui-select [formControl]="restoForm" [stringify]="stringify">
+        <span class="select-placeholder">Sélectionner un restaurant</span>
+        <tui-data-list *tuiDataList>
+          <button
+            *ngFor="let resto of userService.user.deliveriesInfos"
+            tuiOption
+            class="option"
+            [value]="resto"
+          >
+            {{ resto.name }}
+          </button>
+        </tui-data-list>
+      </tui-select>
+    </div>
+
+    <div class="submit-button-section">
+      <button tuiButton type="button" appearance="flat" (click)="closeDialog(observer)">Annuler</button>
+      <button tuiButton type="submit">Créer</button>
+    </div>
+
+  </form>
+</ng-template>
+
