@@ -22,7 +22,7 @@ export interface User {
     sousLieux: string,
     address: string,
     address2: string
-  } | any]
+  }] | []
 }
 
 const userSchema = new mongoose.Schema<User>({

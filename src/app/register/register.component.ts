@@ -29,6 +29,7 @@ export class RegisterComponent implements OnDestroy{
   open = false;
   oldValue = null;
   title = 'Inscription';
+  private subscription: any;
 
   constructor(private fb: FormBuilder,
               @Inject(TuiDialogService) private readonly dialogs: TuiDialogService,
@@ -46,7 +47,7 @@ export class RegisterComponent implements OnDestroy{
       deliveriesInfos: this.fb.array([])
     });
 
-    this.loaderService.isLoading.subscribe(value => {
+    this.subscription = this.loaderService.isLoading.subscribe(value => {
       console.log(this.userService.user);
       this.registrationForm.controls['name'].setValue(this.userService.userName);
       this.registrationForm.controls['email'].setValue(this.userService.userEmail);
@@ -54,9 +55,6 @@ export class RegisterComponent implements OnDestroy{
       this.orderService.getRestaurantList().subscribe(restaurants => {
         this.restaurantsList = restaurants;
       });
-    });
-    this.registrationForm.valueChanges.subscribe(value => {
-      //console.log(value);
     });
   }
 
@@ -96,7 +94,7 @@ export class RegisterComponent implements OnDestroy{
     if (this.registrationForm.valid) {
       console.log(this.registrationForm.value);
       this.http.post(`${environment.baseUrl}${environment.restPort}/api/register`, this.registrationForm.value).subscribe(value => {
-        console.log(value);
+        console.log('Inscription réussie !', value);
         this.router.navigate(['/']);
       });
       // Faites quelque chose avec les données du formulaire, par exemple les envoyer à une API.
@@ -157,6 +155,6 @@ export class RegisterComponent implements OnDestroy{
   }
 
   ngOnDestroy(): void {
-    //this.loaderService.isLoading.unsubscribe();
+    this.subscription.unsubscribe();
   }
 }
