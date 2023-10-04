@@ -74,7 +74,7 @@ export class UserService {
       if (!user) return;
       console.log('User:', user);
       if (user.email)
-      this.socketService.setUser(user.email, this.loading);
+      this.socketService.setUser(user.email, user.name, user.picture , this.loading);
     });
 
     return this.loading;

@@ -47,15 +47,36 @@ export const initializeSocket = (server: any) => {
             let index = onlineUsers.findIndex(u => u.fullUser.email === data.email);
             console.log('setUser', data.email);
             mongoose.models.FullUser.findOne({email: data.email}).then((user) => {
-                if (index === -1) {
-                    let onlineUser = new OnlineUser(socket.id, user);
-                    onlineUsers.push(onlineUser);
+                console.log('setUser', user);
+                if (user === null) {
+                    const localUser = <User>{
+                        name: data.name,
+                        email: data.email,
+                        profilePicture: data.picture,
+                        phone: '',
+                        deliveriesInfos: []
+                    }
+
+                    if (index === -1) {
+                      let onlineUser = new OnlineUser(socket.id, localUser);
+                      onlineUsers.push(onlineUser);
+                    } else {
+                      onlineUsers[index].socketId = socket.id;  // Update socket id
+                    }
+
                     socket.emit('userSet', {id: socket.id});
-                    socket.emit('userUpdate', user);
+                    socket.emit('userUpdate', localUser);
                 } else {
-                    onlineUsers[index].socketId = socket.id;  // Update socket id
-                    socket.emit('userSet', {id: socket.id});
-                    socket.emit('userUpdate', user);
+                    if (index === -1) {
+                        let onlineUser = new OnlineUser(socket.id, user);
+                        onlineUsers.push(onlineUser);
+                        socket.emit('userSet', {id: socket.id});
+                        socket.emit('userUpdate', user);
+                    } else {
+                        onlineUsers[index].socketId = socket.id;  // Update socket id
+                        socket.emit('userSet', {id: socket.id});
+                        socket.emit('userUpdate', user);
+                    }
                 }
             }).catch((error) => {
                 console.log(error);
@@ -117,19 +138,22 @@ export const initializeSocket = (server: any) => {
             console.log('A user disconnected:', socket.id);
             let index = onlineUsers.findIndex(u => u.socketId === socket.id);
             if (index !== -1) {
-                console.log('User disconnected:', onlineUsers[index].fullUser.email);
-                setTimeout(() => {
-                    console.log('Timeout:', onlineUsers[index].fullUser.email);
-                    index = onlineUsers.findIndex(user => user.socketId === socket.id);
-                    if (index !== -1) {
-                        const group = findGroupByUserEmail(onlineUsers[index].fullUser.email);
-                        if (group === undefined || group.getUserOrder(onlineUsers[index].fullUser.email)?.status !== OrderStatus.CONFIRMED) {
-                            exitGroup(onlineUsers[index].fullUser.email);
-                            onlineUsers.splice(index, 1);
+                if (onlineUsers[index].fullUser) {
+                    console.log('User disconnected:', onlineUsers[index].fullUser.email);
+                    setTimeout(() => {
+                        console.log('Timeout:', onlineUsers[index].fullUser.email);
+                        index = onlineUsers.findIndex(user => user.socketId === socket.id);
+                        if (index !== -1) {
+                            const group = findGroupByUserEmail(onlineUsers[index].fullUser.email);
+                            if (group === undefined || group.getUserOrder(onlineUsers[index].fullUser.email)?.status !== OrderStatus.CONFIRMED) {
+                                exitGroup(onlineUsers[index].fullUser.email);
+                                onlineUsers.splice(index, 1);
+                            }
                         }
-                    }
-
-                }, 5 * 60 * 1000 / 20);  // 5 minutes
+                    }, 5 * 60 * 1000 / 20);  // 5 minutes
+                } else {
+                    onlineUsers.splice(index, 1);
+                }
             }
         });
     });

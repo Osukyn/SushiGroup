@@ -20,9 +20,9 @@ export class SocketService {
     this.setGroupsUpdates();
   }
 
-  public setUser(email: string, event: EventEmitter<any> | undefined) {
+  public setUser(email: string, name: string | undefined, picture: string | undefined, event: EventEmitter<any> | undefined) {
     console.log('Setting user:', email);
-    this.socket.emit('setUser', { email });
+    this.socket.emit('setUser', { email, name, picture });
     this.socket.on('userSet', (data: any) => this.setData(event));
   }
 
