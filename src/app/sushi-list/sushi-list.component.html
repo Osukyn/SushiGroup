@@ -1,4 +1,4 @@
-<div style="width: 100%; position: fixed; top: 3rem; background: var(--tui-base-01); z-index: 100" [style.--tui-skeleton-radius.px]="10">
+<div style="width: 100%; position: fixed; top: 2.75rem; background: var(--tui-base-01); z-index: 100" [style.--tui-skeleton-radius.px]="10">
     <!-- Liste des catégories en haut -->
     <div class="category-list" id="categories-container">
         <a tuiLink *ngFor="let item of sushiList" (click)="scrollToCategory(item.code, $event)" class="category-link" [class.cat-active]="item.code === activeCategory" [class.tui-skeleton]="skeletonVisible" @fade>

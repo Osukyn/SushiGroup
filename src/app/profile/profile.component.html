@@ -1,9 +1,9 @@
 <div *ngIf="loaded" id="user">
   <tui-avatar
     id="avatar"
-    [avatarUrl]="profilePicture"
-    [text]="name"
-    [rounded]="true"
+    [src]="profilePicture ? profilePicture : name | tuiInitials"
+    [style.background]="name | tuiAutoColor"
+    [round]="true"
     [size]="'xl'"
   ></tui-avatar>
 

@@ -1,0 +1,134 @@
+.group-list {
+  padding: 0 1.5rem;
+  overflow: auto;
+  flex-grow: 1;
+}
+
+.choose-text {
+  margin: 0 1.5rem 1.5rem;
+}
+
+.order-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.order-pic {
+  flex-shrink: 0;
+}
+
+.order-user {
+  flex-grow: 1;
+}
+
+.order-subtitle {
+  color: #cccccc; /* Light gray for dark mode */
+  font-size: small;
+  margin-right: 5px;
+}
+
+.accordion-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.member-section {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  color: #ffffff; /* White text for dark mode */
+  justify-content: space-between;
+}
+
+.delivery-card {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.card-icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  color: #ffffff; /* White icon for dark mode */
+}
+
+.card-details h4 {
+  margin: 0 0 10px;
+  font-size: 18px;
+  color: #ffffff; /* White text for dark mode */
+}
+
+.card-details p, .card-details span {
+  margin: 5px 0;
+  font-size: 16px;
+  color: #dddddd; /* Slightly lighter gray for dark mode readability */
+}
+
+.join-button-section {
+  display: flex;
+  justify-content: center;
+}
+
+.group-list-container {
+  /*padding-bottom: 7rem; */
+  display: flex;
+  flex-direction: column;
+  bottom: 7rem;
+  top: 4rem;
+  left: 0;
+  right: 0;
+  position: fixed;
+  overflow: hidden;
+}
+
+.create-group-button-section {
+  display: flex;
+  justify-content: center;
+  padding: 0 1rem;
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 2rem; /* Ajustez cette valeur selon le décalage que vous souhaitez par rapport au bas de la page */
+  z-index: 1000; /* Assurez-vous qu'il est au-dessus des autres éléments */
+}
+
+.group-creation-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* Espacement entre les éléments */
+}
+
+.description-text {
+  font-size: 1rem;
+  color: #AAA;  /* Une couleur légèrement grise pour le texte descriptif */
+  margin-bottom: 20px;
+}
+
+.select-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.select-placeholder {
+  font-size: 0.9rem;
+  margin-bottom: 10px;
+}
+
+.submit-button-section {
+  display: flex;
+  justify-content: space-between; /* Espacer les boutons */
+  margin-top: 20px;
+}
+
+.option {
+  padding: 10px;
+  display: block;
+  width: 100%;
+  text-align: left;
+}

@@ -4,6 +4,7 @@ import {Router} from "@angular/router";
 import {OrderService} from "./order.service";
 import {UserService} from "./user.service";
 import {LoaderService} from "./loader.service";
+import {Location} from "@angular/common";
 
 interface Item {
   text: string;
@@ -15,53 +16,53 @@ interface Item {
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css'],
 })
 export class AppComponent implements OnInit {
-  title = 'Easy Sushi'
+  title = null;
 
-  readonly items = [
-    {
-      text: 'Accueil',
-      icon: 'tuiIconHomeLarge',
-      badge: 0,
-      link: '/'
-    },
+  items = [
     {
       text: 'Commande',
       icon: 'tuiIconFileTextLarge',
       badge: 0,
-      link: '/order'
+      link: '/order',
     },
     {
       text: 'Récent',
       icon: 'tuiIconClockLarge',
       badge: 0,
-      link: '/recent'
+      link: '/recent',
     },
     {
       text: 'Panier',
       icon: 'tuiIconShoppingCartLarge',
       badge: 0,
-      link: '/cart'
-    },
-    {
-      text: 'Profil',
-      icon: 'tuiIconUserLarge',
-      badge: 0,
-      link: '/profile'
+      link: '/cart',
     }
   ];
 
-  constructor(public auth: AuthService, private orderService: OrderService, private userService: UserService, private router: Router, public loaderService: LoaderService) {
+  constructor(public auth: AuthService, private orderService: OrderService, private userService: UserService, public router: Router, public loaderService: LoaderService, public location: Location) {
     this.loaderService.show();
     this.orderService.getMenuObservable();
     this.userService.setUp().subscribe(() => {
+      console.log('User set up', this.userService.user);
       this.userService.isUserConnected().subscribe(value => {
         if (!value) {
           this.router.navigate(['/register']).finally(() => this.loaderService.hide());
         } else {
-          if (this.router.url === '/register') this.router.navigate(['/']).finally(() => this.loaderService.hide());
+          this.orderService.getUserGroup().subscribe((group) => {
+            if (group) {
+              console.log('Group get', group);
+              this.orderService.setGroup(group);
+            }
+            if (this.router.url === '/register') this.router.navigate([group ? '/order' : '/']).finally(() => this.loaderService.hide());
+            else if (this.router.url === '/order' && !group) this.router.navigate(['/']).finally(() => this.loaderService.hide());
+            else if (this.router.url === '/cart' && !group) this.router.navigate(['/']).finally(() => this.loaderService.hide());
+            else if (this.router.url === '/' && group) this.router.navigate(['/order']).finally(() => this.loaderService.hide());
+            else if (this.router.url === '/recent' && !group) this.router.navigate(['/']).finally(() => this.loaderService.hide());
+            else this.loaderService.hide();
+          });
         }
       });
     });
@@ -72,6 +73,6 @@ export class AppComponent implements OnInit {
   }
 
   public onRouterOutletActivate(event : any) {
-    this.title = event.title ? event.title : 'Easy Sushi';
+    this.title = event.title ? event.title : null;
   }
 }

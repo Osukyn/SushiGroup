@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, OnDestroy} from '@angular/core';
 import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {TuiDialogService} from "@taiga-ui/core";
 import {TUI_PROMPT, tuiItemsHandlersProvider, TuiPromptData} from "@taiga-ui/kit";
@@ -22,13 +22,14 @@ export interface Restaurant {
   styleUrls: ['./register.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class RegisterComponent {
+export class RegisterComponent implements OnDestroy{
   registrationForm: FormGroup;
   opens: boolean[] = [];
   restaurantsList: any[] = [];
   open = false;
   oldValue = null;
   title = 'Inscription';
+  private subscription: any;
 
   constructor(private fb: FormBuilder,
               @Inject(TuiDialogService) private readonly dialogs: TuiDialogService,
@@ -46,7 +47,7 @@ export class RegisterComponent {
       deliveriesInfos: this.fb.array([])
     });
 
-    this.loaderService.isLoading.subscribe(value => {
+    this.subscription = this.loaderService.isLoading.subscribe(value => {
       console.log(this.userService.user);
       this.registrationForm.controls['name'].setValue(this.userService.userName);
       this.registrationForm.controls['email'].setValue(this.userService.userEmail);
@@ -54,9 +55,6 @@ export class RegisterComponent {
       this.orderService.getRestaurantList().subscribe(restaurants => {
         this.restaurantsList = restaurants;
       });
-    });
-    this.registrationForm.valueChanges.subscribe(value => {
-      //console.log(value);
     });
   }
 
@@ -96,8 +94,7 @@ export class RegisterComponent {
     if (this.registrationForm.valid) {
       console.log(this.registrationForm.value);
       this.http.post(`${environment.baseUrl}${environment.restPort}/api/register`, this.registrationForm.value).subscribe(value => {
-        console.log(value);
-        this.userService.setFullUser(value);
+        console.log('Inscription réussie !', value);
         this.router.navigate(['/']);
       });
       // Faites quelque chose avec les données du formulaire, par exemple les envoyer à une API.
@@ -155,5 +152,9 @@ export class RegisterComponent {
     const found = this.restaurants.controls.find(c => c.value.restaurant === id);
     if (found) return found.get('sousLieux');
     else return null;
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 }
