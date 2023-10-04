@@ -5,6 +5,7 @@ import {Subject} from "rxjs";
 import {OrderService} from "./order.service";
 import {UserService} from "./user.service";
 import {environment} from "../environments/environment";
+import {Group} from "./model/group.model";
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +14,7 @@ export class SocketService {
   private readonly socket: any;
   public orderUpdates = new Subject<any>();
   groupsUpdate = new Subject<any[]>();
+  groupCreated = new EventEmitter<Group>();
 
   constructor() {
     this.socket = io(environment.baseUrl + environment.socketPort);
@@ -41,6 +43,9 @@ export class SocketService {
 
   public createGroup(data: any) {
     this.socket.emit('createGroup', data);
+    this.socket.once('groupCreated', (group: any) => {
+      this.groupCreated.emit(group);
+    });
   }
 
   public getGroups() {
@@ -56,6 +61,10 @@ export class SocketService {
       console.log('Order updated by user:', data);
       this.orderUpdates.next(data);
     });
+  }
+
+  public unsubscribeGroupUpdates(groupId: any) {
+    this.socket.off(`groupUpdate/${groupId}`);
   }
 
   public setGroupsUpdates() {

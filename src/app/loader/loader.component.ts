@@ -8,7 +8,5 @@ import {LoaderService} from "../loader.service";
   styleUrls: ['./loader.component.css']
 })
 export class LoaderComponent {
-  isLoading$ = this.loaderService.isLoading.asObservable();
-
-  constructor(private loaderService: LoaderService) {}
+  constructor(public loaderService: LoaderService) {}
 }

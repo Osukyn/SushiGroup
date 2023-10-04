@@ -39,6 +39,7 @@
   align-items: center;
   gap: 15px;
   color: #ffffff; /* White text for dark mode */
+  justify-content: space-between;
 }
 
 .delivery-card {
@@ -86,25 +87,14 @@
 }
 
 .create-group-button-section {
+  display: flex;
+  justify-content: center;
+  padding: 0 1rem;
   position: fixed;
-  width: max-content;
-  left: 50%;
+  left: 0;
+  right: 0;
   bottom: 2rem; /* Ajustez cette valeur selon le décalage que vous souhaitez par rapport au bas de la page */
-  transform: translateX(-50%); /* Centrer horizontalement */
   z-index: 1000; /* Assurez-vous qu'il est au-dessus des autres éléments */
-}
-
-/* Hide scrollbar for Chrome, Safari and Opera */
-.avatar-stack::-webkit-scrollbar {
-  display: none;
-}
-
-/* Hide scrollbar for IE, Edge and Firefox */
-.avatar-stack {
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
-  overflow-x: auto;
-  white-space: nowrap
 }
 
 .group-creation-form {
@@ -135,7 +125,6 @@
   justify-content: space-between; /* Espacer les boutons */
   margin-top: 20px;
 }
-
 
 .option {
   padding: 10px;

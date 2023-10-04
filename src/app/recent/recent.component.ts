@@ -6,5 +6,5 @@ import {Component} from '@angular/core';
   styleUrls: ['./recent.component.css']
 })
 export class RecentComponent {
-  title = 'Commandes récentes';
+  title = 'Récent';
 }
