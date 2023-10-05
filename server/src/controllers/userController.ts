@@ -4,8 +4,6 @@ import mongoose from "mongoose";
 import {findGroupByUserEmail, getOnlineUserByEmail, getSocketByUserEmail} from "./socketController";
 
 export const register = async (req: Request, res: Response) => {
-  console.log(req.params);
-  console.log(req.body);
   try {
     const user = new FullUser(req.body);
     await user.save();
@@ -20,7 +18,6 @@ export const register = async (req: Request, res: Response) => {
 
 export const getUser = async (req: Request, res: Response) => {
   const email = req.query.email;
-  console.log('getUser', email);
   try {
     mongoose.models.FullUser.findOne({email: email}).then((user) => {
       getSocketByUserEmail(user.email)?.emit('userUpdate', user);
