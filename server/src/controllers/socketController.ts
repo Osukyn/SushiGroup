@@ -32,7 +32,6 @@ export const exitGroup = (email: string) => {
       groups.splice(groups.findIndex(g => g.id === group.id), 1);
       io.sockets.emit('groupsUpdate', groups);
     } else {
-      console.log('exitGroup', email);
       group.removeUser(group.users.find(u => u.email === email)!);
       io.sockets.emit('groupsUpdate', groups);
       for (const user of getOnlineUsersOfGroup(group)) {
@@ -53,9 +52,7 @@ export const initializeSocket = (server: any) => {
 
     socket.on('setUser', async (data: any) => {
       let index = onlineUsers.findIndex(u => u.fullUser.email === data.email);
-      console.log('setUser', data.email);
       mongoose.models.FullUser.findOne({email: data.email}).then((user) => {
-        console.log('setUser', user);
         if (user === null) {
           const localUser = <User>{
             name: data.name,
@@ -159,13 +156,11 @@ export const initializeSocket = (server: any) => {
     });
 
     socket.on('disconnect', () => {
-      console.log('A user disconnected:', socket.id);
       let index = onlineUsers.findIndex(u => u.socketId === socket.id);
       if (index !== -1) {
         if (onlineUsers[index].fullUser) {
           console.log('User disconnected:', onlineUsers[index].fullUser.email);
           setTimeout(() => {
-            console.log('Timeout:', onlineUsers[index].fullUser.email);
             index = onlineUsers.findIndex(user => user.socketId === socket.id);
             if (index !== -1) {
               const group = findGroupByUserEmail(onlineUsers[index].fullUser.email);
