@@ -172,14 +172,6 @@ export class OrderService {
     return this.loaded;
   }
 
-  setUp() {
-    this.getMenuObservable().subscribe(() => {
-      this.loaded = true;
-      this.loading.emit();
-    });
-    return this.loading;
-  }
-
   public getRestaurantList(): Observable<any> {
     return this.http.get(this.apiURL + '/api/lieux');
   }

@@ -1,6 +1,6 @@
 <tui-theme-night></tui-theme-night>
 <tui-root tuiMode="onDark">
-  <app-loader></app-loader>
+  <app-loader *ngIf="loaderService.isLoading$ | async"></app-loader>
   <tui-app-bar class="app-bar" *ngIf="loaderService.loaded && title">
     <a
       title="Back"

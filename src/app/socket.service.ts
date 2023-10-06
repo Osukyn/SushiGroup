@@ -25,7 +25,7 @@ export class SocketService {
   public setUser(email: string, name: string | undefined, picture: string | undefined, event: EventEmitter<any> | undefined) {
     console.log('Setting user:', email);
     this.socket.emit('setUser', { email, name, picture });
-    this.socket.on('userSet', (data: any) => this.setData(event));
+    this.socket.once('userSet', (data: any) => this.setData(event));
   }
 
   sendOrderUpdate(order: Order) {
@@ -35,7 +35,7 @@ export class SocketService {
   public setData(event?: EventEmitter<any> | undefined) {
     this.socket.emit('getOnlineUsers');
 
-    this.socket.on('onlineUsers', (data: any) => {
+    this.socket.once('onlineUsers', (data: any) => {
       console.log('Online users:', data);
       event?.emit();
     });

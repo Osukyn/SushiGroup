@@ -3,7 +3,7 @@ import {AuthService} from "@auth0/auth0-angular";
 import {SocketService} from "./socket.service";
 import {User} from "./model/user.model";
 import {Order} from "./model/order.model";
-import {map, Observable, Subject} from "rxjs";
+import {map, Observable, Subject, take} from "rxjs";
 import {HttpClient} from "@angular/common/http";
 import {environment} from "../environments/environment";
 
@@ -70,7 +70,7 @@ export class UserService {
   }
 
   public setUp() {
-    this.authService.user$.subscribe(user => {
+    this.authService.user$.pipe(take(1)).subscribe(user => {
       if (!user) return;
       console.log('User:', user);
       if (user.email)
