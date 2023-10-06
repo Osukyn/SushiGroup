@@ -24,7 +24,6 @@ export class AuthGuard implements CanActivate {
       route: ActivatedRouteSnapshot,
       state: RouterStateSnapshot
   ): Observable<boolean | UrlTree> {
-    this.loaderService.show();  // Affichez le loader au début
 
     return this.auth.isAuthenticated$.pipe(
         tap((loggedIn) => {
@@ -32,8 +31,7 @@ export class AuthGuard implements CanActivate {
             // redirect to the angular hello route with router state
             this.router.navigate(['/login']).then(r => console.log(r));
           }
-        }),
-        tap(() => this.loaderService.hide())  // Masquez le loader à la fin, que l'utilisateur soit connecté ou non
+        })
     );
   }
 }

@@ -6,6 +6,7 @@ import {ViewportScroller} from "@angular/common";
 import {animate, style, transition, trigger} from "@angular/animations";
 import {Router} from "@angular/router";
 import {LoaderService} from "../loader.service";
+import {take} from "rxjs";
 
 @Component({
   selector: 'app-sushi-list',
@@ -67,24 +68,9 @@ export class SushiListComponent implements OnInit {
     }
   }
 
-  constructor(public orderService: OrderService, private router: Router, private loaderService: LoaderService) {}
+  constructor(public orderService: OrderService) {}
 
   ngOnInit() {
-    if (this.orderService.gotSushiList()) {
-      this.indexes = Array(this.orderService.getSushiList().length).fill(0);
-      this.sushiList = this.orderService.getSushiList().slice(0, this.displayedItemsLimit);
-      this.activeCategory = this.sushiList[0].code;
-
-      const fullList = this.orderService.getSushiList();
-      const interval = setInterval(() => {
-        if (this.sushiList.length < fullList.length) {
-          this.sushiList = [...this.sushiList, ...fullList.slice(this.sushiList.length, this.sushiList.length + this.displayedItemsLimit)];
-        } else {
-          clearInterval(interval);
-        }
-      }, 50); // Ajoutez 'displayedItemsLimit' éléments chaque seconde
-
-    } else {
       this.orderService.getMenuObservable().subscribe(data => {
         this.indexes = Array(data.length).fill(0);
         this.sushiList = data.slice(0, this.displayedItemsLimit);
@@ -99,7 +85,6 @@ export class SushiListComponent implements OnInit {
           }
         }, 50); // Ajoutez 'displayedItemsLimit' éléments chaque seconde
       });
-    }
 
   }
 

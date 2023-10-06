@@ -43,29 +43,6 @@ export class AppComponent implements OnInit {
   ];
 
   constructor(public auth: AuthService, private orderService: OrderService, private userService: UserService, public router: Router, public loaderService: LoaderService, public location: Location) {
-    this.loaderService.show();
-    this.orderService.getMenuObservable();
-    this.userService.setUp().subscribe(() => {
-      console.log('User set up', this.userService.user);
-      this.userService.isUserConnected().subscribe(value => {
-        if (!value) {
-          this.router.navigate(['/register']).finally(() => this.loaderService.hide());
-        } else {
-          this.orderService.getUserGroup().subscribe((group) => {
-            if (group) {
-              console.log('Group get', group);
-              this.orderService.setGroup(group);
-            }
-            if (this.router.url === '/register') this.router.navigate([group ? '/order' : '/']).finally(() => this.loaderService.hide());
-            else if (this.router.url === '/order' && !group) this.router.navigate(['/']).finally(() => this.loaderService.hide());
-            else if (this.router.url === '/cart' && !group) this.router.navigate(['/']).finally(() => this.loaderService.hide());
-            else if (this.router.url === '/' && group) this.router.navigate(['/order']).finally(() => this.loaderService.hide());
-            else if (this.router.url === '/recent' && !group) this.router.navigate(['/']).finally(() => this.loaderService.hide());
-            else this.loaderService.hide();
-          });
-        }
-      });
-    });
   }
 
   ngOnInit() {

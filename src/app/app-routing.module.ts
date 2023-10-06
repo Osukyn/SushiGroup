@@ -10,17 +10,18 @@ import {CartComponent} from "./cart/cart.component";
 import {RecentComponent} from "./recent/recent.component";
 import {RegisterComponent} from "./register/register.component";
 import {GroupChoiceComponent} from "./group-choice/group-choice.component";
+import {DataResolver} from "./data.resolver";
 
 const routes: Routes = [
-  { path: '', component: HelloComponent, canActivate: [AuthGuard] },
+  { path: '', component: HelloComponent, canActivate: [AuthGuard], resolve: {data: DataResolver} },
   { path: 'login', component: LoginComponent },
-  { path: 'register', component: RegisterComponent, canActivate: [AuthGuard] },
-  { path: 'group', component: GroupChoiceComponent, canActivate: [AuthGuard] },
-  { path: 'cart', component: CartComponent, canActivate: [AuthGuard] },
-  { path: 'recent', component: RecentComponent, canActivate: [AuthGuard] },
-  { path: 'logout', component: HelloComponent, canActivate: [AuthGuard] },
-  { path: 'profile', component: ProfileComponent, canActivate: [AuthGuard] },
-  { path: 'order', component: SushiListComponent, canActivate: [AuthGuard] },
+  { path: 'register', component: RegisterComponent, canActivate: [AuthGuard], resolve: {data: DataResolver} },
+  { path: 'group', component: GroupChoiceComponent, canActivate: [AuthGuard], resolve: {data: DataResolver} },
+  { path: 'cart', component: CartComponent, canActivate: [AuthGuard], resolve: {data: DataResolver} },
+  { path: 'recent', component: RecentComponent, canActivate: [AuthGuard], resolve: {data: DataResolver} },
+  { path: 'logout', component: HelloComponent, canActivate: [AuthGuard], resolve: {data: DataResolver} },
+  { path: 'profile', component: ProfileComponent, canActivate: [AuthGuard], resolve: {data: DataResolver} },
+  { path: 'order', component: SushiListComponent, canActivate: [AuthGuard], resolve: {data: DataResolver} },
   { path: '**', redirectTo: '' },
 ];
 
