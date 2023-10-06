@@ -47,14 +47,16 @@ export class RegisterComponent implements OnDestroy{
       deliveriesInfos: this.fb.array([])
     });
 
-    this.subscription = this.loaderService.isLoading.subscribe(value => {
-      console.log(this.userService.user);
-      this.registrationForm.controls['name'].setValue(this.userService.userName);
-      this.registrationForm.controls['email'].setValue(this.userService.userEmail);
-      this.registrationForm.controls['profilePicture'].setValue(this.userService.userPicture);
-      this.orderService.getRestaurantList().subscribe(restaurants => {
-        this.restaurantsList = restaurants;
-      });
+    console.log(this.userService.user);
+    this.registrationForm.controls['name'].setValue(this.userService.userName);
+    this.registrationForm.controls['email'].setValue(this.userService.userEmail);
+    this.registrationForm.controls['profilePicture'].setValue(this.userService.userPicture);
+    this.orderService.getRestaurantList().subscribe(restaurants => {
+      this.restaurantsList = restaurants;
+    });
+
+    this.subscription = this.loaderService.isLoading$.subscribe(value => {
+      console.log('Loader', value);
     });
   }
 
