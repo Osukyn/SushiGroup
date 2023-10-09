@@ -33,6 +33,7 @@ export class SushiListComponent implements OnInit {
   skeletonVisible = false;
   private displayedItemsLimit: number = 1;
   private sushiListTemp: Categorie[] = [];
+  creneauxResult: any;
 
   @HostListener('window:scroll', ['$event']) onScrollEvent($event: Event) {
     if (!this.isProgrammaticScroll) {

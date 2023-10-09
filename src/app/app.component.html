@@ -9,6 +9,15 @@
       *ngIf="router.url === '/profile' || router.url === '/group'"
       (click)="back()"
     ></a>
+    <a
+      title="Menu"
+      tuiIconButton
+      icon="tuiIconHomeLarge"
+      tuiSlot="left"
+      *ngIf="router.url === '/cart' || router.url === '/recent' || router.url === '/order'"
+      (click)="exitGroup()">
+
+    </a>
     <h1 style="font-size: 1.75em">{{ title }}</h1>
     <a
       tuiSlot="right"
