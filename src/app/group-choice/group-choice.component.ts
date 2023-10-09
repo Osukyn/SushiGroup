@@ -1,7 +1,7 @@
 import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
 import {SocketService} from "../socket.service";
 import {Group} from "../model/group.model";
-import {BehaviorSubject, Observable, Subscription} from "rxjs";
+import {BehaviorSubject, Observable, pairwise, startWith, Subscription} from "rxjs";
 import {TuiDialogService} from "@taiga-ui/core";
 import {OrderStatus} from "../model/order.model";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
@@ -53,9 +53,18 @@ export class GroupChoiceComponent implements OnInit, OnDestroy {
     this.orderService.getRestaurantList().subscribe(restaurants => {
       this.restaurantsList = restaurants;
     });
-    this.form.valueChanges.subscribe(value => {
+
+    this.form.valueChanges.pipe(
+      startWith(this.form.value),
+      pairwise(),
+    ).subscribe(([oldValue, newValue]) => {
+      // compare oldValue and newValue to see if the date or the restaurant has changed
+      if (oldValue.date !== newValue.date || oldValue.resto !== newValue.resto) {
+        this.creneauxForm.setValue(null);
+        this.creneaux = [];
+      }
       let date = null;
-      if (value?.date) date = value?.date.toLocalNativeDate().toLocaleDateString().replaceAll('/', '%2F');
+      if (newValue?.date) date = newValue?.date.toLocalNativeDate().toLocaleDateString().replaceAll('/', '%2F');
       if (this.restoForm.value.restaurant && date) {
         console.log(this.restoForm.value.restaurant, date);
         this.orderService.getHoraires(this.restoForm.value.restaurant, date).subscribe(horaires => {
@@ -65,6 +74,7 @@ export class GroupChoiceComponent implements OnInit, OnDestroy {
         });
       }
     });
+
     this.form.controls.date.setValue(TuiDay.currentLocal());
   }
 
