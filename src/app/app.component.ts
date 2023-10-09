@@ -42,7 +42,7 @@ export class AppComponent implements OnInit {
     }
   ];
 
-  constructor(public auth: AuthService, private orderService: OrderService, private userService: UserService, public router: Router, public loaderService: LoaderService, public location: Location) {
+  constructor(public auth: AuthService, private orderService: OrderService, public userService: UserService, public router: Router, public loaderService: LoaderService, public location: Location) {
   }
 
   ngOnInit() {
@@ -51,5 +51,10 @@ export class AppComponent implements OnInit {
 
   public onRouterOutletActivate(event : any) {
     this.title = event.title ? event.title : null;
+  }
+
+  back() {
+    if (this.router.url === '/group') this.router.navigate(['/']);
+    else this.location.back();
   }
 }
