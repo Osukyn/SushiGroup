@@ -1,7 +1,7 @@
 import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
 import {SocketService} from "../socket.service";
 import {Group} from "../model/group.model";
-import {BehaviorSubject, Observable, pairwise, startWith, Subscription} from "rxjs";
+import {BehaviorSubject, EMPTY, Observable, pairwise, startWith, Subscription, switchMap} from "rxjs";
 import {TuiDialogService} from "@taiga-ui/core";
 import {OrderStatus} from "../model/order.model";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
@@ -147,24 +147,23 @@ export class GroupChoiceComponent implements OnInit, OnDestroy {
         this.orderService.setGroup(group);
         this.router.navigate(['/order']);
       } else {
-        const data: TuiPromptData = {
-          content: "Vous faites déjà partie d'un groupe. Êtes-vous sûr de vouloir rejoindre un autre groupe ?",
-          yes: 'Oui',
-          no: 'Non',
-        };
-
         this.dialogs
           .open<boolean>(TUI_PROMPT, {
             label: 'Rejoindre un nouveau groupe',
             size: 's',
-            data,
-          }).subscribe(value => {
+            data: {
+              content: "Vous faites déjà partie d'un groupe. Êtes-vous sûr de vouloir rejoindre un autre groupe ?",
+              yes: 'Oui',
+              no: 'Non',
+            },
+          }).pipe(switchMap(value => {
           if (value) {
             this.socketService.joinGroup(group.id);
             this.orderService.setGroup(group);
             this.router.navigate(['/order']);
           }
-        });
+          return EMPTY;
+        })).subscribe();
       }
     });
   }

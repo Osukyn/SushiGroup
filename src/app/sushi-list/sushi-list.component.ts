@@ -35,65 +35,69 @@ export class SushiListComponent implements OnInit {
   private sushiListTemp: Categorie[] = [];
   creneauxResult: any;
 
-  @HostListener('window:scroll', ['$event']) onScrollEvent($event: Event) {
-    if (!this.isProgrammaticScroll) {
-      const elements: HTMLElement[] = Array.from(document.querySelectorAll('.cat-container'));
-
-      for (let i = 0; i < elements.length; i++) {
-        const element = elements[i];
-        const rect = element.getBoundingClientRect();
-
-        // Vérifiez si l'élément est complètement à l'extérieur du viewport
-        const isOutsideViewport = (
-          rect.bottom < this.getRem(6) ||
-          rect.top > this.getRem(7) ||
-          rect.left > document.documentElement.clientLeft ||
-          rect.right < 0
-        );
-
-        if (!isOutsideViewport && this.activeCategory !== element.id) {
-          this.activeCategory = element.id;
-          let hElement = document.getElementById('categories-container');
-
-          setTimeout(() => {
-            if (hElement) {
-              let target = document.getElementsByClassName('cat-active')[0];
-              if (target) {
-                hElement.scrollTo({left: (target as HTMLElement).offsetLeft - this.getRem(3), behavior: 'smooth'});
-              }
-            }
-          });
-          return;
-        }
-      }
-    }
+  constructor(public orderService: OrderService) {
   }
 
-  constructor(public orderService: OrderService) {}
-
   ngOnInit() {
-      this.orderService.getMenuObservable().subscribe(data => {
-        this.indexes = Array(data.length).fill(0);
-        this.sushiList = data.slice(0, this.displayedItemsLimit);
-        this.activeCategory = this.sushiList[0].code;
+    const productContainer = document.getElementById('product-container');
+    if (productContainer) {
+      productContainer.addEventListener('scroll', ($event: Event) => {
+        if (!this.isProgrammaticScroll) {
+          const elements: HTMLElement[] = Array.from(document.querySelectorAll('.cat-container'));
 
-        const fullList = data;
-        const interval = setInterval(() => {
-          if (this.sushiList.length < fullList.length) {
-            this.sushiList = [...this.sushiList, ...fullList.slice(this.sushiList.length, this.sushiList.length + this.displayedItemsLimit)];
-          } else {
-            clearInterval(interval);
+          for (let i = 0; i < elements.length; i++) {
+            const element = elements[i];
+            const rect = element.getBoundingClientRect();
+
+            // Vérifiez si l'élément est complètement à l'extérieur du viewport
+            const isOutsideViewport = (
+              rect.bottom < this.getRem(6) ||
+              rect.top > this.getRem(7) ||
+              rect.left > document.documentElement.clientLeft ||
+              rect.right < 0
+            );
+
+            if (!isOutsideViewport && this.activeCategory !== element.id) {
+              this.activeCategory = element.id;
+              let hElement = document.getElementById('categories-container');
+
+              setTimeout(() => {
+                if (hElement) {
+                  let target = document.getElementsByClassName('cat-active')[0];
+                  if (target) {
+                    hElement.scrollTo({left: (target as HTMLElement).offsetLeft - this.getRem(3), behavior: 'smooth'});
+                  }
+                }
+              });
+              return;
+            }
           }
-        }, 50); // Ajoutez 'displayedItemsLimit' éléments chaque seconde
+        }
       });
+    }
+
+    this.orderService.getMenuObservable().subscribe(data => {
+      this.indexes = Array(data.length).fill(0);
+      this.sushiList = data.slice(0, this.displayedItemsLimit);
+      this.activeCategory = this.sushiList[0].code;
+
+      const fullList = data;
+      const interval = setInterval(() => {
+        if (this.sushiList.length < fullList.length) {
+          this.sushiList = [...this.sushiList, ...fullList.slice(this.sushiList.length, this.sushiList.length + this.displayedItemsLimit)];
+        } else {
+          clearInterval(interval);
+        }
+      }, 50); // Ajoutez 'displayedItemsLimit' éléments chaque seconde
+    });
 
   }
 
   scrollToCategory(code: string, $event: MouseEvent) {
     let element = document.getElementById(code);
-
-    if (element) {
-      window.scrollTo({top: element.offsetTop - this.getRem(5), behavior: 'smooth'});
+    const productContainer = document.getElementById('product-container');
+    if (element && productContainer) {
+      productContainer.scrollTo({top: element.offsetTop, behavior: 'smooth'});
     }
     this.activeCategory = code;
     element = document.getElementById('categories-container');

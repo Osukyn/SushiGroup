@@ -9,7 +9,7 @@
   </div>
 </div>
 
-<div style="padding-top: 5rem; padding-bottom: 3rem" [style.--tui-skeleton-radius.px]="10">
+<div style="position: fixed; top: 5rem; bottom: 4.5rem; overflow: auto" [style.--tui-skeleton-radius.px]="10" id="product-container">
   <!-- Liste des produits -->
   <div *ngFor="let item of sushiList" [id]="item.code" class="cat-container">
     <div style="height: 1rem"></div>
