@@ -26,6 +26,7 @@ export class OrderService {
   private address: string = '';
   private group: Group | undefined;
   private groupSetEvent: EventEmitter<boolean> = new EventEmitter<boolean>();
+  public remise: any;
 
   constructor(
     private infosService: InfosService,
@@ -186,6 +187,31 @@ export class OrderService {
 
   public getRestaurantAddress(): any {
     return this.address;
+  }
+
+  public createGroup(deliveryInfos: any, creneau: any, date: string): Observable<any> {
+    const data = { deliveryInfos, creneau, date };
+    return new Observable<any>(observer => {
+      this.socketService.createGroup(data).subscribe(
+        (group: Group) => {
+          this.getRemise().subscribe(remise => {
+            observer.next(group);
+          });
+        }
+      );
+    });
+  }
+
+  public getRemise(): Observable<any> {
+    return new Observable<any>(observer => {
+      this.getHoraires(this.getGroup()?.deliveryInfos.restaurant, this.getGroup()?.date || '').subscribe(horaires => {
+        if (horaires.resultat === 'ok') {
+          this.remise = horaires.remises['#GENERALE#'];
+          console.log(this.remise);
+          observer.next(this.remise);
+        }
+      });
+    });
   }
 
   public setGroup(group: Group): void {

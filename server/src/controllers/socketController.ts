@@ -101,14 +101,14 @@ export const initializeSocket = (server: any) => {
       if (onlineUser) {
         const group = groups.find(group => group.host.email === onlineUser.fullUser.email || group.users.some(u => u.email === onlineUser.fullUser.email));
         if (group === undefined) {
-          const newGroup = new GroupOrder(onlineUser.fullUser, data.deliveriesInfos, data.creneau);
+          const newGroup = new GroupOrder(onlineUser.fullUser, data.deliveriesInfos, data.creneau, data.date);
           groups.push(newGroup);
           socket.broadcast.emit('groupsUpdate', groups);
           socket.emit('groupsUpdate', groups);
           socket.emit('groupCreated', newGroup);
         } else {
           exitGroup(onlineUser.fullUser.email);
-          const newGroup = new GroupOrder(onlineUser.fullUser, data.deliveriesInfos, data.creneau);
+          const newGroup = new GroupOrder(onlineUser.fullUser, data.deliveriesInfos, data.creneau, data.date);
           groups.push(newGroup);
           socket.broadcast.emit('groupsUpdate', groups);
           socket.emit('groupsUpdate', groups);

@@ -39,8 +39,7 @@ export class SocketService {
     });
   }
 
-  public createGroup(deliveriesInfos: any, creneau: any): Observable<any> {
-    const data = { deliveriesInfos, creneau };
+  public createGroup(data: any): Observable<any> {
     this.socket.emit('createGroup', data);
     return new Observable((observer) => {
       this.socket.once('groupCreated', (group: any) => {

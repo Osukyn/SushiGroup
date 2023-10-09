@@ -37,13 +37,15 @@ export class GroupOrder {
   status: OrderStatus = OrderStatus.EN_COURS;
   deliveryInfos: Delivery;
   creneau: any;
+  date: string;
 
-  constructor(host: User, deliveryInfos: Delivery, creneau: any) {
+  constructor(host: User, deliveryInfos: Delivery, creneau: any, date: string) {
     this.id = crypto.randomUUID();
     this.host = host;
     this.users = [];
     this.deliveryInfos = deliveryInfos;
     this.creneau = creneau;
+    this.date = date;
     this.orders.set(host.email, new Order(host.email)); // Initialize host order
   }
 
