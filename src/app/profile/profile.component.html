@@ -12,7 +12,7 @@
         ></tui-avatar>
       </div>
 
-      <h1 style="text-align: center; margin-bottom: 1rem;">{{ userService.userName }}</h1>
+      <!--<h1 style="text-align: center; margin-bottom: 1rem;">{{ userService.userName }}</h1>
       <div style="display: flex; flex-direction: column; align-items: center; width: 100%">
         <div style="width: min-content">
           <div class="info-line">
@@ -24,7 +24,35 @@
             <p style="margin-left: 0.5rem;">{{ userService.user.phone }}</p>
           </div>
         </div>
-      </div>
+      </div>-->
+      <!-- Nom -->
+      <tui-input
+        class="inputs"
+        formControlName="name"
+        [readOnly]="true"
+      >
+        Nom
+      </tui-input>
+
+      <!-- E-mail -->
+      <tui-input formControlName="email" class="inputs" [readOnly]="true">
+        Email
+        <input
+          tuiTextfield
+          type="email"
+        />
+      </tui-input>
+
+      <!-- Numéro de téléphone -->
+      <tui-input-phone
+        formControlName="phone"
+        [countryCode]="''"
+        [phoneMaskAfterCountryCode]="'## ## ## ## ##'"
+        class="inputs"
+        [readOnly]="true"
+      >
+        Numéro de téléphone
+      </tui-input-phone>
 
     </ng-container>
 
