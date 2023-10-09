@@ -127,6 +127,7 @@
             tuiOption
             class="option"
             [value]="creneau"
+            [disabled]="!creneau.possible"
           >
             {{ creneau.libelle }}
           </button>
