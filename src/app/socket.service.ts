@@ -1,9 +1,7 @@
-import {EventEmitter, Injectable, Injector} from '@angular/core';
+import {EventEmitter, Injectable} from '@angular/core';
 import {Order} from "./model/order.model";
 import {io} from "socket.io-client";
-import {Subject} from "rxjs";
-import {OrderService} from "./order.service";
-import {UserService} from "./user.service";
+import {Observable, Subject} from "rxjs";
 import {environment} from "../environments/environment";
 import {Group} from "./model/group.model";
 
@@ -41,10 +39,13 @@ export class SocketService {
     });
   }
 
-  public createGroup(data: any) {
+  public createGroup(data: any): Observable<any> {
     this.socket.emit('createGroup', data);
-    this.socket.once('groupCreated', (group: any) => {
-      this.groupCreated.emit(group);
+    return new Observable((observer) => {
+      this.socket.once('groupCreated', (group: any) => {
+        this.groupCreated.emit(group);
+        observer.next(group);
+      });
     });
   }
 
@@ -76,6 +77,10 @@ export class SocketService {
 
   public joinGroup(id: string) {
     this.socket.emit('joinGroup', id);
+  }
+
+  public leaveGroup(email: string) {
+    this.socket.emit('exitGroup', email);
   }
 
   public getSocket(): any {

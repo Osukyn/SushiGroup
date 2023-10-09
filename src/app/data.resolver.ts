@@ -56,6 +56,7 @@ export class DataResolver implements Resolve<Observable<any>> {
             this.orderService.getUserGroup().pipe(take(1)).subscribe((group) => {
               if (group) {
                 this.orderService.setGroup(group);
+                this.orderService.getRemise().subscribe(remise => {});
                 switch (state.url) {
                   case '/':
                   case '/group':

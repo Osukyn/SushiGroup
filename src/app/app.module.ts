@@ -1,16 +1,16 @@
 import { NgDompurifySanitizer } from "@tinkoff/ng-dompurify";
 import {
-    TuiRootModule,
-    TuiDialogModule,
-    TuiAlertModule,
-    TuiButtonModule,
-    TuiLoaderModule,
-    TuiModeModule,
-    TuiThemeNightModule,
-    TuiGroupModule,
-    TuiTextfieldControllerModule,
-    TUI_SANITIZER,
-    TuiLinkModule, TuiHintModule, TuiDataListModule, TuiSvgModule
+  TuiRootModule,
+  TuiDialogModule,
+  TuiAlertModule,
+  TuiButtonModule,
+  TuiLoaderModule,
+  TuiModeModule,
+  TuiThemeNightModule,
+  TuiGroupModule,
+  TuiTextfieldControllerModule,
+  TUI_SANITIZER,
+  TuiLinkModule, TuiHintModule, TuiDataListModule, TuiSvgModule, TuiErrorModule
 } from "@taiga-ui/core";
 import {
   TuiAutoColorModule,
@@ -28,18 +28,26 @@ import { AppRoutingModule } from './app-routing.module';
 import { HelloComponent } from './hello/hello.component';
 import { SushiListComponent } from './sushi-list/sushi-list.component';
 import {
-  TuiAccordionModule, TuiBadgeModule,
-  TuiCarouselModule, TuiDataListWrapperModule, TuiInputModule, TuiInputNumberModule, TuiInputPhoneModule,
-  TuiIslandModule, TuiLineClampModule,
-  TuiMarkerIconModule,
-  TuiPaginationModule, TuiSelectModule
+    TuiAccordionModule,
+    TuiBadgeModule,
+    TuiCarouselModule,
+    TuiDataListWrapperModule,
+    TuiInputDateModule,
+    TuiInputModule,
+    TuiInputNumberModule,
+    TuiInputPhoneModule,
+    TuiIslandModule,
+    TuiLineClampModule,
+    TuiMarkerIconModule,
+    TuiPaginationModule,
+    TuiSelectModule
 } from "@taiga-ui/kit";
 import {HttpClientModule} from "@angular/common/http";
 import {TuiMoneyModule} from "@taiga-ui/addon-commerce";
 import {of} from "rxjs";
 import {TUI_LANGUAGE, TUI_FRENCH_LANGUAGE} from "@taiga-ui/i18n";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {TuiAppBarModule, TuiTabBarModule} from "@taiga-ui/addon-mobile";
+import {TuiAppBarModule, TuiMobileCalendarDialogModule, TuiTabBarModule} from "@taiga-ui/addon-mobile";
 import {AuthModule} from "@auth0/auth0-angular";
 import { LoginComponent } from './login/login.component';
 import { ProfileComponent } from './profile/profile.component';
@@ -120,6 +128,9 @@ import { GroupChoiceComponent } from './group-choice/group-choice.component';
     TuiFallbackSrcModule,
     TuiSvgModule,
     TuiFadeModule,
+    TuiInputDateModule,
+    TuiMobileCalendarDialogModule,
+    TuiErrorModule,
   ],
   providers: [
     {
