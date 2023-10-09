@@ -60,7 +60,7 @@ export class GroupChoiceComponent implements OnInit, OnDestroy {
     ).subscribe(([oldValue, newValue]) => {
       // compare oldValue and newValue to see if the date or the restaurant has changed
       if (oldValue.date !== newValue.date || oldValue.resto !== newValue.resto) {
-        this.creneauxForm.setValue(null);
+        this.creneauxForm.setValue(null, {emitEvent: false});
         this.creneaux = [];
       }
       let date = null;
