@@ -6,6 +6,7 @@ import {BehaviorSubject, Observable, Subscription} from "rxjs";
 import {UserService} from "../user.service";
 import {User} from "../model/user.model";
 import {TuiAlertService, TuiDialogService} from "@taiga-ui/core";
+import {TUI_PROMPT, TuiPromptData} from "@taiga-ui/kit";
 
 @Component({
   selector: 'app-cart',
@@ -94,8 +95,8 @@ export class CartComponent implements OnInit, OnDestroy {
   }
 
   onClick(): void {
-    this.cancelOrder();
-    /*const data: TuiPromptData = {
+    //this.cancelOrder();
+    const data: TuiPromptData = {
         content:
             'Êtes-vous sûr de vouloir annuler votre commande ?',
         yes: 'Oui',
@@ -112,6 +113,6 @@ export class CartComponent implements OnInit, OnDestroy {
             this.cancelOrder();
             this.alerts.open('Votre commande a été annulée.', { status: 'success', hasCloseButton: false, hasIcon: false }).subscribe();
         }
-    });*/
+    });
   }
 }
