@@ -1,24 +1,159 @@
-<div *ngIf="loaded" id="user">
-  <tui-avatar
-    id="avatar"
-    [src]="profilePicture ? profilePicture : name | tuiInitials"
-    [style.background]="name | tuiAutoColor"
-    [round]="true"
-    [size]="'xl'"
-  ></tui-avatar>
+<tui-island *ngIf="loaded" id="user" style="width: 100%">
+  <form [formGroup]="profileForm" (ngSubmit)="saveChanges()" style="width: 100%; margin-bottom: 2rem;">
+    <ng-container *ngIf="!isEditing">
+      <!-- Affichage normal du profil -->
+      <div style="text-align: center; margin-bottom: 2rem;">
+        <tui-avatar
+          id="avatar"
+          [src]="profilePicture ? profilePicture : name | tuiInitials"
+          [style.background]="name | tuiAutoColor"
+          [round]="true"
+          [size]="'xl'"
+        ></tui-avatar>
+      </div>
 
-  <h1>{{ name }}</h1>
-  <p>{{ email }}</p>
-  <p>{{ phone }}</p>
-  <!-- Vous pouvez ajouter plus de détails du profil ici -->
+      <h1 style="text-align: center; margin-bottom: 1rem;">{{ name }}</h1>
+      <div style="display: flex; flex-direction: column; align-items: center; width: 100%">
+        <div style="width: min-content">
+          <div class="info-line">
+            <p><strong>Email:</strong></p>
+            <p style="margin-left: 0.5rem;">{{ email }}</p>
+          </div>
+          <div class="info-line">
+            <p><strong>Téléphone:</strong></p>
+            <p style="margin-left: 0.5rem;">{{ phone }}</p>
+          </div>
+        </div>
+      </div>
+
+    </ng-container>
+
+    <ng-container *ngIf="isEditing">
+      <!-- Formulaire de modification du profil -->
+
+
+      <div style="display: flex; flex-direction: column; align-items: center; margin-bottom: 2rem;">
+        <tui-avatar
+          size="xl"
+          [src]="profileForm.get('profilePicture')?.value ? profileForm.get('profilePicture')?.value : profileForm.get('name')?.value | tuiInitials"
+          [style.background]="profileForm.get('name')?.value | tuiAutoColor"
+          [round]="true"
+        ></tui-avatar>
+        <a
+          [mode]="'negative'"
+          tuiLink
+          (click)="removePhoto()"
+          *ngIf="profileForm.get('profilePicture')?.value !== ''"
+          style="margin-top: 1rem;"
+        >
+          Supprimer la photo
+        </a>
+      </div>
+
+      <!-- Nom -->
+      <tui-input
+        class="inputs"
+        formControlName="name"
+      >
+        Nom
+      </tui-input>
+
+      <!-- E-mail -->
+      <tui-input formControlName="email" class="inputs" [readOnly]="true">
+        Email
+        <input
+          tuiTextfield
+          type="email"
+        />
+      </tui-input>
+
+      <!-- Numéro de téléphone -->
+      <tui-input-phone
+        formControlName="phone"
+        [countryCode]="''"
+        [phoneMaskAfterCountryCode]="'## ## ## ## ##'"
+        class="inputs"
+      >
+        Numéro de téléphone
+      </tui-input-phone>
+    </ng-container>
+
+    <h2 style="text-align: center">Adresses enregistrées</h2>
+    <p style="color: lightgray; margin-left: 1rem" *ngIf="!isEditing && profileForm.controls['deliveriesInfos'].value.length === 0">Il n'y a aucune adresse enregistrée</p>
+
+    <div formArrayName="deliveriesInfos" style="margin: 1rem 0">
+      <tui-accordion>
+        <tui-accordion-item *ngFor="let restaurant of restaurants.controls; let i = index" [formGroupName]="i"
+                            [(open)]="opens[i]">
+          {{ restaurant.value.name || 'Nouvelle adresse' }}
+          <div tuiAccordionItemContent>
+            <tui-input class="inputs1" formControlName="name" [readOnly]="!isEditing">Label de l'adresse</tui-input>
+            <tui-select
+              class="inputs1"
+              [stringify]="stringify"
+              [formControlName]="'restaurant'"
+              [readOnly]="!isEditing"
+            >
+              Selectionner un restaurant
+              <tui-data-list *tuiDataList>
+                <button
+                  *ngFor="let resto of restaurantsList"
+                  tuiOption
+                  class="option"
+                  [value]="resto.id"
+                >
+                  {{ resto.libelle }}
+                </button>
+              </tui-data-list>
+            </tui-select>
+            <tui-select [formControlName]="'sousLieux'" *ngIf="findSousLieux(restaurant.value.restaurant).length > 0" [readOnly]="!isEditing">
+              Selectionner un sous lieu
+              <tui-data-list *tuiDataList>
+                <button
+                  *ngFor="let sousLieu of findSousLieux(restaurant.value.restaurant)"
+                  tuiOption
+                  class="option"
+                  [value]="sousLieu"
+                >
+                  {{ sousLieu }}
+                </button>
+              </tui-data-list>
+            </tui-select>
+            <tui-input class="inputs1" formControlName="address" [readOnly]="!isEditing">Adresse</tui-input>
+            <tui-input class="inputs1" formControlName="address2" [readOnly]="!isEditing">Complément de l'adresse</tui-input>
+            <button *ngIf="isEditing" tuiButton class="inputs1" appearance="secondary-destructive" (click)="removeRestaurant(i)">
+              Retirer
+            </button>
+          </div>
+        </tui-accordion-item>
+      </tui-accordion>
+    </div>
+
+    <div style="text-align: center" *ngIf="isEditing">
+      <button style="align-self: center"  type="button" tuiButton (click)="addRestaurant()">Ajouter un restaurant</button>
+    </div>
+
+
+    <div style="text-align: center;" *ngIf="!isEditing">
+      <button tuiButton appearance="outline" (click)="toggleEdit()">Modifier</button>
+    </div>
+
+    <div style="text-align: center; margin-top: 2rem;" *ngIf="isEditing">
+      <button type="submit" tuiButton style="margin-right: 1rem;">Enregistrer</button>
+      <button tuiButton appearance="outline" (click)="toggleEdit()">Annuler</button>
+    </div>
+
+  </form>
+</tui-island>
+
+<div style="text-align: center; margin-top: 2rem;">
+  <button
+    appearance="accent"
+    tuiButton
+    type="button"
+    class="tui-space_bottom-3"
+    (click)="logout()"
+  >
+    Se déconnecter
+  </button>
 </div>
-
-<button
-  appearance="accent"
-  tuiButton
-  type="button"
-  class="tui-space_bottom-3"
-  (click)="logout()"
->
-  Se déconnecter
-</button>
