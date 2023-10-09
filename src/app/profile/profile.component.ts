@@ -8,7 +8,7 @@ import {Restaurant} from "../register/register.component";
 import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {pairwise, startWith, Subject, takeUntil} from "rxjs";
 import {OrderService} from "../order.service";
-import {TuiDialogService} from "@taiga-ui/core";
+import {TuiAlertService, TuiDialogService} from "@taiga-ui/core";
 import {environment} from "../../environments/environment";
 import {HttpClient} from "@angular/common/http";
 
@@ -32,7 +32,7 @@ export class ProfileComponent {
   // Autres propriétés et méthodes...
 
 
-  constructor(public userService: UserService, public auth: AuthService, private fb: FormBuilder, private orderService: OrderService, @Inject(TuiDialogService) private readonly dialogs: TuiDialogService, private http: HttpClient) {
+  constructor(public userService: UserService, public auth: AuthService, private fb: FormBuilder, private orderService: OrderService, @Inject(TuiDialogService) private readonly dialogs: TuiDialogService, private http: HttpClient, @Inject(TuiAlertService) private readonly alerts: TuiAlertService) {
     this.profile = this.userService.user;
     this.loaded = true;
 
@@ -45,14 +45,7 @@ export class ProfileComponent {
     });
 
     this.tempProfileForm = this.cloneFormGroup(this.profileForm);
-    console.log("------------------");
-    console.log(this.profileForm.value);
-    console.log("------------------");
-    console.log(this.tempProfileForm.value);
-    console.log("------------------");
 
-
-    console.log(this.userService.user);
     this.profileForm.controls['name'].setValue(this.userService.userName);
     this.profileForm.controls['email'].setValue(this.userService.userEmail);
     this.profileForm.controls['profilePicture'].setValue(this.userService.userPicture);
@@ -66,26 +59,6 @@ export class ProfileComponent {
   logout(): void {
     // @ts-ignore
     this.auth.logout({ returnTo: window.location.origin });
-  }
-
-  get profilePicture(): string {
-    if (!this.profile) return '';
-    return this.profile.profilePicture;
-  }
-
-  get name(): string {
-    if (!this.profile) return '';
-    return this.profile.name;
-  }
-
-  get email(): string {
-    if (!this.profile) return '';
-    return this.profile.email;
-  }
-
-  get phone(): string {
-    if (!this.profile) return '';
-    return this.profile.phone;
   }
 
   toggleEdit() {
@@ -164,14 +137,15 @@ export class ProfileComponent {
     // Validez le formulaire, sauvegardez les modifications, etc.
     if (this.profileForm.valid) {
       console.log(this.profileForm.value);
-      /*this.http.post(`${environment.baseUrl}${environment.restPort}/api/register`, this.profileForm.value).subscribe((value: any) => {
-        console.log('Inscription réussie !', value);
-
-      });*/
+      this.http.put(`${environment.baseUrl}${environment.restPort}/api/user`, this.profileForm.value).subscribe(value => {
+        console.log('Mis à jour !', value);
+        this.alerts
+          .open('Votre profil a été mis à jour avec succès', {label: 'Succès', status: 'success', hasCloseButton: false})
+          .subscribe();
+      });
       this.isEditing = false;
       // Faites quelque chose avec les données du formulaire, par exemple les envoyer à une API.
     } else {
-      // Affichez un message d'erreur
       console.log('Formulaire invalide');
       console.log(this.profileForm.value);
     }
