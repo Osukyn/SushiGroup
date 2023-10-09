@@ -10,4 +10,5 @@ export interface Group {
   orders: Map<string, Order>;
   deliveryInfos: any;
   creneau: any;
+  date: string;
 }

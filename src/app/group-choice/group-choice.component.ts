@@ -98,7 +98,9 @@ export class GroupChoiceComponent implements OnInit, OnDestroy {
       this.userService.isUserInGroup(this.userService.userEmail).subscribe(response => {
         console.log(response);
         if (!response) {
-          this.socketService.createGroup(this.restoForm.value, this.creneauxForm.value).subscribe(group => setTimeout(() => {
+          let date = '';
+          if (this.form.controls.date.value) date = this.form.controls.date.value.toLocalNativeDate().toLocaleDateString() || '';
+          this.orderService.createGroup(this.restoForm.value, this.creneauxForm.value, date).subscribe(group => setTimeout(() => {
             observer.complete();
             this.router.navigate(['/order']);
           }));
@@ -116,7 +118,9 @@ export class GroupChoiceComponent implements OnInit, OnDestroy {
               data,
             }).subscribe(value => {
             if (value) {
-              this.socketService.createGroup(this.restoForm.value, this.creneauxForm.value).subscribe(group => setTimeout(() => {
+              let date = '';
+              if (this.form.controls.date.value) date = this.form.controls.date.value.toLocalNativeDate().toLocaleDateString() || '';
+              this.orderService.createGroup(this.restoForm.value, this.creneauxForm.value, date).subscribe(group => setTimeout(() => {
                 observer.complete();
                 this.router.navigate(['/order']);
               }));
