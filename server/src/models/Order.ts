@@ -36,12 +36,14 @@ export class GroupOrder {
   orders: Map<string, Order> = new Map<string, Order>();
   status: OrderStatus = OrderStatus.EN_COURS;
   deliveryInfos: Delivery;
+  creneau: any;
 
-  constructor(host: User, deliveryInfos: Delivery) {
+  constructor(host: User, deliveryInfos: Delivery, creneau: any) {
     this.id = crypto.randomUUID();
     this.host = host;
     this.users = [];
     this.deliveryInfos = deliveryInfos;
+    this.creneau = creneau;
     this.orders.set(host.email, new Order(host.email)); // Initialize host order
   }
 

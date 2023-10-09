@@ -102,7 +102,41 @@
           </button>
         </tui-data-list>
       </tui-select>
+      <tui-error [error]="restoError"></tui-error>
     </div>
+
+    <div>
+      <tui-input-date
+        formControlName="date"
+        [min]="min"
+      >
+        Choisis une date
+        <input
+          tuiTextfield
+        />
+      </tui-input-date>
+      <tui-error [error]="dateError"></tui-error>
+    </div>
+
+    <div>
+      <tui-select [formControl]="creneauxForm" [stringify]="stringifyCreneaux">
+        <span class="select-placeholder">Sélectionner un créneau</span>
+        <tui-data-list *tuiDataList>
+          <button
+            *ngFor="let creneau of creneaux"
+            tuiOption
+            class="option"
+            [value]="creneau"
+          >
+            {{ creneau.libelle }}
+          </button>
+        </tui-data-list>
+      </tui-select>
+      <tui-error [error]="creneauxError"></tui-error>
+    </div>
+
+    <tui-error [error]="formError"></tui-error>
+
 
     <div class="submit-button-section">
       <button tuiButton type="button" appearance="flat" (click)="closeDialog(observer)">Annuler</button>
