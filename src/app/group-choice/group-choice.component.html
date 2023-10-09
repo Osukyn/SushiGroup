@@ -86,11 +86,11 @@
     (ngSubmit)="createGroup(observer)"
     class="group-creation-form"
   >
-    <p class="description-text">Sélectionnez le restaurant pour votre groupe.</p>
+    <p class="description-text">Sélectionnez l'adresse pour votre groupe.</p>
 
     <div class="select-container">
       <tui-select [formControl]="restoForm" [stringify]="stringify">
-        <span class="select-placeholder">Sélectionner un restaurant</span>
+        <span class="select-placeholder">Sélectionner une adresse</span>
         <tui-data-list *tuiDataList>
           <button
             *ngFor="let resto of userService.user.deliveriesInfos"
