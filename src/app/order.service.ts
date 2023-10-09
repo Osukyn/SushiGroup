@@ -200,6 +200,12 @@ export class OrderService {
     this.groupSetEvent.emit(false);
   }
 
+  public exitGroup(): void {
+    if (!this.group) return;
+    this.socketService.leaveGroup(this.userService.userEmail);
+    this.deleteGroup();
+  }
+
   getGroup() {
     return this.group;
   }
