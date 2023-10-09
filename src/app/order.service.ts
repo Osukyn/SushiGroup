@@ -189,8 +189,8 @@ export class OrderService {
     return this.address;
   }
 
-  public createGroup(deliveryInfos: any, creneau: any, date: string): Observable<any> {
-    const data = { deliveryInfos, creneau, date };
+  public createGroup(deliveriesInfos: any, creneau: any, date: string): Observable<any> {
+    const data = { deliveriesInfos, creneau, date };
     return new Observable<any>(observer => {
       this.socketService.createGroup(data).subscribe(
         (group: Group) => {
