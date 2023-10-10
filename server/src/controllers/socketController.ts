@@ -2,6 +2,8 @@ import {Server} from 'socket.io';
 import {OnlineUser, User} from '../models/User';
 import {GroupOrder, Order, OrderStatus} from '../models/Order';
 import mongoose from "mongoose";
+import axios from "axios";
+import FormData from "form-data";
 
 let onlineUsers: OnlineUser[] = [];
 let groups: GroupOrder[] = [];
@@ -45,6 +47,10 @@ export const exitGroup = (email: string) => {
     }
   }
 }
+function formatDateToISO(str: string) {
+  const [day, month, year] = str.split("/");
+  return `${year}-${month}-${day}`;
+}
 export const initializeSocket = (server: any) => {
   io = new Server(server, {
     cors: {
@@ -60,7 +66,8 @@ export const initializeSocket = (server: any) => {
       mongoose.models.FullUser.findOne({email: data.email}).then((user) => {
         if (user === null) {
           const localUser = <User>{
-            name: data.name,
+            firstName: data.firstName,
+            lastName: data.lastName,
             email: data.email,
             profilePicture: data.picture,
             phone: '',
@@ -106,6 +113,7 @@ export const initializeSocket = (server: any) => {
       if (onlineUser) {
         const group = groups.find(group => group.host.email === onlineUser.fullUser.email || group.users.some(u => u.email === onlineUser.fullUser.email));
         if (group === undefined) {
+          console.log('Create group:', data);
           const newGroup = new GroupOrder(onlineUser.fullUser, data.deliveriesInfos, data.creneau, data.date);
           groups.push(newGroup);
           socket.broadcast.emit('groupsUpdate', groups.map(g => g.toJSON()));
@@ -177,6 +185,52 @@ export const initializeSocket = (server: any) => {
           socket.broadcast.emit(`groupUpdate/${group.id}`, group.toJSON());
           socket.emit(`groupUpdate/${group.id}`, group.toJSON());
           socket.broadcast.emit(`groupKick/${group.id}`, onlineUser.fullUser.email);
+        }
+      }
+    });
+
+    socket.on('order', (data: any) => {
+      const onlineUser = onlineUsers.find(u => u.fullUser.email === data.email);
+      if (onlineUser) {
+        // Search for the group where the user is a member
+        const group = groups.find(group => {
+          return group.users.some(u => u.email === onlineUser.fullUser.email) || group.host.email === onlineUser.fullUser.email;
+        });
+
+        if (group) {
+          group.setStatus(OrderStatus.SENT);
+          console.log(JSON.stringify(group.getItems()));
+          console.log(group);
+          const form = new FormData();
+          form.append('idLieuLivraison', group.deliveryInfos.restaurant);
+          if (group.deliveryInfos.sousLieux !== '') form.append('sousville', group.deliveryInfos.sousLieux);
+          form.append('dateLivraison', formatDateToISO(group.date));
+          form.append('heureLivraison', group.creneau.id);
+          form.append('livraison', 1);
+          form.append('client', 1);
+          form.append('prenom', group.host.firstName);
+          form.append('nom', group.host.lastName);
+          form.append('tel', group.host.phone);
+          form.append('email', group.host.email);
+          form.append('adresse1', group.deliveryInfos.address);
+          form.append('complementAdresse', group.deliveryInfos.address2);
+          form.append('observations', '');
+          form.append('heureLivraisonTexte', group.creneau.libelle);
+          form.append('dateLivraisonTexte', group.date);
+          form.append('contenuJson', JSON.stringify(group.getItems()));
+          form.append('idCoupon', '');
+          form.append('codeCoupon', '');
+          form.append('cgv', 'on');
+
+          console.log(form);
+
+          axios.post('https://83.easysushi.fr/Commander.aspx', form).then((response) => {
+            console.log(response);
+            console.log(response.data);
+          }).catch((error) => {
+            console.log(error);
+          });
+          //socket.broadcast.emit(`groupUpdate/${group.id}`, group.toJSON());
         }
       }
     });

@@ -40,20 +40,22 @@ export class ProfileComponent {
       profilePicture: [''],
       email: ['', [Validators.required, Validators.email]],
       phone: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(10)]],
-      name: ['', Validators.required],
+      firstName: ['', Validators.required],
+      lastName: ['', Validators.required],
       deliveriesInfos: this.fb.array([])
     });
 
     this.tempProfileForm = this.cloneFormGroup(this.profileForm);
 
-    this.profileForm.controls['name'].setValue(this.userService.userName);
+    this.profileForm.controls['firstName'].setValue(this.userService.user?.firstName);
+    this.profileForm.controls['lastName'].setValue(this.userService.user?.lastName);
     this.profileForm.controls['email'].setValue(this.userService.userEmail);
     this.profileForm.controls['profilePicture'].setValue(this.userService.userPicture);
-    this.profileForm.controls['phone'].setValue(this.userService.user.phone);
+    this.profileForm.controls['phone'].setValue(this.userService.user?.phone);
     this.orderService.getRestaurantList().subscribe(restaurants => {
       this.restaurantsList = restaurants;
     });
-    this.initializeDeliveriesInfos(this.userService.user.deliveriesInfos);
+    this.initializeDeliveriesInfos(this.userService.user?.deliveriesInfos);
   }
 
   logout(): void {
@@ -204,7 +206,8 @@ export class ProfileComponent {
     return this.profileForm.get('deliveriesInfos') as FormArray;
   }
 
-  initializeDeliveriesInfos(existingData: any[]) {
+  initializeDeliveriesInfos(existingData: [any] | undefined) {
+    if (!existingData) return;
     for (const data of existingData) {
       this.addRestaurant(data);
     }

@@ -23,9 +23,9 @@ export class SocketService {
     this.setGroupsUpdates();
   }
 
-  public setUser(email: string, name: string | undefined, picture: string | undefined, event: EventEmitter<any> | undefined) {
+  public setUser(email: string, firstName: string | undefined, lastName: string | undefined, picture: string | undefined, event: EventEmitter<any> | undefined) {
     console.log('Setting user:', email);
-    this.socket.emit('setUser', { email, name, picture });
+    this.socket.emit('setUser', { email, firstName, lastName, picture });
     this.socket.once('userSet', (data: any) => this.setData(event));
   }
 
@@ -87,6 +87,10 @@ export class SocketService {
 
   public getSocket(): any {
     return this.socket;
+  }
+
+  public order(email: string) {
+    this.socket.emit('order', { email });
   }
 
   kickUser(user: User) {

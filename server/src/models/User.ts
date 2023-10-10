@@ -12,7 +12,8 @@ export class OnlineUser {
 }
 
 export interface User {
-  name: string,
+  firstName: string,
+  lastName: string,
   email: string,
   phone: string,
   profilePicture: string,
@@ -26,7 +27,8 @@ export interface User {
 }
 
 const userSchema = new mongoose.Schema<User>({
-  name: String,
+  firstName: String,
+  lastName: String,
   email: String,
   phone: String,
   profilePicture: String,

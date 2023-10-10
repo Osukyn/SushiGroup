@@ -4,8 +4,8 @@
       style="display: flex; flex-direction: column; justify-content: center; align-items: center; margin-top: 1rem; margin-bottom: 3rem">
       <tui-avatar
         size="xl"
-        [src]="registrationForm.get('profilePicture')?.value ? registrationForm.get('profilePicture')?.value : registrationForm.get('name')?.value | tuiInitials"
-        [style.background]="registrationForm.get('name')?.value | tuiAutoColor"
+        [src]="registrationForm.get('profilePicture')?.value ? registrationForm.get('profilePicture')?.value : (registrationForm.get('firstName')?.value + ' ' + registrationForm.get('lastName')?.value) | tuiInitials"
+        [style.background]="(registrationForm.get('firstName')?.value + ' ' + registrationForm.get('lastName')?.value) | tuiAutoColor"
         [round]="true"
         style="margin-bottom: 1rem"
       ></tui-avatar>
@@ -20,10 +20,18 @@
     </div>
 
     <div>
-      <!-- Nom -->
+      <!-- Prénom -->
       <tui-input
         class="inputs"
-        formControlName="name"
+        formControlName="firstName"
+      >
+        Prénom
+      </tui-input>
+
+      <!-- Nom -->
+      <tui-input
+              class="inputs"
+              formControlName="lastName"
       >
         Nom
       </tui-input>
