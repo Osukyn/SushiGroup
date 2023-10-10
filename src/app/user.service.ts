@@ -51,14 +51,14 @@ export class UserService {
     return this._onlineUsers.some(u => u.email === user.email);
   }
 
-  getUser(email: string): User | null {
+  /*getUser(email: string): User | null {
     const foundUser = this._onlineUsers.find(u => u.email === email);
     return foundUser || (email === this.userEmail ? {
       email: this.userEmail,
       name: this.userName,
       profilePicture: this.userPicture,
     } : null);
-  }
+  }*/
 
   isUserConnected(): Observable<boolean> {
     console.log('isUserConnected' + this.userEmail);

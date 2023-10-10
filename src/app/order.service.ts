@@ -9,6 +9,7 @@ import {UserService} from "./user.service";
 import {HttpClient} from "@angular/common/http";
 import {environment} from "../environments/environment";
 import {Group} from "./model/group.model";
+import {User} from "./model/user.model";
 
 @Injectable({
   providedIn: 'root'
@@ -51,11 +52,17 @@ export class OrderService {
 
 
   private updateOrders(data: any): void {
-    let existingOrder = this._onlineOrders.find(order => order.email === data.email);
-    if (existingOrder) {
-      Object.assign(existingOrder, data.order);
-    } else if (data.order) {
-      this._onlineOrders.push(data.order);
+    // L'adresse e-mail est maintenant la clé pour accéder à la commande dans 'orders'.
+    const orderEmails = Object.keys(data.orders);
+
+    for (const email of orderEmails) {
+      let existingOrder = this._onlineOrders.find(order => order.email === email);
+
+      if (existingOrder) {
+        Object.assign(existingOrder, data.orders[email]);
+      } else {
+        this._onlineOrders.push(data.orders[email]);
+      }
     }
 
     this._orders$.next(this._onlineOrders);
@@ -75,7 +82,6 @@ export class OrderService {
     } else {
       this.currentOrder?.addOrderItem(new OrderItem(code, 1));
     }
-
     this.socketService.sendOrderUpdate(this.currentOrder!);  // Assuming sendOrderUpdate accepts potentially null values
   }
 
@@ -224,6 +230,16 @@ export class OrderService {
     this.socketService.unsubscribeGroupUpdates(this.group?.id);
     this.group = undefined;
     this.groupSetEvent.emit(false);
+  }
+
+  public getOnlineUsers() {
+    if (!this.group) return [];
+    return [this.group.host, ...this.group.users];
+  }
+
+  getUser(email: string): User | null {
+    const foundUser = this.getOnlineUsers().find(u => u.email === email);
+    return foundUser || null;
   }
 
   public exitGroup(): void {
