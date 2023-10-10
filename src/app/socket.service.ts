@@ -13,6 +13,7 @@ export class SocketService {
   public orderUpdates = new Subject<any>();
   groupsUpdate = new Subject<any[]>();
   groupCreated = new EventEmitter<Group>();
+  groupDeleted = new EventEmitter<void>();
 
   constructor() {
     this.socket = io(environment.baseUrl + environment.socketPort);
@@ -58,10 +59,8 @@ export class SocketService {
   }
 
   public setGroupUpdates(groupId: any) {
-    this.socket.on(`groupUpdate/${groupId}`, (data: any) => {
-      console.log('Order updated by user:', data);
-      this.orderUpdates.next(data);
-    });
+    this.socket.on(`groupUpdate/${groupId}`, (data: any) => this.orderUpdates.next(data));
+    this.socket.once(`groupDeletion/${groupId}`, (data: any) => this.groupDeleted.emit());
   }
 
   public unsubscribeGroupUpdates(groupId: any) {
