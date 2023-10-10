@@ -22,11 +22,15 @@ export const findGroupByUserEmail = (email: string) => {
 export const getOnlineUsersOfGroup = (group: GroupOrder) => {
   return onlineUsers.filter(u => group.users.some(user => user.email === u.fullUser.email) || group.host.email === u.fullUser.email);
 }
+
+export const getOnlineUsersOfGroupUsers = (group: GroupOrder) => {
+  return onlineUsers.filter(u => group.users.some(user => user.email === u.fullUser.email));
+}
 export const exitGroup = (email: string) => {
   const group = findGroupByUserEmail(email);
   if (group) {
     if (group.host.email === email) {
-      for (const user of getOnlineUsersOfGroup(group)) {
+      for (const user of getOnlineUsersOfGroupUsers(group)) {
         io.sockets.sockets.get(user.socketId)?.emit(`groupDeletion/${group.id}`, group.toJSON());
       }
       groups.splice(groups.findIndex(g => g.id === group.id), 1);
