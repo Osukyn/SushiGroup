@@ -163,6 +163,24 @@ export const initializeSocket = (server: any) => {
       }
     });
 
+    socket.on('kickUser', (data: any) => {
+      console.log('Kick user:', data);
+      const onlineUser = onlineUsers.find(u => u.fullUser.email === data.email);
+      if (onlineUser) {
+        // Search for the group where the user is a member
+        const group = groups.find(group => {
+          return group.users.some(u => u.email === onlineUser.fullUser.email) || group.host.email === onlineUser.fullUser.email;
+        });
+
+        if (group) {
+          exitGroup(onlineUser.fullUser.email);
+          socket.broadcast.emit(`groupUpdate/${group.id}`, group.toJSON());
+          socket.emit(`groupUpdate/${group.id}`, group.toJSON());
+          socket.broadcast.emit(`groupKick/${group.id}`, onlineUser.fullUser.email);
+        }
+      }
+    });
+
     socket.on('disconnect', () => {
       let index = onlineUsers.findIndex(u => u.socketId === socket.id);
       if (index !== -1) {

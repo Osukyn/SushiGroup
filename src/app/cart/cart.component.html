@@ -102,7 +102,7 @@
 <ng-template
     let-observer
     [tuiDialogOptions]="{label: 'Confirmer la commande', dismissible: true}"
-    [(tuiDialog)]="open"
+    [(tuiDialog)]="openConfirmDialog"
 >
 
     <p class="description-text">Ces personnes n'ont pas encore confirmé leur commande:</p>
@@ -113,6 +113,7 @@
                         [src]="user.profilePicture ? user.profilePicture || '' : user.name || '' | tuiInitials"
                         [style.background]="user.name || '' | tuiAutoColor"></tui-avatar>
             <div class="user-name">{{ user.name }}</div>
+            <button tuiButton size="s" appearance="secondary-destructive" style="margin-left: auto" (click)="kickUser(user)">Exclure</button>
         </div>
     </div>
 
@@ -124,4 +125,6 @@
 
 
 </ng-template>
+
+
 
