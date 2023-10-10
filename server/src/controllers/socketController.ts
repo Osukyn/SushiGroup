@@ -27,15 +27,16 @@ export const exitGroup = (email: string) => {
   if (group) {
     if (group.host.email === email) {
       for (const user of getOnlineUsersOfGroup(group)) {
-        io.sockets.sockets.get(user.socketId)?.emit(`groupDeletion/${group.id}`, group);
+        io.sockets.sockets.get(user.socketId)?.emit(`groupDeletion/${group.id}`, group.toJSON());
       }
       groups.splice(groups.findIndex(g => g.id === group.id), 1);
-      io.sockets.emit('groupsUpdate', groups);
+      // create new array of JSON group from groups
+      io.sockets.emit('groupsUpdate', groups.map(g => g.toJSON()));
     } else {
       group.removeUser(group.users.find(u => u.email === email)!);
-      io.sockets.emit('groupsUpdate', groups);
+      io.sockets.emit('groupsUpdate', groups.map(g => g.toJSON()));
       for (const user of getOnlineUsersOfGroup(group)) {
-        io.sockets.sockets.get(user.socketId)?.emit(`groupUpdate/${group.id}`, group);
+        io.sockets.sockets.get(user.socketId)?.emit(`groupUpdate/${group.id}`, group.toJSON());
       }
     }
   }
@@ -93,7 +94,7 @@ export const initializeSocket = (server: any) => {
     });
 
     socket.on('getGroups', () => {
-      socket.emit('groups', groups);
+      socket.emit('groups', groups.map(g => g.toJSON()));
     });
 
     socket.on('createGroup', (data: any) => {
@@ -103,16 +104,16 @@ export const initializeSocket = (server: any) => {
         if (group === undefined) {
           const newGroup = new GroupOrder(onlineUser.fullUser, data.deliveriesInfos, data.creneau, data.date);
           groups.push(newGroup);
-          socket.broadcast.emit('groupsUpdate', groups);
-          socket.emit('groupsUpdate', groups);
-          socket.emit('groupCreated', newGroup);
+          socket.broadcast.emit('groupsUpdate', groups.map(g => g.toJSON()));
+          socket.emit('groupsUpdate', groups.map(g => g.toJSON()));
+          socket.emit('groupCreated', newGroup.toJSON());
         } else {
           exitGroup(onlineUser.fullUser.email);
           const newGroup = new GroupOrder(onlineUser.fullUser, data.deliveriesInfos, data.creneau, data.date);
           groups.push(newGroup);
-          socket.broadcast.emit('groupsUpdate', groups);
-          socket.emit('groupsUpdate', groups);
-          socket.emit('groupCreated', newGroup);
+          socket.broadcast.emit('groupsUpdate', groups.map(g => g.toJSON()));
+          socket.emit('groupsUpdate', groups.map(g => g.toJSON()));
+          socket.emit('groupCreated', newGroup.toJSON());
         }
       }
     });
@@ -131,8 +132,8 @@ export const initializeSocket = (server: any) => {
           }
           groupIndex = groups.findIndex(group => group.id === groupId);
           groups[groupIndex].addUser(onlineUser.fullUser);
-          socket.broadcast.emit('groupsUpdate', groups);
-          socket.emit('groupsUpdate', groups);
+          socket.broadcast.emit('groupsUpdate', groups.map(g => g.toJSON()));
+          socket.emit('groupsUpdate', groups.map(g => g.toJSON()));
         }
       }
     });
@@ -149,8 +150,9 @@ export const initializeSocket = (server: any) => {
           const order = new Order(data.email);
           order.items = data.items;
           order.status = data.status;
+          console.log('Order updated:', order);
           group.setUserOrder(onlineUser.fullUser.email, order);
-          socket.broadcast.emit(`groupUpdate/${group.id}`, group);
+          socket.broadcast.emit(`groupUpdate/${group.id}`, group.toJSON());
         }
       }
     });

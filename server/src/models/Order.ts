@@ -68,6 +68,8 @@ export class GroupOrder {
 
   setUserOrder(email: string, order: Order) {
     this.orders.set(email, order);
+    console.log('set user order:', this.orders);
+
   }
 
   getHostOrder(): Order | undefined {
@@ -113,5 +115,18 @@ export class GroupOrder {
     });
 
     return items;
+  }
+
+  toJSON(): any {
+    return {
+      id: this.id,
+      host: this.host,
+      users: this.users,
+      orders: Object.fromEntries(this.orders),
+      status: this.status,
+      deliveryInfos: this.deliveryInfos,
+      creneau: this.creneau,
+      date: this.date,
+    };
   }
 }
