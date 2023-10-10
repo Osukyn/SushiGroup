@@ -156,8 +156,9 @@ export class OrderService {
     return order;
   }
 
-  public getAllOrders(): Order[] {
-    return this.orders;
+  public getOrders(): Order[] {
+    if (!this.group) return [];
+    return Object.values(this.group.orders);
   }
 
   public setCurrentOrder(order: Order): void {
@@ -256,6 +257,7 @@ export class OrderService {
   }
 
   getUser(email: string): User | null {
+    //console.log('Get user:', this.getOnlineUsers());
     const foundUser = this.getOnlineUsers().find(u => u.email === email);
     return foundUser || null;
   }
@@ -272,5 +274,9 @@ export class OrderService {
 
   public getUserGroup(): Observable<any> {
     return this.http.get(this.apiURL + '/api/getUserGroup?email=' + this.userService.userEmail);
+  }
+
+  public isHost(): boolean {
+    return this.group?.host.email === this.userService.userEmail;
   }
 }
