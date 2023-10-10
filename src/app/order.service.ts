@@ -158,7 +158,7 @@ export class OrderService {
   }
 
   public setCurrentOrder(order: Order): void {
-    this.currentOrder = order;
+    this.currentOrder = Order.fromRawObject(order);
   }
 
   public confirmOrder(): void {
@@ -236,13 +236,14 @@ export class OrderService {
     this.group = group;
     this.socketService.setGroupUpdates(group.id);
     this.updateOrders(group);
-    this.setCurrentOrder(group.orders[this.userService.userEmail]);
+    if (group.orders[this.userService.userEmail]) this.setCurrentOrder(group.orders[this.userService.userEmail]);
     this.groupSetEvent.emit(true);
   }
 
   deleteGroup(): void {
     this.socketService.unsubscribeGroupUpdates(this.group?.id);
     this.group = undefined;
+    this.currentOrder = null;
     this.groupSetEvent.emit(false);
   }
 
