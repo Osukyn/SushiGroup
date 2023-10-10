@@ -17,6 +17,7 @@ export class Order {
 export enum OrderStatus {
   EN_COURS = 'En cours',
   CONFIRMED = 'Confirmée',
+  SENT = 'Envoyée',
 }
 
 export class OrderItem {
@@ -29,13 +30,27 @@ export class OrderItem {
   }
 }
 
+export class OrderItemForm {
+  qte: number;
+  pdt: string;
+
+  constructor(qte: number, pdt: string) {
+    this.qte = qte;
+    this.pdt = pdt;
+  }
+
+  static fromOrderItem(orderItem: OrderItem): OrderItemForm {
+    return new OrderItemForm(orderItem.qte, orderItem.code);
+  }
+}
+
 export class GroupOrder {
   id: string;
   host: User;
   users: User[];
   orders: Map<string, Order> = new Map<string, Order>();
   status: OrderStatus = OrderStatus.EN_COURS;
-  deliveryInfos: Delivery;
+  deliveryInfos: any;
   creneau: any;
   date: string;
 
@@ -68,6 +83,8 @@ export class GroupOrder {
 
   setUserOrder(email: string, order: Order) {
     this.orders.set(email, order);
+    console.log('set user order:', this.orders);
+
   }
 
   getHostOrder(): Order | undefined {
@@ -98,20 +115,33 @@ export class GroupOrder {
     this.status = status;
   }
 
-  getItems(): OrderItem[] {
-    let items: OrderItem[] = [];
+  getItems(): OrderItemForm[] {
+    let items: OrderItemForm[] = [];
 
     this.orders.forEach(order => {
       order.items.forEach(item => {
-        const index = items.findIndex(i => i.code === item.code);
+        const index = items.findIndex(i => i.pdt === item.code);
         if (index !== -1) {
           items[index].qte += item.qte;
         } else {
-          items.push(item);
+          items.push(OrderItemForm.fromOrderItem(item));
         }
       });
     });
 
     return items;
+  }
+
+  toJSON(): any {
+    return {
+      id: this.id,
+      host: this.host,
+      users: this.users,
+      orders: Object.fromEntries(this.orders),
+      status: this.status,
+      deliveryInfos: this.deliveryInfos,
+      creneau: this.creneau,
+      date: this.date,
+    };
   }
 }

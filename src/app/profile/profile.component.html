@@ -5,8 +5,8 @@
       <div style="text-align: center; margin-bottom: 2rem;">
         <tui-avatar
           id="avatar"
-          [src]="userService.userPicture ? userService.userPicture : userService.userName | tuiInitials"
-          [style.background]="userService.userName | tuiAutoColor"
+          [src]="userService.userPicture ? userService.userPicture : (userService.user?.firstName + ' ' + userService.user?.lastName) | tuiInitials"
+          [style.background]="(userService.user?.firstName + ' ' + userService.user?.lastName) | tuiAutoColor"
           [round]="true"
           [size]="'xl'"
         ></tui-avatar>
@@ -25,11 +25,21 @@
           </div>
         </div>
       </div>-->
+
+      <!-- Prénom -->
+      <tui-input
+              class="inputs"
+              formControlName="firstName"
+              [readOnly]="true"
+      >
+        Prénom
+      </tui-input>
+
       <!-- Nom -->
       <tui-input
-        class="inputs"
-        formControlName="name"
-        [readOnly]="true"
+              class="inputs"
+              formControlName="lastName"
+              [readOnly]="true"
       >
         Nom
       </tui-input>
@@ -63,8 +73,8 @@
       <div style="display: flex; flex-direction: column; align-items: center; margin-bottom: 2rem;">
         <tui-avatar
           size="xl"
-          [src]="profileForm.get('profilePicture')?.value ? profileForm.get('profilePicture')?.value : profileForm.get('name')?.value | tuiInitials"
-          [style.background]="profileForm.get('name')?.value | tuiAutoColor"
+          [src]="profileForm.get('profilePicture')?.value ? profileForm.get('profilePicture')?.value : (profileForm.get('firstName')?.value + ' ' + profileForm.get('lastName')?.value) | tuiInitials"
+          [style.background]="(profileForm.get('firstName')?.value + ' ' + profileForm.get('lastName')?.value) | tuiAutoColor"
           [round]="true"
         ></tui-avatar>
         <a
@@ -78,10 +88,18 @@
         </a>
       </div>
 
+      <!-- Prénom -->
+      <tui-input
+              class="inputs"
+              formControlName="firstName"
+      >
+        Prénom
+      </tui-input>
+
       <!-- Nom -->
       <tui-input
-        class="inputs"
-        formControlName="name"
+              class="inputs"
+              formControlName="lastName"
       >
         Nom
       </tui-input>

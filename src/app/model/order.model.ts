@@ -11,6 +11,10 @@ export class Order {
         this.date = date || new Date();
         this.status = status || OrderStatus.EN_COURS;
     }
+    static fromRawObject(raw: any): Order {
+        const order = new Order(raw.email, raw.items, new Date(raw.date), raw.status);
+        return order;
+    }
     addOrderItem(item: OrderItem) {
         this.items.push(item);
     }

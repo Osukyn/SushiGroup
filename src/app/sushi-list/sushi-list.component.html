@@ -22,7 +22,7 @@
           <span>{{ sushi.cdt }}</span>
           <span>
             Prix:
-            <tui-money [value]="orderService.remise ? sushi.prix * (1 - orderService.remise.pourcentage / 100) : sushi.prix" currency="EUR"></tui-money>
+            <tui-money [value]="orderService.remise ? Math.round((sushi.prix * (1 - orderService.remise.pourcentage / 100)) * 100) / 100 : sushi.prix" currency="EUR"></tui-money>
             <tui-money [value]="sushi.prix" currency="EUR" style="text-decoration: line-through; margin-left: 0.5rem"
                        *ngIf="orderService.remise"></tui-money>
           </span>

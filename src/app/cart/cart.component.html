@@ -4,15 +4,15 @@
             <div class="order-header">
                 <div class="order-pic">
                     <tui-avatar class="order-icon" [round]="true"
-                                [src]="getLocalUser()?.profilePicture ? getLocalUser()?.profilePicture || '' : getLocalUser()?.name || '' | tuiInitials"
-                                [style.background]="getLocalUser()?.name || '' | tuiAutoColor"></tui-avatar>
+                                [src]="getLocalUser()?.profilePicture ? getLocalUser()?.profilePicture || '' : (getLocalUser()?.firstName + ' ' + getLocalUser()?.lastName) || '' | tuiInitials"
+                                [style.background]="(getLocalUser()?.firstName + ' ' + getLocalUser()?.lastName) || '' | tuiAutoColor"></tui-avatar>
                 </div>
                 <div class="order-user">
-                    <div class="order-title">{{ getLocalUser()?.name }}</div>
+                    <div class="order-title">{{ getLocalUser()?.firstName }}</div>
                     <div class="order-status"
                          [ngClass]="{'order-status-pending': orderService.getLocalOrder().status === OrderStatus.EN_COURS, 'order-status-confirmed': orderService.getLocalOrder().status === OrderStatus.CONFIRMEE}">{{ orderService.getLocalOrder().status }}</div>
                 </div>
-                <tui-money class="order-amount" [value]="getTotalForOrder(orderService.getLocalOrder())"
+                <tui-money class="order-amount" [value]="getTotalForOrderWithRemise(orderService.getLocalOrder())"
                            [currency]="'EUR'"></tui-money>
             </div>
 
@@ -23,14 +23,18 @@
                             <span class="product-quantity"><strong>{{ product.qte }}</strong></span>
                             <tui-line-clamp class="product-name" [content]="getName(product.code)"
                                             [linesLimit]="1"></tui-line-clamp>
-                            <tui-money class="product-price" [value]="getTotalForProduct(product)"
+                            <tui-money class="product-price" [value]="getTotalForProductWithRemise(product)"
                                        [currency]="'EUR'"></tui-money>
                         </div>
                     </div>
                 </div>
                 <div class="actions">
-                    <button tuiButton (click)="resumeOrder()" size="s" *ngIf="orderService.getLocalOrder().status === OrderStatus.CONFIRMEE">Reprendre</button>
-                    <button tuiButton (click)="confirmOrder()" size="s" *ngIf="orderService.getLocalOrder().status === OrderStatus.EN_COURS">Confirmer</button>
+                    <button tuiButton (click)="resumeOrder()" size="s"
+                            *ngIf="orderService.getLocalOrder().status === OrderStatus.CONFIRMEE">Reprendre
+                    </button>
+                    <button tuiButton (click)="confirmOrder()" size="s"
+                            *ngIf="orderService.getLocalOrder().status === OrderStatus.EN_COURS">Confirmer
+                    </button>
                     <button tuiButton appearance="secondary-destructive" (click)="onClick()" size="s">Supprimer</button>
                 </div>
             </ng-template>
@@ -40,14 +44,15 @@
             <div class="order-header">
                 <div class="order-pic">
                     <tui-avatar class="order-icon" [round]="true"
-                                [src]="userService.getUser(order.email)?.profilePicture ? userService.getUser(order.email)?.profilePicture || '' : userService.getUser(order.email)?.name || '' | tuiInitials"
-                                [style.background]="userService.getUser(order.email)?.name || '' | tuiAutoColor"></tui-avatar>
+                                [src]="orderService.getUser(order.email)?.profilePicture ? orderService.getUser(order.email)?.profilePicture || '' : (orderService.getUser(order.email)?.firstName + ' ' + orderService.getUser(order.email)?.lastName) || '' | tuiInitials"
+                                [style.background]="(orderService.getUser(order.email)?.firstName + ' ' + orderService.getUser(order.email)?.lastName) || '' | tuiAutoColor"></tui-avatar>
                 </div>
                 <div class="order-user">
-                    <div class="order-title">{{ userService.getUser(order.email)?.name }}</div>
+                    <div class="order-title">{{ orderService.getUser(order.email)?.firstName }}</div>
                     <div [ngClass]="{'order-status': true,'order-status-pending': order.status === OrderStatus.EN_COURS, 'order-status-confirmed': order.status === OrderStatus.CONFIRMEE}">{{ order.status }}</div>
                 </div>
-                <tui-money class="order-amount" [value]="getTotalForOrder(order)" [currency]="'EUR'"></tui-money>
+                <tui-money class="order-amount" [value]="getTotalForOrderWithRemise(order)"
+                           [currency]="'EUR'"></tui-money>
             </div>
 
             <ng-template tuiAccordionItemContent>
@@ -57,7 +62,7 @@
                             <span class="product-quantity"><strong>{{ product.qte }}</strong></span>
                             <tui-line-clamp class="product-name" [content]="getName(product.code)"
                                             [linesLimit]="1"></tui-line-clamp>
-                            <tui-money class="product-price" [value]="getTotalForProduct(product)"
+                            <tui-money class="product-price" [value]="getTotalForProductWithRemise(product)"
                                        [currency]="'EUR'"></tui-money>
                         </div>
                     </div>
@@ -66,11 +71,8 @@
         </tui-accordion-item>
     </tui-accordion>
 
-    <div class="total" *ngIf="getTotalCost() > 0">
-        Total:
-        <tui-money class="total-amount" [value]="getTotalCost() || 0" [currency]="'EUR'"></tui-money>
-    </div>
-    <tui-block-status *ngIf="getTotalCost() === 0" [card]="true" style="height: 100%; display: flex; justify-content: center; align-items: center">
+    <tui-block-status *ngIf="getTotalCost() === 0" [card]="true"
+                      style="height: 100%; display: flex; justify-content: center; align-items: center">
         <img
                 alt="not found"
                 src="./assets/images/empty-cart.svg"
@@ -83,3 +85,43 @@
         Essayez d'ajouter des produits au panier
     </tui-block-status>
 </div>
+
+<div class="order-container" *ngIf="getTotalCost() > 0">
+    <div class="total">
+        Total:
+        <tui-money class="total-amount" [value]="getTotalCostWithRemise() + 0.99 || 0" [currency]="'EUR'"></tui-money>
+        <div class="total-details">
+            (
+            <tui-money class="total-amount" [value]="0.99" [currency]="'EUR'"></tui-money>
+            de livraison)
+        </div>
+    </div>
+    <button tuiButton *ngIf="orderService.isHost()" (click)="orderClick()">Commander</button>
+</div>
+
+<ng-template
+    let-observer
+    [tuiDialogOptions]="{label: 'Confirmer la commande', dismissible: true}"
+    [(tuiDialog)]="openConfirmDialog"
+>
+
+    <p class="description-text">Ces personnes n'ont pas encore confirmé leur commande:</p>
+
+    <div class="users">
+        <div class="user" *ngFor="let user of getUnconfirmedUsers()">
+            <tui-avatar class="user-icon" [round]="true"
+                        [src]="user.profilePicture ? user.profilePicture || '' : (user.firstName + ' ' + user.lastName) || '' | tuiInitials"
+                        [style.background]="(user.firstName + ' ' + user.lastName) || '' | tuiAutoColor"></tui-avatar>
+            <div class="user-name">{{ user.firstName }}</div>
+            <button tuiButton size="s" appearance="secondary-destructive" style="margin-left: auto" (click)="kickUser(user)">Exclure</button>
+        </div>
+    </div>
+
+        <p class="description-text">Voulez-vous forcer la commande ?</p>
+    <div class="submit-button-section">
+        <button tuiButton type="button" appearance="flat" (click)="closeDialog(observer)">Annuler</button>
+        <button tuiButton type="button" (click)="order()">Commander</button>
+    </div>
+
+
+</ng-template>
