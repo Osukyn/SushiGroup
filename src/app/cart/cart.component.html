@@ -68,7 +68,10 @@
 
     <div class="total" *ngIf="getTotalCost() > 0">
         Total:
-        <tui-money class="total-amount" [value]="getTotalCostWithRemise() || 0" [currency]="'EUR'"></tui-money>
+        <tui-money class="total-amount" [value]="getTotalCostWithRemise() + 0.99 || 0" [currency]="'EUR'"></tui-money>
+        <div class="total-details">
+            (<tui-money class="total-amount" [value]="getTotalCostWithRemise() || 0" [currency]="'EUR'"></tui-money> + <tui-money class="total-amount" [value]="0.99" [currency]="'EUR'"></tui-money> de livraison)
+        </div>
     </div>
     <tui-block-status *ngIf="getTotalCost() === 0" [card]="true" style="height: 100%; display: flex; justify-content: center; align-items: center">
         <img
