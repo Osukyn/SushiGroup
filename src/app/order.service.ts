@@ -55,18 +55,30 @@ export class OrderService {
     // L'adresse e-mail est maintenant la clé pour accéder à la commande dans 'orders'.
     const orderEmails = Object.keys(data.orders);
 
+    // Nouvelles commandes en ligne après mise à jour
+    const updatedOrders: any[] = [];
+
     for (const email of orderEmails) {
       let existingOrder = this._onlineOrders.find(order => order.email === email);
 
+      console.log('Update orders for email:', email, data.orders[email]);
+
       if (existingOrder) {
+        // Mettre à jour l'ordre existant
         Object.assign(existingOrder, data.orders[email]);
+        updatedOrders.push(existingOrder);
       } else {
-        this._onlineOrders.push(data.orders[email]);
+        // Ajouter le nouvel ordre
+        updatedOrders.push(data.orders[email]);
       }
     }
 
+    // Attribuer la liste mise à jour à _onlineOrders
+    this._onlineOrders = updatedOrders;
+
     this._orders$.next(this._onlineOrders);
   }
+
 
 
   public getOrder(email: string): Order {
@@ -220,9 +232,11 @@ export class OrderService {
     });
   }
 
-  public setGroup(group: Group): void {
+  public setGroup(group: any): void {
     this.group = group;
     this.socketService.setGroupUpdates(group.id);
+    this.updateOrders(group);
+    this.setCurrentOrder(group.orders[this.userService.userEmail]);
     this.groupSetEvent.emit(true);
   }
 

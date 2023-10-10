@@ -32,7 +32,8 @@ export class CartComponent implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         this.subscription = this.orderService.ordersObservable().subscribe(orders => {
-            this.orders = orders.filter(order => order.items.length !== 0);
+            console.log('orders', orders);
+            this.orders = orders.filter(order => order.items.length !== 0 && order.email !== this.userService.userEmail);
             this._orders$.next(this.orders);
             this.loaded = true;
         });
@@ -84,7 +85,7 @@ export class CartComponent implements OnInit, OnDestroy {
     }
 
     public getTotalCostWithRemise(): number {
-        return this.orderService.remise ? Math.round((this.getTotalCost() * (1 - this.orderService.remise.pourcentage / 100)) * 100) / 100 : this.getTotalCost() ;
+        return this.orderService.remise ? Math.round((this.getTotalCost() * (1 - this.orderService.remise.pourcentage / 100)) * 100) / 100 : this.getTotalCost();
     }
 
 
