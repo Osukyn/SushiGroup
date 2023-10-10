@@ -130,23 +130,54 @@ export class CartComponent implements OnInit, OnDestroy {
             });
     }
 
-    order() {
-        this.open = true;
-        /*const ordersNotConfirmed = this.orderService.getOrders().filter(order => order.status === OrderStatus.EN_COURS);
-        if (ordersNotConfirmed.length === 0) {
+    order(): void {
+        if (this.getUnconfirmedUsers().length === 0) {
 
         } else {
+            this.open = true;
+        }
+    }
 
-        }*/
+    get openConfirmDialog(): boolean {
+        return this.open && this.getUnconfirmedUsers().length > 0;
+    }
+
+    set openConfirmDialog(value: boolean) {
+        this.open = value;
+    }
+
+    confirmDialog(observer: any): void {
+        this.open = false;
+        observer.complete();
     }
 
     closeDialog(observer: any): void {
         observer.complete();
     }
 
+    kickUser(user: User) {
+        const data: TuiPromptData = {
+            content:
+                `Êtes-vous sûr de vouloir exclure ${user.name} du groupe ?`,
+            yes: 'Oui',
+            no: 'Non',
+        };
+
+        this.dialog = this.dialogs
+            .open<boolean>(TUI_PROMPT, {
+                label: 'Attention !',
+                size: 's',
+                data,
+            }).subscribe((ans) => {
+                if (ans) {
+                    this.orderService.kickUser(user);
+                    this.alerts.open(`${user.name} a été exclu(e) du groupe.`, {status: 'success', hasCloseButton: false, hasIcon: false}).subscribe();
+                }
+            });
+    }
+
     getUnconfirmedUsers() {
-        const ordersNotConfirmed = this.orderService.getOrders().filter(order => order.status === OrderStatus.EN_COURS);
-        console.log(ordersNotConfirmed);
+        const ordersNotConfirmed = this.orderService.getOrders().filter(order => order.status === OrderStatus.EN_COURS && order.email !== this.userService.userEmail);
         return this.orderService.getOnlineUsers().filter(user => ordersNotConfirmed.find(order => order.email === user.email));
     }
 }

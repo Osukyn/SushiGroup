@@ -279,4 +279,8 @@ export class OrderService {
   public isHost(): boolean {
     return this.group?.host.email === this.userService.userEmail;
   }
+
+  kickUser(user: User) {
+    this.socketService.kickUser(user);
+  }
 }
