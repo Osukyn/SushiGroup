@@ -33,7 +33,6 @@ export class CartComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
         this.subscription = this.orderService.ordersObservable().subscribe(orders => {
             this.orders = orders.filter(order => order.items.length !== 0);
-            console.log('Orders:', this.orders);
             this._orders$.next(this.orders);
             this.loaded = true;
         });
@@ -44,8 +43,6 @@ export class CartComponent implements OnInit, OnDestroy {
     }
 
     private findProductByCode(code: string) {
-        console.log('Code:', code);
-        console.log('Sushi list:', this.orderService.getSushiList());
         return this.orderService.getSushiList()
             .flatMap(categorie => categorie.produits)
             .find(produit => produit.code === code) || null;
@@ -64,9 +61,7 @@ export class CartComponent implements OnInit, OnDestroy {
     }
 
     public getTotalForProduct(order: OrderItem): number {
-        console.log('Order:', order);
         const product = this.findProductByCode(order.code);
-        console.log('Product:', product);
         return product ? order.qte * product.prix : 0;
     }
 
@@ -81,15 +76,15 @@ export class CartComponent implements OnInit, OnDestroy {
     }
 
     public getTotalForProductWithRemise(order: OrderItem): number {
-        return Math.round((this.getTotalForProduct(order) * (1 - this.orderService.remise.pourcentage / 100)) * 100) / 100;
+        return this.orderService.remise ? Math.round((this.getTotalForProduct(order) * (1 - this.orderService.remise.pourcentage / 100)) * 100) / 100 : this.getTotalForProduct(order);
     }
 
     public getTotalForOrderWithRemise(order: Order): number {
-        return Math.round((this.getTotalForOrder(order) * (1 - this.orderService.remise.pourcentage / 100)) * 100) / 100;
+        return this.orderService.remise ? Math.round((this.getTotalForOrder(order) * (1 - this.orderService.remise.pourcentage / 100)) * 100) / 100 : this.getTotalForOrder(order);
     }
 
     public getTotalCostWithRemise(): number {
-        return Math.round((this.getTotalCost() * (1 - this.orderService.remise.pourcentage / 100)) * 100) / 100;
+        return this.orderService.remise ? Math.round((this.getTotalCost() * (1 - this.orderService.remise.pourcentage / 100)) * 100) / 100 : this.getTotalCost() ;
     }
 
 
