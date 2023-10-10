@@ -20,6 +20,7 @@ export class CartComponent implements OnInit, OnDestroy {
     private _orders$ = new BehaviorSubject<Order[]>([]); // Créer un BehaviorSubject pour les commandes
     private dialog: any;
     title = 'Panier';
+    open = false;
 
     constructor(
         public orderService: OrderService,
@@ -127,5 +128,25 @@ export class CartComponent implements OnInit, OnDestroy {
                     this.alerts.open('Votre commande a été annulée.', {status: 'success', hasCloseButton: false, hasIcon: false}).subscribe();
                 }
             });
+    }
+
+    order() {
+        this.open = true;
+        /*const ordersNotConfirmed = this.orderService.getOrders().filter(order => order.status === OrderStatus.EN_COURS);
+        if (ordersNotConfirmed.length === 0) {
+
+        } else {
+
+        }*/
+    }
+
+    closeDialog(observer: any): void {
+        observer.complete();
+    }
+
+    getUnconfirmedUsers() {
+        const ordersNotConfirmed = this.orderService.getOrders().filter(order => order.status === OrderStatus.EN_COURS);
+        console.log(ordersNotConfirmed);
+        return this.orderService.getOnlineUsers().filter(user => ordersNotConfirmed.find(order => order.email === user.email));
     }
 }

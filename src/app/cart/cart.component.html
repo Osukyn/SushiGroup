@@ -29,8 +29,12 @@
                     </div>
                 </div>
                 <div class="actions">
-                    <button tuiButton (click)="resumeOrder()" size="s" *ngIf="orderService.getLocalOrder().status === OrderStatus.CONFIRMEE">Reprendre</button>
-                    <button tuiButton (click)="confirmOrder()" size="s" *ngIf="orderService.getLocalOrder().status === OrderStatus.EN_COURS">Confirmer</button>
+                    <button tuiButton (click)="resumeOrder()" size="s"
+                            *ngIf="orderService.getLocalOrder().status === OrderStatus.CONFIRMEE">Reprendre
+                    </button>
+                    <button tuiButton (click)="confirmOrder()" size="s"
+                            *ngIf="orderService.getLocalOrder().status === OrderStatus.EN_COURS">Confirmer
+                    </button>
                     <button tuiButton appearance="secondary-destructive" (click)="onClick()" size="s">Supprimer</button>
                 </div>
             </ng-template>
@@ -47,7 +51,8 @@
                     <div class="order-title">{{ orderService.getUser(order.email)?.name }}</div>
                     <div [ngClass]="{'order-status': true,'order-status-pending': order.status === OrderStatus.EN_COURS, 'order-status-confirmed': order.status === OrderStatus.CONFIRMEE}">{{ order.status }}</div>
                 </div>
-                <tui-money class="order-amount" [value]="getTotalForOrderWithRemise(order)" [currency]="'EUR'"></tui-money>
+                <tui-money class="order-amount" [value]="getTotalForOrderWithRemise(order)"
+                           [currency]="'EUR'"></tui-money>
             </div>
 
             <ng-template tuiAccordionItemContent>
@@ -66,14 +71,8 @@
         </tui-accordion-item>
     </tui-accordion>
 
-    <div class="total" *ngIf="getTotalCost() > 0">
-        Total:
-        <tui-money class="total-amount" [value]="getTotalCostWithRemise() + 0.99 || 0" [currency]="'EUR'"></tui-money>
-        <div class="total-details">
-            (<tui-money class="total-amount" [value]="getTotalCostWithRemise() || 0" [currency]="'EUR'"></tui-money> + <tui-money class="total-amount" [value]="0.99" [currency]="'EUR'"></tui-money> de livraison)
-        </div>
-    </div>
-    <tui-block-status *ngIf="getTotalCost() === 0" [card]="true" style="height: 100%; display: flex; justify-content: center; align-items: center">
+    <tui-block-status *ngIf="getTotalCost() === 0" [card]="true"
+                      style="height: 100%; display: flex; justify-content: center; align-items: center">
         <img
                 alt="not found"
                 src="./assets/images/empty-cart.svg"
@@ -86,3 +85,43 @@
         Essayez d'ajouter des produits au panier
     </tui-block-status>
 </div>
+
+<div class="order-container" *ngIf="getTotalCost() > 0">
+    <div class="total">
+        Total:
+        <tui-money class="total-amount" [value]="getTotalCostWithRemise() + 0.99 || 0" [currency]="'EUR'"></tui-money>
+        <div class="total-details">
+            (
+            <tui-money class="total-amount" [value]="0.99" [currency]="'EUR'"></tui-money>
+            de livraison)
+        </div>
+    </div>
+    <button tuiButton *ngIf="orderService.isHost()" (click)="order()">Commander</button>
+</div>
+
+<ng-template
+    let-observer
+    [tuiDialogOptions]="{label: 'Confirmer la commande', dismissible: true}"
+    [(tuiDialog)]="open"
+>
+
+    <p class="description-text">Ces personnes n'ont pas encore confirmé leur commande:</p>
+
+    <div class="users">
+        <div class="user" *ngFor="let user of getUnconfirmedUsers()">
+            <tui-avatar class="user-icon" [round]="true"
+                        [src]="user.profilePicture ? user.profilePicture || '' : user.name || '' | tuiInitials"
+                        [style.background]="user.name || '' | tuiAutoColor"></tui-avatar>
+            <div class="user-name">{{ user.name }}</div>
+        </div>
+    </div>
+
+        <p class="description-text">Voulez-vous forcer la commande ?</p>
+    <div class="submit-button-section">
+        <button tuiButton type="button" appearance="flat" (click)="closeDialog(observer)">Annuler</button>
+        <button tuiButton type="submit">Commander</button>
+    </div>
+
+
+</ng-template>
+
