@@ -9,12 +9,12 @@
           <div class="order-pic">
             <tui-avatar
               [round]="true"
-              [src]="group.host.profilePicture ? group.host.profilePicture : group.host.name | tuiInitials"
-              [style.background]="group.host.name | tuiAutoColor">
+              [src]="group.host.profilePicture ? group.host.profilePicture : (group.host.firstName + ' ' + group.host.lastName) | tuiInitials"
+              [style.background]="(group.host.firstName + ' ' + group.host.lastName) | tuiAutoColor">
             </tui-avatar>
           </div>
           <div class="order-user">
-            <div class="order-title">{{ group.host.name }}</div>
+            <div class="order-title">{{ group.host.firstName + ' ' + group.host.lastName }}</div>
             <div class="order-subtitle">{{ group.deliveryInfos.address }}</div>
           </div>
         </div>
@@ -28,8 +28,8 @@
                 <tui-avatar
                   [round]="true"
                   *ngFor="let user of group.users.slice(0, 4)"
-                  [src]="user.profilePicture ? user.profilePicture : user.name | tuiInitials"
-                  [style.background]="user.name | tuiAutoColor">
+                  [src]="user.profilePicture ? user.profilePicture : (user.firstName + ' ' + user.lastName) | tuiInitials"
+                  [style.background]="(user.firstName + ' ' + user.lastName) | tuiAutoColor">
                 </tui-avatar>
                 <tui-avatar
                   [round]="true"
@@ -86,14 +86,14 @@
     (ngSubmit)="createGroup(observer)"
     class="group-creation-form"
   >
-    <p class="description-text">Sélectionnez le restaurant pour votre groupe.</p>
+    <p class="description-text">Sélectionnez l'adresse pour votre groupe.</p>
 
     <div class="select-container">
       <tui-select [formControl]="restoForm" [stringify]="stringify">
-        <span class="select-placeholder">Sélectionner un restaurant</span>
+        <span class="select-placeholder">Sélectionner une adresse</span>
         <tui-data-list *tuiDataList>
           <button
-            *ngFor="let resto of userService.user.deliveriesInfos"
+            *ngFor="let resto of userService.user?.deliveriesInfos"
             tuiOption
             class="option"
             [value]="resto"
@@ -127,6 +127,7 @@
             tuiOption
             class="option"
             [value]="creneau"
+            [disabled]="!creneau.possible"
           >
             {{ creneau.libelle }}
           </button>

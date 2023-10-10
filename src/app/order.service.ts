@@ -9,6 +9,7 @@ import {UserService} from "./user.service";
 import {HttpClient} from "@angular/common/http";
 import {environment} from "../environments/environment";
 import {Group} from "./model/group.model";
+import {User} from "./model/user.model";
 
 @Injectable({
   providedIn: 'root'
@@ -35,7 +36,10 @@ export class OrderService {
     private http: HttpClient
   ) {
     // Écoute des mises à jour des commandes depuis les autres utilisateurs
-    this.socketService.orderUpdates.subscribe(data => this.updateOrders(data));
+    this.socketService.orderUpdates.subscribe(data => {
+      this.updateOrders(data);
+      this.group = data;
+    });
     this.socketService.groupCreated.subscribe(group => this.setGroup(group));
   }
 
@@ -51,15 +55,33 @@ export class OrderService {
 
 
   private updateOrders(data: any): void {
-    let existingOrder = this._onlineOrders.find(order => order.email === data.email);
-    if (existingOrder) {
-      Object.assign(existingOrder, data.order);
-    } else if (data.order) {
-      this._onlineOrders.push(data.order);
+    // L'adresse e-mail est maintenant la clé pour accéder à la commande dans 'orders'.
+    const orderEmails = Object.keys(data.orders);
+
+    // Nouvelles commandes en ligne après mise à jour
+    const updatedOrders: any[] = [];
+
+    for (const email of orderEmails) {
+      let existingOrder = this._onlineOrders.find(order => order.email === email);
+
+      console.log('Update orders for email:', email, data.orders[email]);
+
+      if (existingOrder) {
+        // Mettre à jour l'ordre existant
+        Object.assign(existingOrder, data.orders[email]);
+        updatedOrders.push(existingOrder);
+      } else {
+        // Ajouter le nouvel ordre
+        updatedOrders.push(data.orders[email]);
+      }
     }
+
+    // Attribuer la liste mise à jour à _onlineOrders
+    this._onlineOrders = updatedOrders;
 
     this._orders$.next(this._onlineOrders);
   }
+
 
 
   public getOrder(email: string): Order {
@@ -75,7 +97,6 @@ export class OrderService {
     } else {
       this.currentOrder?.addOrderItem(new OrderItem(code, 1));
     }
-
     this.socketService.sendOrderUpdate(this.currentOrder!);  // Assuming sendOrderUpdate accepts potentially null values
   }
 
@@ -135,12 +156,13 @@ export class OrderService {
     return order;
   }
 
-  public getAllOrders(): Order[] {
-    return this.orders;
+  public getOrders(): Order[] {
+    if (!this.group) return [];
+    return Object.values(this.group.orders);
   }
 
   public setCurrentOrder(order: Order): void {
-    this.currentOrder = order;
+    this.currentOrder = Order.fromRawObject(order);
   }
 
   public confirmOrder(): void {
@@ -214,16 +236,30 @@ export class OrderService {
     });
   }
 
-  public setGroup(group: Group): void {
+  public setGroup(group: any): void {
     this.group = group;
     this.socketService.setGroupUpdates(group.id);
+    this.updateOrders(group);
+    if (group.orders[this.userService.userEmail]) this.setCurrentOrder(group.orders[this.userService.userEmail]);
     this.groupSetEvent.emit(true);
   }
 
   deleteGroup(): void {
     this.socketService.unsubscribeGroupUpdates(this.group?.id);
     this.group = undefined;
+    this.currentOrder = null;
     this.groupSetEvent.emit(false);
+  }
+
+  public getOnlineUsers() {
+    if (!this.group) return [];
+    return [this.group.host, ...this.group.users];
+  }
+
+  getUser(email: string): User | null {
+    //console.log('Get user:', this.getOnlineUsers());
+    const foundUser = this.getOnlineUsers().find(u => u.email === email);
+    return foundUser || null;
   }
 
   public exitGroup(): void {
@@ -238,5 +274,19 @@ export class OrderService {
 
   public getUserGroup(): Observable<any> {
     return this.http.get(this.apiURL + '/api/getUserGroup?email=' + this.userService.userEmail);
+  }
+
+  public isHost(): boolean {
+    return this.group?.host.email === this.userService.userEmail;
+  }
+
+  kickUser(user: User) {
+    this.socketService.kickUser(user);
+  }
+
+  public order(): void {
+    if (this.group) {
+      this.socketService.order(this.userService.userEmail);
+    }
   }
 }

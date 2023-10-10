@@ -2,6 +2,8 @@ import {Server} from 'socket.io';
 import {OnlineUser, User} from '../models/User';
 import {GroupOrder, Order, OrderStatus} from '../models/Order';
 import mongoose from "mongoose";
+import axios from "axios";
+import FormData from "form-data";
 
 let onlineUsers: OnlineUser[] = [];
 let groups: GroupOrder[] = [];
@@ -22,23 +24,32 @@ export const findGroupByUserEmail = (email: string) => {
 export const getOnlineUsersOfGroup = (group: GroupOrder) => {
   return onlineUsers.filter(u => group.users.some(user => user.email === u.fullUser.email) || group.host.email === u.fullUser.email);
 }
+
+export const getOnlineUsersOfGroupUsers = (group: GroupOrder) => {
+  return onlineUsers.filter(u => group.users.some(user => user.email === u.fullUser.email));
+}
 export const exitGroup = (email: string) => {
   const group = findGroupByUserEmail(email);
   if (group) {
     if (group.host.email === email) {
-      for (const user of getOnlineUsersOfGroup(group)) {
-        io.sockets.sockets.get(user.socketId)?.emit(`groupDeletion/${group.id}`, group);
+      for (const user of getOnlineUsersOfGroupUsers(group)) {
+        io.sockets.sockets.get(user.socketId)?.emit(`groupDeletion/${group.id}`, group.toJSON());
       }
       groups.splice(groups.findIndex(g => g.id === group.id), 1);
-      io.sockets.emit('groupsUpdate', groups);
+      // create new array of JSON group from groups
+      io.sockets.emit('groupsUpdate', groups.map(g => g.toJSON()));
     } else {
       group.removeUser(group.users.find(u => u.email === email)!);
-      io.sockets.emit('groupsUpdate', groups);
+      io.sockets.emit('groupsUpdate', groups.map(g => g.toJSON()));
       for (const user of getOnlineUsersOfGroup(group)) {
-        io.sockets.sockets.get(user.socketId)?.emit(`groupUpdate/${group.id}`, group);
+        io.sockets.sockets.get(user.socketId)?.emit(`groupUpdate/${group.id}`, group.toJSON());
       }
     }
   }
+}
+function formatDateToISO(str: string) {
+  const [day, month, year] = str.split("/");
+  return `${year}-${month}-${day}`;
 }
 export const initializeSocket = (server: any) => {
   io = new Server(server, {
@@ -55,7 +66,8 @@ export const initializeSocket = (server: any) => {
       mongoose.models.FullUser.findOne({email: data.email}).then((user) => {
         if (user === null) {
           const localUser = <User>{
-            name: data.name,
+            firstName: data.firstName,
+            lastName: data.lastName,
             email: data.email,
             profilePicture: data.picture,
             phone: '',
@@ -93,7 +105,7 @@ export const initializeSocket = (server: any) => {
     });
 
     socket.on('getGroups', () => {
-      socket.emit('groups', groups);
+      socket.emit('groups', groups.map(g => g.toJSON()));
     });
 
     socket.on('createGroup', (data: any) => {
@@ -101,18 +113,19 @@ export const initializeSocket = (server: any) => {
       if (onlineUser) {
         const group = groups.find(group => group.host.email === onlineUser.fullUser.email || group.users.some(u => u.email === onlineUser.fullUser.email));
         if (group === undefined) {
+          console.log('Create group:', data);
           const newGroup = new GroupOrder(onlineUser.fullUser, data.deliveriesInfos, data.creneau, data.date);
           groups.push(newGroup);
-          socket.broadcast.emit('groupsUpdate', groups);
-          socket.emit('groupsUpdate', groups);
-          socket.emit('groupCreated', newGroup);
+          socket.broadcast.emit('groupsUpdate', groups.map(g => g.toJSON()));
+          socket.emit('groupsUpdate', groups.map(g => g.toJSON()));
+          socket.emit('groupCreated', newGroup.toJSON());
         } else {
           exitGroup(onlineUser.fullUser.email);
           const newGroup = new GroupOrder(onlineUser.fullUser, data.deliveriesInfos, data.creneau, data.date);
           groups.push(newGroup);
-          socket.broadcast.emit('groupsUpdate', groups);
-          socket.emit('groupsUpdate', groups);
-          socket.emit('groupCreated', newGroup);
+          socket.broadcast.emit('groupsUpdate', groups.map(g => g.toJSON()));
+          socket.emit('groupsUpdate', groups.map(g => g.toJSON()));
+          socket.emit('groupCreated', newGroup.toJSON());
         }
       }
     });
@@ -131,8 +144,10 @@ export const initializeSocket = (server: any) => {
           }
           groupIndex = groups.findIndex(group => group.id === groupId);
           groups[groupIndex].addUser(onlineUser.fullUser);
-          socket.broadcast.emit('groupsUpdate', groups);
-          socket.emit('groupsUpdate', groups);
+          socket.broadcast.emit('groupsUpdate', groups.map(g => g.toJSON()));
+          socket.emit('groupsUpdate', groups.map(g => g.toJSON()));
+          socket.broadcast.emit(`groupUpdate/${groupId}`, groups[groupIndex].toJSON());
+          socket.emit(`groupUpdate/${groupId}`, groups[groupIndex].toJSON());
         }
       }
     });
@@ -149,8 +164,73 @@ export const initializeSocket = (server: any) => {
           const order = new Order(data.email);
           order.items = data.items;
           order.status = data.status;
+          console.log('Order updated:', order);
           group.setUserOrder(onlineUser.fullUser.email, order);
-          socket.broadcast.emit(`groupUpdate/${group.id}`, group);
+          socket.broadcast.emit(`groupUpdate/${group.id}`, group.toJSON());
+        }
+      }
+    });
+
+    socket.on('kickUser', (data: any) => {
+      console.log('Kick user:', data);
+      const onlineUser = onlineUsers.find(u => u.fullUser.email === data.email);
+      if (onlineUser) {
+        // Search for the group where the user is a member
+        const group = groups.find(group => {
+          return group.users.some(u => u.email === onlineUser.fullUser.email) || group.host.email === onlineUser.fullUser.email;
+        });
+
+        if (group) {
+          exitGroup(onlineUser.fullUser.email);
+          socket.broadcast.emit(`groupUpdate/${group.id}`, group.toJSON());
+          socket.emit(`groupUpdate/${group.id}`, group.toJSON());
+          socket.broadcast.emit(`groupKick/${group.id}`, onlineUser.fullUser.email);
+        }
+      }
+    });
+
+    socket.on('order', (data: any) => {
+      const onlineUser = onlineUsers.find(u => u.fullUser.email === data.email);
+      if (onlineUser) {
+        // Search for the group where the user is a member
+        const group = groups.find(group => {
+          return group.users.some(u => u.email === onlineUser.fullUser.email) || group.host.email === onlineUser.fullUser.email;
+        });
+
+        if (group) {
+          group.setStatus(OrderStatus.SENT);
+          console.log(JSON.stringify(group.getItems()));
+          console.log(group);
+          const form = new FormData();
+          form.append('idLieuLivraison', group.deliveryInfos.restaurant);
+          if (group.deliveryInfos.sousLieux !== '') form.append('sousville', group.deliveryInfos.sousLieux);
+          form.append('dateLivraison', formatDateToISO(group.date));
+          form.append('heureLivraison', group.creneau.id);
+          form.append('livraison', 1);
+          form.append('client', 1);
+          form.append('prenom', group.host.firstName);
+          form.append('nom', group.host.lastName);
+          form.append('tel', group.host.phone);
+          form.append('email', group.host.email);
+          form.append('adresse1', group.deliveryInfos.address);
+          form.append('complementAdresse', group.deliveryInfos.address2);
+          form.append('observations', '');
+          form.append('heureLivraisonTexte', group.creneau.libelle);
+          form.append('dateLivraisonTexte', group.date);
+          form.append('contenuJson', JSON.stringify(group.getItems()));
+          form.append('idCoupon', '');
+          form.append('codeCoupon', '');
+          form.append('cgv', 'on');
+
+          console.log(form);
+
+          axios.post('https://83.easysushi.fr/Commander.aspx', form).then((response) => {
+            console.log(response);
+            console.log(response.data);
+          }).catch((error) => {
+            console.log(error);
+          });
+          //socket.broadcast.emit(`groupUpdate/${group.id}`, group.toJSON());
         }
       }
     });

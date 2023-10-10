@@ -27,12 +27,8 @@ export class UserService {
     });
   }
 
-  get user(): any {
+  get user(): User | undefined {
     return this._user;
-  }
-
-  get userName(): string {
-    return this._user?.name || '';
   }
 
   get userEmail(): string {
@@ -51,14 +47,14 @@ export class UserService {
     return this._onlineUsers.some(u => u.email === user.email);
   }
 
-  getUser(email: string): User | null {
+  /*getUser(email: string): User | null {
     const foundUser = this._onlineUsers.find(u => u.email === email);
     return foundUser || (email === this.userEmail ? {
       email: this.userEmail,
       name: this.userName,
       profilePicture: this.userPicture,
     } : null);
-  }
+  }*/
 
   isUserConnected(): Observable<boolean> {
     console.log('isUserConnected' + this.userEmail);
@@ -74,7 +70,7 @@ export class UserService {
       if (!user) return;
       console.log('User:', user);
       if (user.email)
-      this.socketService.setUser(user.email, user.name, user.picture , this.loading);
+      this.socketService.setUser(user.email, user.given_name, user.family_name, user.picture , this.loading);
     });
 
     return this.loading;

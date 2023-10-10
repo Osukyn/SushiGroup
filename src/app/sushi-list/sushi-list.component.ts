@@ -118,4 +118,5 @@ export class SushiListComponent implements OnInit {
     return rem * parseFloat(getComputedStyle(document.documentElement).fontSize);
   }
 
+  protected readonly Math = Math;
 }

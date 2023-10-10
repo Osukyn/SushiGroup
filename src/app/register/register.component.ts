@@ -43,12 +43,14 @@ export class RegisterComponent implements OnDestroy{
       profilePicture: [''],
       email: ['', [Validators.required, Validators.email]],
       phone: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(10)]],
-      name: ['', Validators.required],
+      firstName: ['', Validators.required],
+      lastName: ['', Validators.required],
       deliveriesInfos: this.fb.array([])
     });
 
     console.log(this.userService.user);
-    this.registrationForm.controls['name'].setValue(this.userService.userName);
+    this.registrationForm.controls['firstName'].setValue(this.userService.user?.firstName);
+    this.registrationForm.controls['lastName'].setValue(this.userService.user?.lastName);
     this.registrationForm.controls['email'].setValue(this.userService.userEmail);
     this.registrationForm.controls['profilePicture'].setValue(this.userService.userPicture);
     this.orderService.getRestaurantList().subscribe(restaurants => {

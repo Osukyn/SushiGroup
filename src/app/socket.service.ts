@@ -4,6 +4,7 @@ import {io} from "socket.io-client";
 import {Observable, Subject} from "rxjs";
 import {environment} from "../environments/environment";
 import {Group} from "./model/group.model";
+import {User} from "./model/user.model";
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +14,8 @@ export class SocketService {
   public orderUpdates = new Subject<any>();
   groupsUpdate = new Subject<any[]>();
   groupCreated = new EventEmitter<Group>();
+  groupDeleted = new EventEmitter<void>();
+  groupKick = new EventEmitter<string>();
 
   constructor() {
     this.socket = io(environment.baseUrl + environment.socketPort);
@@ -20,9 +23,9 @@ export class SocketService {
     this.setGroupsUpdates();
   }
 
-  public setUser(email: string, name: string | undefined, picture: string | undefined, event: EventEmitter<any> | undefined) {
+  public setUser(email: string, firstName: string | undefined, lastName: string | undefined, picture: string | undefined, event: EventEmitter<any> | undefined) {
     console.log('Setting user:', email);
-    this.socket.emit('setUser', { email, name, picture });
+    this.socket.emit('setUser', { email, firstName, lastName, picture });
     this.socket.once('userSet', (data: any) => this.setData(event));
   }
 
@@ -58,10 +61,9 @@ export class SocketService {
   }
 
   public setGroupUpdates(groupId: any) {
-    this.socket.on(`groupUpdate/${groupId}`, (data: any) => {
-      console.log('Order updated by user:', data);
-      this.orderUpdates.next(data);
-    });
+    this.socket.on(`groupUpdate/${groupId}`, (data: any) => this.orderUpdates.next(data));
+    this.socket.once(`groupDeletion/${groupId}`, (data: any) => this.groupDeleted.emit());
+    this.socket.on(`groupKick/${groupId}`, (data: any) => this.groupKick.emit(data));
   }
 
   public unsubscribeGroupUpdates(groupId: any) {
@@ -85,5 +87,13 @@ export class SocketService {
 
   public getSocket(): any {
     return this.socket;
+  }
+
+  public order(email: string) {
+    this.socket.emit('order', { email });
+  }
+
+  kickUser(user: User) {
+    this.socket.emit('kickUser', user);
   }
 }
