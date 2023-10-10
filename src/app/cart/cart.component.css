@@ -62,6 +62,11 @@
     margin-top: 1rem;
 }
 
+.total-details {
+    font-weight: normal !important;
+    font-size: 1rem !important;
+}
+
 .product-details {
     display: flex;
     justify-content: space-between;
