@@ -36,7 +36,10 @@ export class OrderService {
     private http: HttpClient
   ) {
     // Écoute des mises à jour des commandes depuis les autres utilisateurs
-    this.socketService.orderUpdates.subscribe(data => this.updateOrders(data));
+    this.socketService.orderUpdates.subscribe(data => {
+      this.updateOrders(data);
+      this.group = data;
+    });
     this.socketService.groupCreated.subscribe(group => this.setGroup(group));
   }
 
