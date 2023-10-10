@@ -143,8 +143,8 @@ export class GroupChoiceComponent implements OnInit, OnDestroy {
   joinGroup(group: Group): void {
     this.userService.isUserInGroup(this.userService.userEmail).subscribe(response => {
       if (!response) {
-        this.socketService.joinGroup(group.id);
         this.orderService.setGroup(group);
+        this.socketService.joinGroup(group.id);
         this.router.navigate(['/order']);
       } else {
         this.dialogs

@@ -138,6 +138,8 @@ export const initializeSocket = (server: any) => {
           groups[groupIndex].addUser(onlineUser.fullUser);
           socket.broadcast.emit('groupsUpdate', groups.map(g => g.toJSON()));
           socket.emit('groupsUpdate', groups.map(g => g.toJSON()));
+          socket.broadcast.emit(`groupUpdate/${groupId}`, groups[groupIndex].toJSON());
+          socket.emit(`groupUpdate/${groupId}`, groups[groupIndex].toJSON());
         }
       }
     });
