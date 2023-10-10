@@ -27,12 +27,8 @@ export class UserService {
     });
   }
 
-  get user(): any {
+  get user(): User | undefined {
     return this._user;
-  }
-
-  get userName(): string {
-    return this._user?.name || '';
   }
 
   get userEmail(): string {
@@ -74,7 +70,7 @@ export class UserService {
       if (!user) return;
       console.log('User:', user);
       if (user.email)
-      this.socketService.setUser(user.email, user.name, user.picture , this.loading);
+      this.socketService.setUser(user.email, user.given_name, user.family_name, user.picture , this.loading);
     });
 
     return this.loading;

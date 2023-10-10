@@ -283,4 +283,10 @@ export class OrderService {
   kickUser(user: User) {
     this.socketService.kickUser(user);
   }
+
+  public order(): void {
+    if (this.group) {
+      this.socketService.order(this.userService.userEmail);
+    }
+  }
 }

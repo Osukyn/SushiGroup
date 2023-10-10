@@ -130,15 +130,20 @@ export class CartComponent implements OnInit, OnDestroy {
             });
     }
 
-    order(): void {
+    orderClick(): void {
         if (this.getUnconfirmedUsers().length === 0) {
-
+            //this.orderService.order();
+            this.order();
+            this.alerts.open('Votre commande a été envoyée.', {status: 'success', hasCloseButton: false, hasIcon: false}).subscribe();
         } else {
             this.open = true;
         }
     }
 
     get openConfirmDialog(): boolean {
+         if (this.open && this.getUnconfirmedUsers().length === 0) {
+             this.open = false;
+         }
         return this.open && this.getUnconfirmedUsers().length > 0;
     }
 
@@ -147,7 +152,6 @@ export class CartComponent implements OnInit, OnDestroy {
     }
 
     confirmDialog(observer: any): void {
-        this.open = false;
         observer.complete();
     }
 
@@ -158,7 +162,7 @@ export class CartComponent implements OnInit, OnDestroy {
     kickUser(user: User) {
         const data: TuiPromptData = {
             content:
-                `Êtes-vous sûr de vouloir exclure ${user.name} du groupe ?`,
+                `Êtes-vous sûr de vouloir exclure ${user.firstName} ${user.lastName} du groupe ?`,
             yes: 'Oui',
             no: 'Non',
         };
@@ -171,7 +175,7 @@ export class CartComponent implements OnInit, OnDestroy {
             }).subscribe((ans) => {
                 if (ans) {
                     this.orderService.kickUser(user);
-                    this.alerts.open(`${user.name} a été exclu(e) du groupe.`, {status: 'success', hasCloseButton: false, hasIcon: false}).subscribe();
+                    this.alerts.open(`${user.firstName} ${user.lastName} a été exclu(e) du groupe.`, {status: 'success', hasCloseButton: false, hasIcon: false}).subscribe();
                 }
             });
     }
@@ -179,5 +183,10 @@ export class CartComponent implements OnInit, OnDestroy {
     getUnconfirmedUsers() {
         const ordersNotConfirmed = this.orderService.getOrders().filter(order => order.status === OrderStatus.EN_COURS && order.email !== this.userService.userEmail);
         return this.orderService.getOnlineUsers().filter(user => ordersNotConfirmed.find(order => order.email === user.email));
+    }
+
+
+    order() {
+        this.orderService.order();
     }
 }
