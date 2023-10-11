@@ -10,6 +10,7 @@ import {HttpClient} from "@angular/common/http";
 import {environment} from "../environments/environment";
 import {Group} from "./model/group.model";
 import {User} from "./model/user.model";
+import {Router} from "@angular/router";
 
 @Injectable({
   providedIn: 'root'
@@ -33,12 +34,16 @@ export class OrderService {
     private infosService: InfosService,
     private socketService: SocketService,
     private userService: UserService,
-    private http: HttpClient
+    private http: HttpClient,
+    private router: Router
   ) {
     // Écoute des mises à jour des commandes depuis les autres utilisateurs
     this.socketService.orderUpdates.subscribe(data => {
       this.updateOrders(data);
       this.group = data;
+      if (this.group?.status === OrderStatus.SENT) {
+        this.router.navigate(['/orderPlaced']);
+      }
     });
     this.socketService.groupCreated.subscribe(group => this.setGroup(group));
   }

@@ -42,4 +42,5 @@ export class Order {
 export enum OrderStatus {
   EN_COURS = 'En cours',
   CONFIRMEE = 'Confirmée',
+  SENT = 'Envoyée',
 }

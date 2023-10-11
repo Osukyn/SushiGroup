@@ -58,6 +58,7 @@ import { LoaderComponent } from './loader/loader.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { RegisterComponent } from './register/register.component';
 import { GroupChoiceComponent } from './group-choice/group-choice.component';
+import { GroupOrderPassedComponent } from './group-order-passed/group-order-passed.component';
 
 @NgModule({
   declarations: [
@@ -71,6 +72,7 @@ import { GroupChoiceComponent } from './group-choice/group-choice.component';
     LoaderComponent,
     RegisterComponent,
     GroupChoiceComponent,
+    GroupOrderPassedComponent,
   ],
     imports: [
         BrowserModule,
