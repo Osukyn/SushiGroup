@@ -63,13 +63,17 @@ export class DataResolver implements Resolve<Observable<any>> {
                 if (group) {
                   this.orderService.setGroup(group);
                   this.orderService.getRemise().subscribe(remise => {});
-                  switch (state.url) {
-                    case '/':
-                    case '/group':
-                      this.router.navigate(['/order']);
-                      break;
-                    default:
-                      break;
+                  if (group.status === OrderStatus.SENT && state.url !== '/orderPlaced') {
+                    this.router.navigate(['/orderPlaced']);
+                  } else {
+                    switch (state.url) {
+                      case '/':
+                      case '/group':
+                        this.router.navigate(['/order']);
+                        break;
+                      default:
+                        break;
+                    }
                   }
                 } else {
                   switch (state.url) {

@@ -7,6 +7,7 @@ import {UserService} from "../user.service";
 import {User} from "../model/user.model";
 import {TuiAlertService, TuiDialogService} from "@taiga-ui/core";
 import {TUI_PROMPT, TuiPromptData} from "@taiga-ui/kit";
+import {Router} from "@angular/router";
 
 @Component({
     selector: 'app-cart',
@@ -27,7 +28,7 @@ export class CartComponent implements OnInit, OnDestroy {
         public userService: UserService,
         @Inject(TuiDialogService) private readonly dialogs: TuiDialogService,
         @Inject(TuiAlertService) private readonly alerts: TuiAlertService,
-        private ref: ChangeDetectorRef,
+        private router: Router
     ) {
     }
 
@@ -188,5 +189,6 @@ export class CartComponent implements OnInit, OnDestroy {
 
     order() {
         this.orderService.order();
+        this.router.navigate(['/orderPlaced']);
     }
 }
