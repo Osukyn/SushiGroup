@@ -11,6 +11,7 @@ import {RecentComponent} from "./recent/recent.component";
 import {RegisterComponent} from "./register/register.component";
 import {GroupChoiceComponent} from "./group-choice/group-choice.component";
 import {DataResolver} from "./data.resolver";
+import {GroupOrderPassedComponent} from "./group-order-passed/group-order-passed.component";
 
 const routes: Routes = [
   { path: '', component: HelloComponent, canActivate: [AuthGuard], resolve: {data: DataResolver} },
@@ -22,6 +23,7 @@ const routes: Routes = [
   { path: 'logout', component: HelloComponent, canActivate: [AuthGuard], resolve: {data: DataResolver} },
   { path: 'profile', component: ProfileComponent, canActivate: [AuthGuard], resolve: {data: DataResolver} },
   { path: 'order', component: SushiListComponent, canActivate: [AuthGuard], resolve: {data: DataResolver} },
+  { path: 'orderPlaced', component: GroupOrderPassedComponent, canActivate: [AuthGuard], resolve: {data: DataResolver}},
   { path: '**', redirectTo: '' },
 ];
 

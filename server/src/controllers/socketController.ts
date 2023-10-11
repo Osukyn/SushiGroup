@@ -1,6 +1,6 @@
 import {Server} from 'socket.io';
 import {OnlineUser, User} from '../models/User';
-import {GroupOrder, Order, OrderStatus} from '../models/Order';
+import {Group, GroupOrder, Order, OrderStatus} from '../models/Order';
 import mongoose from "mongoose";
 import axios from "axios";
 import FormData from "form-data";
@@ -227,6 +227,18 @@ export const initializeSocket = (server: any) => {
           axios.post('https://83.easysushi.fr/Commander.aspx', form).then((response) => {
             console.log(response);
             console.log(response.data);
+            if (response.data.resultat === 1) {
+              group.setStatus(OrderStatus.SENT);
+              for (const user of getOnlineUsersOfGroup(group)) {
+                io.sockets.sockets.get(user.socketId)?.emit(`groupUpdate/${group.id}`, group.toJSON());
+              }
+              // persist group here
+              const persistGroup = new Group(group);
+              persistGroup.save().then((savedGroup) => {
+                console.log(savedGroup);
+                console.log('persisted');
+              }).catch((reason) => console.log(reason));
+            }
           }).catch((error) => {
             console.log(error);
           });

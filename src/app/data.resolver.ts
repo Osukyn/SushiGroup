@@ -4,6 +4,7 @@ import {UserService} from "./user.service";
 import {OrderService} from "./order.service";
 import {Injectable} from "@angular/core";
 import {LoaderService} from "./loader.service";
+import {OrderStatus} from "./model/order.model";
 
 @Injectable({
   providedIn: 'root'
@@ -21,13 +22,17 @@ export class DataResolver implements Resolve<Observable<any>> {
       if (this.loaderService.dataResolved) {
         const group = this.orderService.getGroup();
         if (group) {
-          switch (state.url) {
-            case '/':
-            case '/group':
-              this.router.navigate(['/order']);
-              break;
-            default:
-              break;
+          if (group.status === OrderStatus.SENT && state.url !== '/orderPlaced') {
+            this.router.navigate(['/orderPlaced']);
+          } else {
+            switch (state.url) {
+              case '/':
+              case '/group':
+                this.router.navigate(['/order']);
+                break;
+              default:
+                break;
+            }
           }
         } else {
           switch (state.url) {
