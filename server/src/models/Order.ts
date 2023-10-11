@@ -1,6 +1,7 @@
-import {OnlineUser, User} from "./User";
+import {FullUser, OnlineUser, User} from "./User";
 import {Delivery} from "./Delivery";
 import crypto from 'crypto';
+import mongoose, {Schema} from "mongoose";
 export class Order {
   items: OrderItem[];
   email: string;
@@ -145,3 +146,97 @@ export class GroupOrder {
     };
   }
 }
+
+export interface OrderInterface {
+  items: OrderItemInterface[];
+  email: string;
+  date: Date;
+  status: OrderStatus;
+}
+
+export interface OrderItemInterface {
+  code: string;
+  qte: number;
+}
+
+const orderSchema = new mongoose.Schema<OrderInterface>({
+  items: [{ code: String, qte: Number }],
+  email: String,
+  date: Date,
+  status: String,
+});
+
+export interface IGroup {
+  id: string;
+  host: any;  // Une référence à l'ID du modèle FullUser
+  users: any[];  // Une liste de références aux ID des modèles FullUser
+  orders: any[];  // Utilisez "any" si vous n'avez pas encore de type pour Order, sinon remplacez-le par le type approprié
+  status: string;
+  deliveryInfos: any;
+  creneau: any;
+  date: string;
+}
+
+const groupSchema = new mongoose.Schema({
+  id: String,
+  host: {
+    firstName: String,
+    lastName: String,
+    email: String,
+    phone: String,
+    profilePicture: String,
+    deliveriesInfos: [{
+      name: String,
+      restaurant: Number,
+      sousLieux: String,
+      address: String,
+      address2: String
+    }]
+  },  // Référence à FullUser
+  users: [{
+    firstName: String,
+    lastName: String,
+    email: String,
+    phone: String,
+    profilePicture: String,
+    deliveriesInfos: [{
+      name: String,
+      restaurant: Number,
+      sousLieux: String,
+      address: String,
+      address2: String
+    }]
+  }],  // Liste de références à FullUser
+  orders: [{
+    items: [{
+      code: String,
+      qte: Number
+    }],
+    email: String,
+    date: Date,
+    status: String,
+  }],
+  status: String,
+  deliveryInfos: {
+    name: String,
+    restaurant: Number,
+    sousLieux: String,
+    address: String,
+    address2: String
+  },
+  creneau: {
+    nbCommandes: Number,
+    bloque: Boolean,
+    possible: Boolean,
+    id: Number,
+    idMagasin: Number,
+    libelle: String,
+    nbCommandesMax: Number,
+    service: String,
+    exceptionnel: Boolean,
+    cc: Boolean
+  },
+  date: String,
+});
+
+export const Group = mongoose.model('Group', groupSchema);
