@@ -143,9 +143,7 @@ export class GroupChoiceComponent implements OnInit, OnDestroy {
   joinGroup(group: Group): void {
     this.userService.isUserInGroup(this.userService.userEmail).subscribe(response => {
       if (!response) {
-        this.orderService.setGroup(group);
-        this.socketService.joinGroup(group.id);
-        this.router.navigate(['/order']);
+        this.joinLogic(group);
       } else {
         this.dialogs
           .open<boolean>(TUI_PROMPT, {
@@ -157,15 +155,18 @@ export class GroupChoiceComponent implements OnInit, OnDestroy {
               no: 'Non',
             },
           }).pipe(switchMap(value => {
-          if (value) {
-            this.socketService.joinGroup(group.id);
-            this.orderService.setGroup(group);
-            this.router.navigate(['/order']);
-          }
+          if (value) this.joinLogic(group);
           return EMPTY;
         })).subscribe();
       }
     });
+  }
+
+  joinLogic(group: Group) {
+    this.orderService.setGroup(group);
+    this.socketService.joinGroup(group.id);
+    this.router.navigate(['/order']);
+    this.orderService.getRemise().subscribe(remise => {});
   }
 
   isUserInGroup(group: Group): boolean {
