@@ -9,6 +9,7 @@ import * as http from "http";
 import mongoose from "mongoose";
 import {initializeSocket} from "./controllers/socketController";
 import * as https from "https";
+import orderRoutes from "./routes/orderRoutes";
 
 const app = express();
 const PORT = 3000;
@@ -31,6 +32,7 @@ app.use(cors({ origin: '*' }));
 
 app.use('/api', userRoutes);
 app.use('/api', menuRoutes);
+app.use('/api', orderRoutes);
 
 initializeSocket(server);
 
