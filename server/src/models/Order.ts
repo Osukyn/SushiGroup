@@ -54,14 +54,16 @@ export class GroupOrder {
   deliveryInfos: any;
   creneau: any;
   date: string;
+  remise: number;
 
-  constructor(host: User, deliveryInfos: Delivery, creneau: any, date: string) {
+  constructor(host: User, deliveryInfos: Delivery, creneau: any, date: string, remise: number) {
     this.id = crypto.randomUUID();
     this.host = host;
     this.users = [];
     this.deliveryInfos = deliveryInfos;
     this.creneau = creneau;
     this.date = date;
+    this.remise = remise;
     this.orders.set(host.email, new Order(host.email)); // Initialize host order
   }
 
@@ -143,6 +145,7 @@ export class GroupOrder {
       deliveryInfos: this.deliveryInfos,
       creneau: this.creneau,
       date: this.date,
+      remise: this.remise,
     };
   }
 
@@ -156,38 +159,9 @@ export class GroupOrder {
       deliveryInfos: this.deliveryInfos,
       creneau: this.creneau,
       date: this.date,
+      remise: this.remise,
     };
   }
-}
-
-export interface OrderInterface {
-  items: OrderItemInterface[];
-  email: string;
-  date: Date;
-  status: OrderStatus;
-}
-
-export interface OrderItemInterface {
-  code: string;
-  qte: number;
-}
-
-const orderSchema = new mongoose.Schema<OrderInterface>({
-  items: [{ code: String, qte: Number }],
-  email: String,
-  date: Date,
-  status: String,
-});
-
-export interface IGroup {
-  id: string;
-  host: any;  // Une référence à l'ID du modèle FullUser
-  users: any[];  // Une liste de références aux ID des modèles FullUser
-  orders: any[];  // Utilisez "any" si vous n'avez pas encore de type pour Order, sinon remplacez-le par le type approprié
-  status: string;
-  deliveryInfos: any;
-  creneau: any;
-  date: string;
 }
 
 const groupSchema = new mongoose.Schema({
@@ -250,6 +224,7 @@ const groupSchema = new mongoose.Schema({
     cc: Boolean
   },
   date: String,
+  remise: Number,
 });
 
 export const Group = mongoose.model('Group', groupSchema);
