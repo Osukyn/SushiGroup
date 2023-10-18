@@ -118,7 +118,7 @@ export class AppComponent implements OnInit {
       }
       this.update.versionUpdates.subscribe(event => {
         console.log('Event type', event.type);
-        this.update.activateUpdate().then(() => document.location.reload());
+        if (event.type === "VERSION_DETECTED") this.update.activateUpdate().then(() => document.location.reload());
       });
     }
 }
