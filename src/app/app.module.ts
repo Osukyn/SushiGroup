@@ -59,6 +59,7 @@ import { ServiceWorkerModule } from '@angular/service-worker';
 import { RegisterComponent } from './register/register.component';
 import { GroupChoiceComponent } from './group-choice/group-choice.component';
 import { GroupOrderPassedComponent } from './group-order-passed/group-order-passed.component';
+import { OrderHistoryComponent } from './order-history/order-history.component';
 
 @NgModule({
   declarations: [
@@ -73,6 +74,7 @@ import { GroupOrderPassedComponent } from './group-order-passed/group-order-pass
     RegisterComponent,
     GroupChoiceComponent,
     GroupOrderPassedComponent,
+    OrderHistoryComponent,
   ],
     imports: [
         BrowserModule,

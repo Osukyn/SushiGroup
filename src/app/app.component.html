@@ -6,7 +6,7 @@
       title="Back"
       tuiAppBarBack
       tuiSlot="left"
-      *ngIf="router.url === '/profile' || router.url === '/group'"
+      *ngIf="router.url === '/profile' || router.url === '/group' || router.url === '/order-history'"
       (click)="back()"
     ></a>
     <a
@@ -29,7 +29,7 @@
     </a>
   </tui-app-bar>
   <router-outlet (activate)="onRouterOutletActivate($event)"></router-outlet>
-  <div style="position: fixed; bottom: 0; left: 0; right: 0; padding-bottom: 0;" *ngIf="router.url !== '/profile' && router.url !== '/group' && router.url !== '/' && router.url !== '/orderPlaced'">
+  <div style="position: fixed; bottom: 0; left: 0; right: 0; padding-bottom: 0;" *ngIf="router.url === '/cart' || router.url === '/recent' || router.url === '/order'">
     <nav
       tuiTabBar
       *ngIf="auth.isAuthenticated$ | async"

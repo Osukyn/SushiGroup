@@ -296,4 +296,8 @@ export class OrderService {
       this.socketService.order(this.userService.userEmail);
     }
   }
+
+  public getOrdersHistory(): Observable<any> {
+    return this.http.get(this.apiURL + '/api/getOrdersHistory?email=' + this.userService.userEmail);
+  }
 }
