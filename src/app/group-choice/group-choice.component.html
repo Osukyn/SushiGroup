@@ -76,6 +76,76 @@
   </div>
 </div>
 
+<div class="overlay" *ngIf="manualDialog"></div>
+
+<div *ngIf="manualDialog" class="dialog">
+  <h1>Créer un groupe</h1>
+  <form
+    [formGroup]="form"
+    (ngSubmit)="createGroup()"
+    class="group-creation-form"
+  >
+    <p class="description-text">Sélectionnez l'adresse pour votre groupe.</p>
+
+    <div class="select-container">
+      <tui-select [formControl]="restoForm" [stringify]="stringify">
+        <span class="select-placeholder">Sélectionner une adresse</span>
+        <tui-data-list *tuiDataList>
+          <button
+            *ngFor="let resto of userService.user?.deliveriesInfos"
+            tuiOption
+            class="option"
+            [value]="resto"
+          >
+            {{ resto.name }}
+          </button>
+        </tui-data-list>
+      </tui-select>
+      <tui-error [error]="restoError"></tui-error>
+    </div>
+
+    <div>
+      <tui-input-date
+        formControlName="date"
+        [min]="min"
+      >
+        Choisis une date
+        <input
+          tuiTextfield
+        />
+      </tui-input-date>
+      <tui-error [error]="dateError"></tui-error>
+    </div>
+
+    <div>
+      <tui-select [formControl]="creneauxForm" [stringify]="stringifyCreneaux">
+        <span class="select-placeholder">Sélectionner un créneau</span>
+        <tui-data-list *tuiDataList>
+          <button
+            *ngFor="let creneau of creneaux"
+            tuiOption
+            class="option"
+            [value]="creneau"
+            [disabled]="!creneau.possible"
+          >
+            {{ creneau.libelle }}
+          </button>
+        </tui-data-list>
+      </tui-select>
+      <tui-error [error]="creneauxError"></tui-error>
+    </div>
+
+    <tui-error [error]="formError"></tui-error>
+
+
+    <div class="submit-button-section">
+      <button tuiButton type="button" appearance="flat" (click)="closeManualDialog()">Annuler</button>
+      <button tuiButton type="submit">Créer</button>
+    </div>
+
+  </form>
+</div>
+
 <ng-template
   let-observer
   [tuiDialogOptions]="{label: 'Créer un groupe', dismissible: true}"
