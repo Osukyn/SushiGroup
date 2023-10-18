@@ -25,10 +25,8 @@
 
   <div style="flex-grow: 1; height: 100%"></div>
 
-  <div style="display: flex; justify-content: center; align-items: center; flex-direction: column; gap: 0.5rem">
-    <button tuiButton>Test button</button>
-    <button tuiButton>Test button</button>
-    <a style="width: 100%;" tuiButton routerLink="/order-history">Historique</a>
-    <a style="width: 100%;" tuiButton routerLink="/group">Commencer</a>
+  <div style="display: flex; justify-content: center; align-items: center; flex-direction: column; gap: 1rem">
+    <a style="width: 100%;" tuiButton routerLink="/order-history" [icon]="'tuiIconClockLarge'" appearance="secondary">Historique</a>
+    <a style="width: 100%;" tuiButton routerLink="/group" [icon]="'tuiIconPlayLarge'">Commencer</a>
   </div>
 </div>
