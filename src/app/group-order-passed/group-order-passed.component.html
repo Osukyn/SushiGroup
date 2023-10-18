@@ -1,37 +1,41 @@
-<h2>Commande passée avec succès</h2>
+<div style="position: fixed; bottom: 6rem; top: 3rem; left: 0; right: 0; padding: 1.5rem; overflow: auto">
 
-<tui-accordion class="container" [closeOthers]="false">
-  <tui-accordion-item *ngIf="orderService.getLocalOrder().items.length > 0" [open]="true" [disabled]="true">
-    <div class="order-header">
-      <div class="order-pic">
-        <tui-avatar class="order-icon" [round]="true"
-                    [src]="getLocalUser()?.profilePicture ? getLocalUser()?.profilePicture || '' : (getLocalUser()?.firstName + ' ' + getLocalUser()?.lastName) || '' | tuiInitials"
-                    [style.background]="(getLocalUser()?.firstName + ' ' + getLocalUser()?.lastName) || '' | tuiAutoColor"></tui-avatar>
+  <tui-accordion class="container" [closeOthers]="false">
+    <tui-accordion-item *ngIf="orderService.getLocalOrder().items.length > 0" [open]="true" [disabled]="true">
+      <div class="order-header">
+        <div class="order-pic">
+          <tui-avatar class="order-icon" [round]="true"
+                      [src]="getLocalUser()?.profilePicture ? getLocalUser()?.profilePicture || '' : (getLocalUser()?.firstName + ' ' + getLocalUser()?.lastName) || '' | tuiInitials"
+                      [style.background]="(getLocalUser()?.firstName + ' ' + getLocalUser()?.lastName) || '' | tuiAutoColor"></tui-avatar>
+        </div>
+        <div class="order-user">
+          <div class="order-title">{{ getLocalUser()?.firstName }}</div>
+          <div class="order-status"
+               [ngClass]="{'order-status-pending': orderService.getLocalOrder().status === OrderStatus.EN_COURS, 'order-status-confirmed': orderService.getLocalOrder().status === OrderStatus.CONFIRMEE}">{{ orderService.getLocalOrder().status }}</div>
+        </div>
+        <tui-money class="order-amount" [value]="getTotalForOrderWithRemise(orderService.getLocalOrder())"
+                   [currency]="'EUR'"></tui-money>
       </div>
-      <div class="order-user">
-        <div class="order-title">{{ getLocalUser()?.firstName }}</div>
-        <div class="order-status"
-             [ngClass]="{'order-status-pending': orderService.getLocalOrder().status === OrderStatus.EN_COURS, 'order-status-confirmed': orderService.getLocalOrder().status === OrderStatus.CONFIRMEE}">{{ orderService.getLocalOrder().status }}</div>
-      </div>
-      <tui-money class="order-amount" [value]="getTotalForOrderWithRemise(orderService.getLocalOrder())"
-                 [currency]="'EUR'"></tui-money>
-    </div>
 
-    <ng-template tuiAccordionItemContent>
-      <div *ngFor="let product of orderService.getLocalOrder().items">
-        <div class="product-info">
-          <div class="product-details">
-            <span class="product-quantity"><strong>{{ product.qte }}</strong></span>
-            <tui-line-clamp class="product-name" [content]="getName(product.code)"
-                            [linesLimit]="1"></tui-line-clamp>
-            <tui-money class="product-price" [value]="getTotalForProductWithRemise(product)"
-                       [currency]="'EUR'"></tui-money>
+      <ng-template tuiAccordionItemContent>
+        <div *ngFor="let product of orderService.getLocalOrder().items">
+          <div class="product-info">
+            <div class="product-details">
+              <span class="product-quantity"><strong>{{ product.qte }}</strong></span>
+              <tui-line-clamp class="product-name" [content]="getName(product.code)"
+                              [linesLimit]="1"></tui-line-clamp>
+              <tui-money class="product-price" [value]="getTotalForProductWithRemise(product)"
+                         [currency]="'EUR'"></tui-money>
+            </div>
           </div>
         </div>
-      </div>
-    </ng-template>
+      </ng-template>
 
-  </tui-accordion-item>
-</tui-accordion>
+    </tui-accordion-item>
+  </tui-accordion>
 
-<button tuiButton (click)="exit()">Terminer</button>
+</div>
+
+<button tuiButton (click)="exit()" style="position: fixed; bottom: 2rem; left: 0; right: 0; margin: 1.5rem 1.5rem 0">
+  Terminer
+</button>
