@@ -47,10 +47,12 @@ export const exitGroup = (email: string) => {
     }
   }
 }
+
 function formatDateToISO(str: string) {
   const [day, month, year] = str.split("/");
   return `${year}-${month}-${day}`;
 }
+
 export const initializeSocket = (server: any) => {
   io = new Server(server, {
     cors: {
@@ -224,6 +226,29 @@ export const initializeSocket = (server: any) => {
 
           console.log(form);
 
+          /*const response = {
+            data: {
+              resultat: 1,
+              message: "Votre commande est enregistrée, un email de confirmation vous a été envoyé sur <span style='color:#E30613'>7luca.nicolas@gmail.com</span>.",
+              facebook: "fba('track', 'Purchase', {currency: 'EUR', value: 39.693);"
+            }
+          };
+
+          console.log(response);
+          console.log(response.data);
+          if (response.data.resultat === 1) {
+            group.setStatus(OrderStatus.SENT);
+            for (const user of getOnlineUsersOfGroup(group)) {
+              io.sockets.sockets.get(user.socketId)?.emit(`groupUpdate/${group.id}`, group.toJSON());
+            }
+            console.log(group.toPersistentObject());
+            const persistGroup = new Group(group.toPersistentObject());
+            persistGroup.save().then((savedGroup) => {
+              console.log(savedGroup);
+              console.log('persisted');
+            }).catch((reason) => console.log(reason));
+          }*/
+
           axios.post('https://83.easysushi.fr/Commander.aspx', form).then((response) => {
             console.log(response);
             console.log(response.data);
@@ -232,8 +257,8 @@ export const initializeSocket = (server: any) => {
               for (const user of getOnlineUsersOfGroup(group)) {
                 io.sockets.sockets.get(user.socketId)?.emit(`groupUpdate/${group.id}`, group.toJSON());
               }
-              // persist group here
-              const persistGroup = new Group(group);
+              console.log(group.toPersistentObject());
+              const persistGroup = new Group(group.toPersistentObject());
               persistGroup.save().then((savedGroup) => {
                 console.log(savedGroup);
                 console.log('persisted');
