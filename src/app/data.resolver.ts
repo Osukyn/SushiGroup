@@ -27,6 +27,7 @@ export class DataResolver implements Resolve<Observable<any>> {
           } else {
             switch (state.url) {
               case '/':
+              case '/order-history':
               case '/group':
                 this.router.navigate(['/order']);
                 break;
@@ -68,6 +69,7 @@ export class DataResolver implements Resolve<Observable<any>> {
                   } else {
                     switch (state.url) {
                       case '/':
+                      case '/order-history':
                       case '/group':
                         this.router.navigate(['/order']);
                         break;

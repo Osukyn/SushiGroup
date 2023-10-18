@@ -1,0 +1,25 @@
+<div class="container">
+  <tui-accordion>
+    <tui-accordion-item *ngFor="let order of getOrders() | async">
+      <div class="order-header">
+        <div class="order-date">{{ order.order.date | date:'dd/MM/y, hh:mm' }}</div>
+        <tui-money class="order-amount" [value]="getTotalForOrderWithRemise(order)"
+                   [currency]="'EUR'"></tui-money>
+      </div>
+
+      <ng-template tuiAccordionItemContent>
+        <div *ngFor="let product of order.order.items">
+          <div class="product-info">
+            <div class="product-details">
+              <span class="product-quantity"><strong>{{ product.qte }}</strong></span>
+              <tui-line-clamp class="product-name" [content]="getName(product.code)"
+                              [linesLimit]="1"></tui-line-clamp>
+              <tui-money class="product-price" [value]="getTotalForProductWithRemise(product, order)"
+                         [currency]="'EUR'"></tui-money>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+    </tui-accordion-item>
+  </tui-accordion>
+</div>
