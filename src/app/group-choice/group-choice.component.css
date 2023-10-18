@@ -131,3 +131,28 @@
   width: 100%;
   text-align: left;
 }
+
+.dialog {
+  border-top-left-radius: 1rem;
+  border-top-right-radius: 1rem;
+  display: flex;
+  flex-direction: column;
+  z-index: 1000000;
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 1.5rem 2rem 2rem;
+  background-color: var(--tui-base-01);
+}
+
+.overlay {
+  position: fixed; /* Pour s'assurer que l'overlay reste en place lors du défilement */
+  top: 0;
+  left: 0;
+  width: 100%; /* Couvre la totalité de la largeur de la fenêtre */
+  height: 100%; /* Couvre la totalité de la hauteur de la fenêtre */
+  background-color: rgba(0, 0, 0, 0.7); /* Couleur noire avec 70% d'opacité */
+  z-index: 1000;
+}
+
