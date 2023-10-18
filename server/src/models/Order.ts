@@ -145,6 +145,19 @@ export class GroupOrder {
       date: this.date,
     };
   }
+
+  toPersistentObject(): any {
+    return {
+      id: this.id,
+      host: this.host,
+      users: this.users,
+      orders: [...this.orders.values()],
+      status: this.status,
+      deliveryInfos: this.deliveryInfos,
+      creneau: this.creneau,
+      date: this.date,
+    };
+  }
 }
 
 export interface OrderInterface {
