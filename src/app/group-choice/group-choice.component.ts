@@ -38,6 +38,7 @@ export class GroupChoiceComponent implements OnInit, OnDestroy {
   restaurantsList: any[] = [];
   creneauxResult: any;
   creneaux: any[] = [];
+  manualDialog = false;
 
 
   constructor(public socketService: SocketService, private orderService: OrderService, public userService: UserService, @Inject(TuiDialogService) private readonly dialogs: TuiDialogService, private router: Router) {
@@ -89,10 +90,11 @@ export class GroupChoiceComponent implements OnInit, OnDestroy {
   stringifyCreneaux: TuiStringHandler<any> = creneaux => creneaux.libelle;
 
   showDialog(): void {
-    this.open = true;
+    //this.open = true;
+    this.manualDialog = true;
   }
 
-  createGroup(observer: any): void {
+  createGroup(observer?: any): void {
     console.log('Test');
     if (this.form.valid) {
       this.userService.isUserInGroup(this.userService.userEmail).subscribe(response => {
@@ -101,7 +103,7 @@ export class GroupChoiceComponent implements OnInit, OnDestroy {
           let date = '';
           if (this.form.controls.date.value) date = this.form.controls.date.value.toLocalNativeDate().toLocaleDateString() || '';
           this.orderService.createGroup(this.restoForm.value, this.creneauxForm.value, date).subscribe(group => setTimeout(() => {
-            observer.complete();
+            // observer.complete();
             this.router.navigate(['/order']);
           }));
         } else {
@@ -121,7 +123,7 @@ export class GroupChoiceComponent implements OnInit, OnDestroy {
               let date = '';
               if (this.form.controls.date.value) date = this.form.controls.date.value.toLocalNativeDate().toLocaleDateString() || '';
               this.orderService.createGroup(this.restoForm.value, this.creneauxForm.value, date).subscribe(group => setTimeout(() => {
-                observer.complete();
+                //observer.complete();
                 this.router.navigate(['/order']);
               }));
             }
@@ -138,6 +140,10 @@ export class GroupChoiceComponent implements OnInit, OnDestroy {
 
   closeDialog(observer: any): void {
     observer.complete();
+  }
+
+  closeManualDialog(): void {
+    this.manualDialog = false;
   }
 
   joinGroup(group: Group): void {
