@@ -72,6 +72,7 @@ export class AppComponent implements OnInit {
             }
         });
         this.updateClient();
+      if (this.update.isEnabled) setInterval(() => this.update.checkForUpdate().then(() => console.log('Checking for update')), 1000 * 5);
     }
 
     ngOnInit() {
