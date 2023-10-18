@@ -12,6 +12,7 @@ import {RegisterComponent} from "./register/register.component";
 import {GroupChoiceComponent} from "./group-choice/group-choice.component";
 import {DataResolver} from "./data.resolver";
 import {GroupOrderPassedComponent} from "./group-order-passed/group-order-passed.component";
+import {OrderHistoryComponent} from "./order-history/order-history.component";
 
 const routes: Routes = [
   { path: '', component: HelloComponent, canActivate: [AuthGuard], resolve: {data: DataResolver} },
@@ -24,6 +25,7 @@ const routes: Routes = [
   { path: 'profile', component: ProfileComponent, canActivate: [AuthGuard], resolve: {data: DataResolver} },
   { path: 'order', component: SushiListComponent, canActivate: [AuthGuard], resolve: {data: DataResolver} },
   { path: 'orderPlaced', component: GroupOrderPassedComponent, canActivate: [AuthGuard], resolve: {data: DataResolver}},
+  { path: 'order-history', component: OrderHistoryComponent, canActivate: [AuthGuard], resolve: {data: DataResolver}},
   { path: '**', redirectTo: '' },
 ];
 

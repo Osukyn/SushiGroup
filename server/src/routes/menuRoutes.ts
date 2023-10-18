@@ -7,6 +7,4 @@ router.get('/menu', menuController.getMenu);
 router.get('/lieux', menuController.getLieux);
 router.get('/horaires', menuController.getHoraires);
 
-// ... Autres routes pour le menu ...
-
 export default router;
