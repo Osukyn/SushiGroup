@@ -28,15 +28,6 @@
                         </div>
                     </div>
                 </div>
-                <div class="actions">
-                    <button tuiButton (click)="resumeOrder()" size="s"
-                            *ngIf="orderService.getLocalOrder().status === OrderStatus.CONFIRMEE">Reprendre
-                    </button>
-                    <button tuiButton (click)="confirmOrder()" size="s"
-                            *ngIf="orderService.getLocalOrder().status === OrderStatus.EN_COURS">Confirmer
-                    </button>
-                    <button tuiButton appearance="secondary-destructive" (click)="onClick()" size="s">Supprimer</button>
-                </div>
             </ng-template>
 
         </tui-accordion-item>
@@ -97,6 +88,7 @@
         </div>
     </div>
     <button tuiButton *ngIf="orderService.isHost()" (click)="orderClick()">Commander</button>
+    <button tuiButton *ngIf="!orderService.isHost()" (click)="confirmOrder()">Confirmer</button>
 </div>
 
 <ng-template
