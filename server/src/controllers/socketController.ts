@@ -116,14 +116,14 @@ export const initializeSocket = (server: any) => {
         const group = groups.find(group => group.host.email === onlineUser.fullUser.email || group.users.some(u => u.email === onlineUser.fullUser.email));
         if (group === undefined) {
           console.log('Create group:', data);
-          const newGroup = new GroupOrder(onlineUser.fullUser, data.deliveriesInfos, data.creneau, data.date);
+          const newGroup = new GroupOrder(onlineUser.fullUser, data.deliveriesInfos, data.creneau, data.date, data.remise);
           groups.push(newGroup);
           socket.broadcast.emit('groupsUpdate', groups.map(g => g.toJSON()));
           socket.emit('groupsUpdate', groups.map(g => g.toJSON()));
           socket.emit('groupCreated', newGroup.toJSON());
         } else {
           exitGroup(onlineUser.fullUser.email);
-          const newGroup = new GroupOrder(onlineUser.fullUser, data.deliveriesInfos, data.creneau, data.date);
+          const newGroup = new GroupOrder(onlineUser.fullUser, data.deliveriesInfos, data.creneau, data.date, data.remise);
           groups.push(newGroup);
           socket.broadcast.emit('groupsUpdate', groups.map(g => g.toJSON()));
           socket.emit('groupsUpdate', groups.map(g => g.toJSON()));

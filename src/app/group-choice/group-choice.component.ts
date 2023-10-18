@@ -39,7 +39,7 @@ export class GroupChoiceComponent implements OnInit, OnDestroy {
   creneauxResult: any;
   creneaux: any[] = [];
   manualDialog = false;
-
+  waiting = false;
 
   constructor(public socketService: SocketService, private orderService: OrderService, public userService: UserService, @Inject(TuiDialogService) private readonly dialogs: TuiDialogService, private router: Router) {
   }
@@ -102,8 +102,10 @@ export class GroupChoiceComponent implements OnInit, OnDestroy {
         if (!response) {
           let date = '';
           if (this.form.controls.date.value) date = this.form.controls.date.value.toLocalNativeDate().toLocaleDateString() || '';
+          this.waiting = true;
           this.orderService.createGroup(this.restoForm.value, this.creneauxForm.value, date).subscribe(group => setTimeout(() => {
             // observer.complete();
+            this.waiting = false;
             this.router.navigate(['/order']);
           }));
         } else {
@@ -122,8 +124,10 @@ export class GroupChoiceComponent implements OnInit, OnDestroy {
             if (value) {
               let date = '';
               if (this.form.controls.date.value) date = this.form.controls.date.value.toLocalNativeDate().toLocaleDateString() || '';
+              this.waiting = true;
               this.orderService.createGroup(this.restoForm.value, this.creneauxForm.value, date).subscribe(group => setTimeout(() => {
                 //observer.complete();
+                this.waiting = false;
                 this.router.navigate(['/order']);
               }));
             }

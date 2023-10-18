@@ -11,4 +11,5 @@ export interface Group {
   deliveryInfos: any;
   creneau: any;
   date: string;
+  remise: number;
 }

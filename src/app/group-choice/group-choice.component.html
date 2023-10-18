@@ -140,7 +140,7 @@
 
     <div class="submit-button-section">
       <button tuiButton type="button" appearance="flat" (click)="closeManualDialog()">Annuler</button>
-      <button tuiButton type="submit">Créer</button>
+      <button tuiButton type="submit" [disabled]="waiting">Créer</button>
     </div>
 
   </form>

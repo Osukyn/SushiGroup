@@ -88,7 +88,6 @@ export class OrderService {
   }
 
 
-
   public getOrder(email: string): Order {
     return this.currentOrder ?? (this.currentOrder = new Order(email));
   }
@@ -217,15 +216,18 @@ export class OrderService {
   }
 
   public createGroup(deliveriesInfos: any, creneau: any, date: string): Observable<any> {
-    const data = { deliveriesInfos, creneau, date };
     return new Observable<any>(observer => {
-      this.socketService.createGroup(data).subscribe(
-        (group: Group) => {
-          this.getRemise().subscribe(remise => {
-            observer.next(group);
-          });
+      this.getHoraires(deliveriesInfos.restaurant, date || '').subscribe(horaires => {
+        if (horaires.resultat === 'ok') {
+          this.remise = horaires.remises['#GENERALE#'];
+          const data = {deliveriesInfos, creneau, date, remise: this.remise?.pourcentage || 0};
+          this.socketService.createGroup(data).subscribe(
+            (group: Group) => {
+              observer.next(group);
+            }
+          );
         }
-      );
+      });
     });
   }
 
