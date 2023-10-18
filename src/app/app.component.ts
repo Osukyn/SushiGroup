@@ -8,6 +8,7 @@ import {Location} from "@angular/common";
 import {TuiDialogService} from "@taiga-ui/core";
 import {TUI_PROMPT, TuiPromptData} from "@taiga-ui/kit";
 import {SocketService} from "./socket.service";
+import {SwUpdate} from "@angular/service-worker";
 
 interface Item {
     text: string;
@@ -47,7 +48,7 @@ export class AppComponent implements OnInit {
 
     private dialog: any;
 
-    constructor(public auth: AuthService, private orderService: OrderService, public userService: UserService, public router: Router, public loaderService: LoaderService, public location: Location, @Inject(TuiDialogService) private readonly dialogs: TuiDialogService, private socketService: SocketService) {
+    constructor(private update: SwUpdate, public auth: AuthService, private orderService: OrderService, public userService: UserService, public router: Router, public loaderService: LoaderService, public location: Location, @Inject(TuiDialogService) private readonly dialogs: TuiDialogService, private socketService: SocketService) {
         this.socketService.groupDeleted.subscribe(() => {
             this.orderService.exitGroup();
             this.router.navigate(['/']);
@@ -70,6 +71,7 @@ export class AppComponent implements OnInit {
                     .subscribe();
             }
         });
+        this.updateClient();
     }
 
     ngOnInit() {
@@ -107,5 +109,16 @@ export class AppComponent implements OnInit {
                     this.router.navigate(['/']);
                 }
             });
+    }
+
+    updateClient() {
+      if (!this.update.isEnabled) {
+        console.log('Not enabled');
+        return;
+      }
+      this.update.versionUpdates.subscribe(event => {
+        console.log('Event type', event.type);
+        this.update.activateUpdate().then(() => document.location.reload());
+      });
     }
 }
