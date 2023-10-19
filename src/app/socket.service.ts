@@ -1,6 +1,6 @@
 import {EventEmitter, Injectable} from '@angular/core';
 import {Order} from "./model/order.model";
-import {io} from "socket.io-client";
+import {io, Socket} from "socket.io-client";
 import {Observable, Subject} from "rxjs";
 import {environment} from "../environments/environment";
 import {Group} from "./model/group.model";
@@ -10,16 +10,32 @@ import {User} from "./model/user.model";
   providedIn: 'root'
 })
 export class SocketService {
-  private readonly socket: any;
+  private readonly socket: Socket;
   public orderUpdates = new Subject<any>();
   groupsUpdate = new Subject<any[]>();
   groupCreated = new EventEmitter<Group>();
   groupDeleted = new EventEmitter<void>();
   groupKick = new EventEmitter<string>();
+  needsUpdate = false;
 
   constructor() {
     this.socket = io(environment.baseUrl + environment.socketPort);
-
+    this.socket.on('connect', () => {
+      console.log("recovered?", this.socket.recovered);
+      if (this.needsUpdate) {
+        this.needsUpdate = false;
+        window.location.reload();
+      }
+    });
+    this.socket.on('disconnect', (reason: string) => {
+      console.warn('Disconnected:', reason);
+      this.needsUpdate = true;
+    });
+    this.socket.on('connect_error', (error: any) => {
+      console.log('Connection Error');
+      this.needsUpdate = true;
+    });
+    
     this.setGroupsUpdates();
   }
 
