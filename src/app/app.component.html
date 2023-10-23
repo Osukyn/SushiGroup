@@ -25,7 +25,7 @@
       icon="tuiIconUserLarge"
       title="User"
       tuiIconButton
-      *ngIf="router.url !== '/register'">
+      *ngIf="router.url !== '/register' && router.url !== '/profile'">
     </a>
   </tui-app-bar>
   <router-outlet (activate)="onRouterOutletActivate($event)"></router-outlet>
