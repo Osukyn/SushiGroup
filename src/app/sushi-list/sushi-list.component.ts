@@ -7,6 +7,7 @@ import {animate, style, transition, trigger} from "@angular/animations";
 import {Router} from "@angular/router";
 import {LoaderService} from "../loader.service";
 import {take} from "rxjs";
+import {tuiLoaderOptionsProvider} from "@taiga-ui/core";
 
 @Component({
   selector: 'app-sushi-list',
@@ -19,7 +20,7 @@ import {take} from "rxjs";
         animate(100, style({opacity: 1}))
       ])
     ])
-  ]
+  ],
 })
 export class SushiListComponent implements OnInit {
   public indexes: number[] = [];
@@ -34,6 +35,7 @@ export class SushiListComponent implements OnInit {
   private displayedItemsLimit: number = 1;
   private sushiListTemp: Categorie[] = [];
   creneauxResult: any;
+  loader = true;
 
   constructor(public orderService: OrderService) {
   }
@@ -77,20 +79,22 @@ export class SushiListComponent implements OnInit {
     }
 
     this.orderService.getMenuObservable().subscribe(data => {
-      this.indexes = Array(data.length).fill(0);
-      this.sushiList = data.slice(0, this.displayedItemsLimit);
-      this.activeCategory = this.sushiList[0].code;
+      if (data.length > 0) {
+        this.loader = false;
+        this.indexes = Array(data.length).fill(0);
+        this.sushiList = data.slice(0, this.displayedItemsLimit);
+        this.activeCategory = this.sushiList[0].code;
 
-      const fullList = data;
-      const interval = setInterval(() => {
-        if (this.sushiList.length < fullList.length) {
-          this.sushiList = [...this.sushiList, ...fullList.slice(this.sushiList.length, this.sushiList.length + this.displayedItemsLimit)];
-        } else {
-          clearInterval(interval);
-        }
-      }, 50); // Ajoutez 'displayedItemsLimit' éléments chaque seconde
+        const fullList = data;
+        const interval = setInterval(() => {
+          if (this.sushiList.length < fullList.length) {
+            this.sushiList = [...this.sushiList, ...fullList.slice(this.sushiList.length, this.sushiList.length + this.displayedItemsLimit)];
+          } else {
+            clearInterval(interval);
+          }
+        }, 50); // Ajoutez 'displayedItemsLimit' éléments chaque seconde
+      }
     });
-
   }
 
   scrollToCategory(code: string, $event: MouseEvent) {
