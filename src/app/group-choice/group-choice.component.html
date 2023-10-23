@@ -1,6 +1,12 @@
 <div class="group-list-container">
   <h2 class="choose-text">Choisir un groupe:</h2>
-  <div class="group-list">
+
+  <div *ngIf="groups.length === 0" class="no-group-container">
+    <tui-svg src="tuiIconXCircleLarge" class="no-group-icon"></tui-svg>
+    <div class="no-group-text">Aucun groupe n'est disponible pour le moment.</div>
+  </div>
+
+  <div class="group-list" *ngIf="groups.length > 0">
 
     <tui-accordion>
 
