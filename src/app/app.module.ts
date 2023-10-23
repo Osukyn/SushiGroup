@@ -51,7 +51,6 @@ import {TuiAppBarModule, TuiMobileCalendarDialogModule, TuiTabBarModule} from "@
 import {AuthModule} from "@auth0/auth0-angular";
 import { LoginComponent } from './login/login.component';
 import { ProfileComponent } from './profile/profile.component';
-import { RecentComponent } from './recent/recent.component';
 import { CartComponent } from './cart/cart.component';
 import {TuiBlockStatusModule} from "@taiga-ui/layout";
 import { LoaderComponent } from './loader/loader.component';
@@ -68,7 +67,6 @@ import { OrderHistoryComponent } from './order-history/order-history.component';
     SushiListComponent,
     LoginComponent,
     ProfileComponent,
-    RecentComponent,
     CartComponent,
     LoaderComponent,
     RegisterComponent,

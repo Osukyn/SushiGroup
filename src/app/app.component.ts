@@ -33,12 +33,6 @@ export class AppComponent implements OnInit {
             link: '/order',
         },
         {
-            text: 'Récent',
-            icon: 'tuiIconClockLarge',
-            badge: 0,
-            link: '/recent',
-        },
-        {
             text: 'Panier',
             icon: 'tuiIconShoppingCartLarge',
             badge: 0,
