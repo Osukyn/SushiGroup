@@ -110,7 +110,7 @@ export class AppComponent implements OnInit {
     let counter = 5;
     this.dialogs
       .open(
-        'Une nouvelle version est disponible. Installation en cours... ' + counter,
+        `Une nouvelle version est disponible. Installation en cours... <br>Rafraichissement de la page dans ${counter} secondes.`,
         {label: 'Mise à jour disponible', size: 's', closeable: false, dismissible: false},
       )
       .subscribe();
