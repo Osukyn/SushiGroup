@@ -9,6 +9,8 @@ export const getOrdersHistory = async (req: Request, res: Response) => {
         return {
           order: group.orders.find((order: any) => order.email === email),
           remise: group.remise,
+          isHost: group.host.email === email,
+          orderNumber: group.orders.length,
         };
       });
       console.log('userOrders:', userOrders);
