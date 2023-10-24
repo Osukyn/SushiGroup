@@ -14,7 +14,7 @@ export class OrderHistoryComponent {
   orders: any[] = [];
   _orders$ = new BehaviorSubject<any[]>([]); // Créer un BehaviorSubject pour les commandes
 
-  constructor(private orderService: OrderService) {
+  constructor(public orderService: OrderService) {
     this.orderService.getOrdersHistory().subscribe(orders => {
       console.log('orders history', orders);
       this.orders = orders;
@@ -55,6 +55,18 @@ export class OrderHistoryComponent {
   }
 
   public getTotalForOrderWithRemise(order: any): number {
-    return order.remise ? Math.round((this.getTotalForOrder(order.order) * (1 - order.remise / 100)) * 100) / 100 : this.getTotalForOrder(order.order);
+    return (order.remise ? Math.round((this.getTotalForOrder(order.order) * (1 - order.remise / 100)) * 100) / 100 : this.getTotalForOrder(order.order)) + this.getDeliveryCostByOrder(order);
+  }
+
+  public getDeliveryCost(order: any): number {
+    return Number.parseFloat((0.99 / order.orderNumber).toFixed(2));
+  }
+
+  public getDeliveryHostCost(order: any): number {
+    return (0.99 - this.getDeliveryCost(order) * order.orderNumber) + this.getDeliveryCost(order);
+  }
+
+  public getDeliveryCostByOrder(order: any): number {
+    return order.isHost ? this.getDeliveryHostCost(order) : this.getDeliveryCost(order);
   }
 }

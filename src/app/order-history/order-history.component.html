@@ -19,6 +19,15 @@
             </div>
           </div>
         </div>
+        <div class="product-info">
+          <div class="product-details">
+            <tui-line-clamp class="product-name" [content]="'Frais de livraison'"
+                            [linesLimit]="1"></tui-line-clamp>
+            <tui-money class="product-price"
+                       [value]="getDeliveryCostByOrder(order)"
+                       [currency]="'EUR'"></tui-money>
+          </div>
+        </div>
       </ng-template>
     </tui-accordion-item>
   </tui-accordion>
