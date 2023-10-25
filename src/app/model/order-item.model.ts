@@ -6,3 +6,8 @@ export class OrderItem {
     this.qte = qte;
   }
 }
+
+export interface RuptureItem {
+  produit: string;
+  idMagasin: number;
+}
