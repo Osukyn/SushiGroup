@@ -39,10 +39,12 @@ export class OrderService {
   ) {
     // Écoute des mises à jour des commandes depuis les autres utilisateurs
     this.socketService.orderUpdates.subscribe(data => {
-      this.updateOrders(data);
-      this.group = data;
-      if (this.group?.status === OrderStatus.SENT) {
-        this.router.navigate(['/orderPlaced']);
+      if (this.group?.status !== OrderStatus.SENT) {
+        this.updateOrders(data);
+        this.group = data;
+        if (this.group?.status === OrderStatus.SENT) {
+          this.router.navigate(['/orderPlaced']);
+        }
       }
     });
     this.socketService.groupCreated.subscribe(group => this.setGroup(group));
