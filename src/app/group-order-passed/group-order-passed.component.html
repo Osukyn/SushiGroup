@@ -1,7 +1,7 @@
 <div style="position: fixed; bottom: 6rem; top: 3rem; left: 0; right: 0; padding: 1.5rem; overflow: auto">
 
   <tui-accordion class="container" [closeOthers]="false">
-    <tui-accordion-item *ngIf="orderService.getLocalOrder().items.length > 0" [open]="true" [disabled]="true">
+    <tui-accordion-item *ngIf="order.items.length > 0" [open]="true" [disabled]="true">
       <div class="order-header">
         <div class="order-pic">
           <tui-avatar class="order-icon" [round]="true"
@@ -10,15 +10,13 @@
         </div>
         <div class="order-user">
           <div class="order-title">{{ getLocalUser()?.firstName }}</div>
-          <div class="order-status"
-               [ngClass]="{'order-status-pending': orderService.getLocalOrder().status === OrderStatus.EN_COURS, 'order-status-confirmed': orderService.getLocalOrder().status === OrderStatus.CONFIRMEE}">{{ orderService.getLocalOrder().status }}</div>
         </div>
-        <tui-money class="order-amount" [value]="getTotalForOrderWithRemise(orderService.getLocalOrder())"
+        <tui-money class="order-amount" [value]="getTotalForOrderWithRemise(order)"
                    [currency]="'EUR'"></tui-money>
       </div>
 
       <ng-template tuiAccordionItemContent>
-        <div *ngFor="let product of orderService.getLocalOrder().items">
+        <div *ngFor="let product of order.items">
           <div class="product-info">
             <div class="product-details">
               <span class="product-quantity"><strong>{{ product.qte }}</strong></span>
@@ -27,6 +25,15 @@
               <tui-money class="product-price" [value]="getTotalForProductWithRemise(product)"
                          [currency]="'EUR'"></tui-money>
             </div>
+          </div>
+        </div>
+        <div class="product-info">
+          <div class="product-details">
+            <tui-line-clamp class="product-name" [content]="'Frais de livraison'"
+                            [linesLimit]="1"></tui-line-clamp>
+            <tui-money class="product-price"
+                       [value]="isHost() ? getDeliveryHostCost() : getDeliveryCost()"
+                       [currency]="'EUR'"></tui-money>
           </div>
         </div>
       </ng-template>

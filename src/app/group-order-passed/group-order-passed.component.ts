@@ -5,6 +5,7 @@ import {OrderItem} from "../model/order-item.model";
 import {User} from "../model/user.model";
 import {UserService} from "../user.service";
 import {Router} from "@angular/router";
+import {Group} from "../model/group.model";
 
 @Component({
   selector: 'app-group-order-passed',
@@ -13,9 +14,16 @@ import {Router} from "@angular/router";
 })
 export class GroupOrderPassedComponent {
   title = 'Récapitulatif';
-  orders: any;
+  group: Group | undefined;
+  order: Order;
   constructor(public orderService: OrderService, public userService: UserService, private router: Router) {
-    this.orders = orderService.getOrders();
+    this.group = structuredClone(orderService.getGroup());
+    const order = this.findOrder(userService.userEmail);
+    if (order) {
+      this.order = order;
+    } else {
+      this.order = new Order(userService.userEmail);
+    }
   }
 
   protected readonly OrderStatus = OrderStatus;
@@ -37,33 +45,53 @@ export class GroupOrderPassedComponent {
     else return 0;
   }
 
-  public getTotalCost(): number {
-    return this.orders.reduce((acc: number, order: Order) => acc + this.getTotalForOrder(order), 0) + this.getTotalForOrder(this.orderService.getLocalOrder());
-  }
-
   public getTotalForProductWithRemise(order: OrderItem): number {
     return this.orderService.remise ? Math.round((this.getTotalForProduct(order) * (1 - this.orderService.remise.pourcentage / 100)) * 100) / 100 : this.getTotalForProduct(order);
   }
 
   public getTotalForOrderWithRemise(order: Order): number {
-    return this.orderService.remise ? Math.round((this.getTotalForOrder(order) * (1 - this.orderService.remise.pourcentage / 100)) * 100) / 100 : this.getTotalForOrder(order);
+    return (this.orderService.remise ? Math.round((this.getTotalForOrder(order) * (1 - this.orderService.remise.pourcentage / 100)) * 100) / 100 : this.getTotalForOrder(order)) + this.getDeliveryCostByOrder(order);
   }
 
-  public getTotalCostWithRemise(): number {
-    return this.orderService.remise ? Math.round((this.getTotalCost() * (1 - this.orderService.remise.pourcentage / 100)) * 100) / 100 : this.getTotalCost();
-  }
 
   public getName(code: string): string {
     const foundProduct = this.findProductByCode(code);
     return foundProduct ? foundProduct.nom.replace('<small>', '').replace('</small>', '') : '';
   }
 
-  getLocalUser(): User | null {
-    return this.orderService.getUser(this.userService.userEmail);
+  getLocalUser(): User | undefined {
+    return this.userService.user;
   }
 
   exit() {
     this.orderService.exitGroup();
     this.router.navigate(['/']);
+  }
+
+  findOrder(email: string): Order | undefined {
+    if (this.group) return Object.values(this.group.orders).find((order: Order) => order.email === email);
+    return undefined;
+  }
+
+  getOrders(): Order[] {
+    if (this.group) return Object.values(this.group.orders);
+    return [];
+  }
+
+  public getDeliveryCost(): number {
+    return Number.parseFloat((0.99 / this.getOrders().length).toFixed(2));
+  }
+
+  public getDeliveryHostCost(): number {
+    return (0.99 - this.getDeliveryCost() * this.getOrders().length) + this.getDeliveryCost();
+  }
+
+  isHost(): boolean {
+    if (!this.group) return false;
+    return this.group?.host.email === this.userService.userEmail;
+  }
+
+  public getDeliveryCostByOrder(order: any): number {
+    return this.group?.host.email === this.userService.userEmail ? this.getDeliveryHostCost() : this.getDeliveryCost();
   }
 }

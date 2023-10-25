@@ -9,6 +9,7 @@ import {TuiDialogService} from "@taiga-ui/core";
 import {TUI_PROMPT, TuiPromptData} from "@taiga-ui/kit";
 import {SocketService} from "./socket.service";
 import {SwUpdate} from "@angular/service-worker";
+import {OrderStatus} from "./model/order.model";
 
 interface Item {
   text: string;
@@ -44,14 +45,18 @@ export class AppComponent implements OnInit {
 
   constructor(private update: SwUpdate, public auth: AuthService, private orderService: OrderService, public userService: UserService, public router: Router, public loaderService: LoaderService, public location: Location, @Inject(TuiDialogService) private readonly dialogs: TuiDialogService, private socketService: SocketService) {
     this.socketService.groupDeleted.subscribe(() => {
+      const status = orderService.getGroup()?.status;
       this.orderService.exitGroup();
-      this.router.navigate(['/']);
-      this.dialogs
-        .open(
-          'Le groupe a été dissous. Vous avez été déconnecté et redirigé vers la page d\'accueil.',
-          {label: 'Groupe dissous', size: 's'},
-        )
-        .subscribe();
+      console.log('Group status', status);
+      if (status !== OrderStatus.SENT) {
+        this.router.navigate(['/']);
+        this.dialogs
+          .open(
+            'Le groupe a été dissous. Vous avez été déconnecté et redirigé vers la page d\'accueil.',
+            {label: 'Groupe dissous', size: 's'},
+          )
+          .subscribe();
+      }
     });
     this.socketService.groupKick.subscribe((email) => {
       if (email === this.userService.userEmail) {
