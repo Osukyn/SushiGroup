@@ -35,7 +35,7 @@ export class SocketService {
       console.log('Connection Error');
       this.needsUpdate = true;
     });
-    
+
     this.setGroupsUpdates();
   }
 
