@@ -88,3 +88,8 @@
 .loader {
   height: 100vh;
 }
+
+.gris {
+  filter: grayscale(100%);
+}
+

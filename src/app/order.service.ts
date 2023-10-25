@@ -1,5 +1,5 @@
 import {EventEmitter, Injectable} from '@angular/core';
-import {OrderItem} from "./model/order-item.model";
+import {OrderItem, RuptureItem} from "./model/order-item.model";
 import {Categorie} from "./model/categorie.model";
 import {InfosService} from "./infos.service";
 import {BehaviorSubject, catchError, EMPTY, Observable, take, throwError} from "rxjs";
@@ -29,6 +29,7 @@ export class OrderService {
   private group: Group | undefined;
   private groupSetEvent: EventEmitter<boolean> = new EventEmitter<boolean>();
   public remise: any;
+  public ruptures: RuptureItem[] = [];
 
   constructor(
     private infosService: InfosService,
@@ -238,6 +239,7 @@ export class OrderService {
       this.getHoraires(this.getGroup()?.deliveryInfos.restaurant, this.getGroup()?.date || '').subscribe(horaires => {
         if (horaires.resultat === 'ok') {
           this.remise = horaires.remises['#GENERALE#'];
+          this.ruptures = horaires.ruptures;
           console.log(this.remise);
           observer.next(this.remise);
         }
@@ -301,6 +303,10 @@ export class OrderService {
     if (this.group) {
       this.socketService.order(this.userService.userEmail);
     }
+  }
+
+  getRuptures(): RuptureItem[] {
+    return this.ruptures;
   }
 
   public getOrdersHistory(): Observable<any> {
