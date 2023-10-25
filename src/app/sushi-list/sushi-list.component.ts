@@ -122,5 +122,9 @@ export class SushiListComponent implements OnInit {
     return rem * parseFloat(getComputedStyle(document.documentElement).fontSize);
   }
 
+  isProductAvailable(code: string): boolean {
+    return this.orderService.getRuptures().some(rupture => rupture.produit === code);
+  }
+
   protected readonly Math = Math;
 }
