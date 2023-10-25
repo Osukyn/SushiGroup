@@ -20,7 +20,7 @@
     <div *ngFor="let item of sushiList" [id]="item.code" class="cat-container">
       <div style="height: 1rem"></div>
       <h2 style="padding-left: 1rem" [class.tui-skeleton]="skeletonVisible">{{ item.code }}</h2>
-      <div class="product" *ngFor="let sushi of item.produits" [class.tui-skeleton]="skeletonVisible">
+      <div class="product" *ngFor="let sushi of item.produits" [class.tui-skeleton]="skeletonVisible" [class.gris]="isProductAvailable(sushi.code)">
         <img [src]="'./assets/images/food/' + sushi.img" [alt]="sushi.nom">
         <div class="product-details">
           <h3 [innerHTML]="sushi.nom" style="margin: 0"></h3>
@@ -42,7 +42,7 @@
             type="button"
             size="m"
             style="width: 3rem"
-            *ngIf="orderService.getQte(sushi.code) === 0"
+            *ngIf="orderService.getQte(sushi.code) === 0 && !isProductAvailable(sushi.code)"
             (click)="orderService.add(sushi.code)"
           >
             +
