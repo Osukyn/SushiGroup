@@ -6,6 +6,7 @@ import {User} from "../model/user.model";
 import {UserService} from "../user.service";
 import {Router} from "@angular/router";
 import {Group} from "../model/group.model";
+import {FormControl} from "@angular/forms";
 
 @Component({
   selector: 'app-group-order-passed',
@@ -16,6 +17,8 @@ export class GroupOrderPassedComponent {
   title = 'Récapitulatif';
   group: Group | undefined;
   order: Order;
+  observationsForm: FormControl | null = null;
+
   constructor(public orderService: OrderService, public userService: UserService, private router: Router) {
     this.group = structuredClone(orderService.getGroup());
     const order = this.findOrder(userService.userEmail);
@@ -93,5 +96,10 @@ export class GroupOrderPassedComponent {
 
   public getDeliveryCostByOrder(order: any): number {
     return this.group?.host.email === this.userService.userEmail ? this.getDeliveryHostCost() : this.getDeliveryCost();
+  }
+
+  getObservationsByOrder(): FormControl {
+    if (!this.observationsForm) this.observationsForm = new FormControl(this.order.observations);
+    return this.observationsForm;
   }
 }

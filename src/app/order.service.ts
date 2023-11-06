@@ -104,6 +104,7 @@ export class OrderService {
     } else {
       this.currentOrder?.addOrderItem(new OrderItem(code, 1));
     }
+    if (this.currentOrder?.status === OrderStatus.CONFIRMEE) this.currentOrder.status = OrderStatus.EN_COURS;
     this.socketService.sendOrderUpdate(this.currentOrder!);  // Assuming sendOrderUpdate accepts potentially null values
   }
 
@@ -123,6 +124,7 @@ export class OrderService {
         this.currentOrder.items.splice(index, 1);
       }
     }
+    if (this.currentOrder?.status === OrderStatus.CONFIRMEE) this.currentOrder.status = OrderStatus.EN_COURS;
     // Notifier les autres utilisateurs de la mise à jour de la commande
     if (this.currentOrder) this.socketService.sendOrderUpdate(this.currentOrder);
   }
@@ -175,13 +177,6 @@ export class OrderService {
   public confirmOrder(): void {
     if (this.currentOrder) {
       this.currentOrder.status = OrderStatus.CONFIRMEE;
-      this.socketService.sendOrderUpdate(this.currentOrder);
-    }
-  }
-
-  public resumeOrder(): void {
-    if (this.currentOrder) {
-      this.currentOrder.status = OrderStatus.EN_COURS;
       this.socketService.sendOrderUpdate(this.currentOrder);
     }
   }
@@ -311,5 +306,11 @@ export class OrderService {
 
   public getOrdersHistory(): Observable<any> {
     return this.http.get(this.apiURL + '/api/getOrdersHistory?email=' + this.userService.userEmail);
+  }
+
+  setObservation(observation: string): void {
+    if (this.currentOrder) {
+      this.currentOrder.observations = observation;
+    }
   }
 }

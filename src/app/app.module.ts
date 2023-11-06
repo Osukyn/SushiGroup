@@ -40,7 +40,7 @@ import {
     TuiLineClampModule,
     TuiMarkerIconModule,
     TuiPaginationModule, TuiProgressModule,
-    TuiSelectModule
+    TuiSelectModule, TuiTextareaModule
 } from "@taiga-ui/kit";
 import {HttpClientModule} from "@angular/common/http";
 import {TuiMoneyModule} from "@taiga-ui/addon-commerce";
@@ -132,6 +132,7 @@ import { OrderHistoryComponent } from './order-history/order-history.component';
         TuiMobileCalendarDialogModule,
         TuiErrorModule,
         TuiProgressModule,
+        TuiTextareaModule,
     ],
   providers: [
     {
