@@ -37,6 +37,12 @@
                        [currency]="'EUR'"></tui-money>
           </div>
         </div>
+        <tui-textarea
+          [expandable]="true"
+          [formControl]="observationsForm"
+        >
+          Remarques et observations
+        </tui-textarea>
       </ng-template>
 
     </tui-accordion-item>
@@ -77,6 +83,10 @@
                        [currency]="'EUR'"></tui-money>
           </div>
         </div>
+        <tui-textarea
+          [expandable]="true"
+          [formControl]="getObservationsByOrder(order)"
+          [readOnly]="true">Remarques et observations</tui-textarea>
       </ng-template>
     </tui-accordion-item>
   </tui-accordion>
@@ -98,16 +108,10 @@
 
 <div class="order-container" *ngIf="getTotalCost() > 0">
   <div class="total">
-    Total:
     <tui-money class="total-amount" [value]="getTotalCostWithRemise() + 0.99 || 0" [currency]="'EUR'"></tui-money>
-    <div class="total-details">
-      (
-      <tui-money class="total-amount" [value]="0.99" [currency]="'EUR'"></tui-money>
-      de livraison)
-    </div>
   </div>
-  <button tuiButton *ngIf="orderService.isHost()" (click)="orderClick()">Commander</button>
-  <button tuiButton *ngIf="!orderService.isHost()" (click)="confirmOrder()">Confirmer</button>
+  <button tuiButton appearance="outline" *ngIf="orderService.isHost() && orderService.getCurrentOrder()?.status === OrderStatus.CONFIRMEE && observationsForm.value === orderService.getCurrentOrder()?.observations" (click)="orderClick()" icon="tuiIconShoppingCartLarge">Commander</button>
+  <button tuiButton *ngIf="!orderService.isHost() || (orderService.isHost() && (observationsForm.value !== orderService.getCurrentOrder()?.observations || orderService.getCurrentOrder()?.status !== OrderStatus.CONFIRMEE))" (click)="confirmOrder()" [disabled]="orderService.getCurrentOrder()?.status === OrderStatus.CONFIRMEE && observationsForm.value === orderService.getCurrentOrder()?.observations">Confirmer</button>
 </div>
 
 <ng-template

@@ -3,6 +3,7 @@ import {OrderService} from "../order.service";
 import {OrderItem} from "../model/order-item.model";
 import {Order, OrderStatus} from "../model/order.model";
 import {BehaviorSubject, map, Observable} from "rxjs";
+import {FormControl} from "@angular/forms";
 
 @Component({
   selector: 'app-order-history',
@@ -13,6 +14,7 @@ export class OrderHistoryComponent {
   title = 'Historique';
   orders: any[] = [];
   _orders$ = new BehaviorSubject<any[]>([]); // Créer un BehaviorSubject pour les commandes
+  observationsForms: Map<string, FormControl> = new Map<string, FormControl>();
 
   constructor(public orderService: OrderService) {
     this.orderService.getOrdersHistory().subscribe(orders => {
@@ -68,5 +70,15 @@ export class OrderHistoryComponent {
 
   public getDeliveryCostByOrder(order: any): number {
     return order.isHost ? this.getDeliveryHostCost(order) : this.getDeliveryCost(order);
+  }
+
+  getObservationsByOrder(order: any): FormControl {
+    if (this.observationsForms.has(order.order._id)) {
+      if (order.order.observations) this.observationsForms.get(order.order._id)?.setValue(order.order.observations);
+      return this.observationsForms.get(order.order._id) as FormControl;
+    } else {
+      this.observationsForms.set(order.order._id, new FormControl(order.order.observations ?? ''));
+      return this.observationsForms.get(order.order._id) as FormControl;
+    }
   }
 }

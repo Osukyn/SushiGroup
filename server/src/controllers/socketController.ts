@@ -166,6 +166,7 @@ export const initializeSocket = (server: any) => {
           const order = new Order(data.email);
           order.items = data.items;
           order.status = data.status;
+          order.observations = data.observations;
           console.log('Order updated:', order);
           group.setUserOrder(onlineUser.fullUser.email, order);
           socket.broadcast.emit(`groupUpdate/${group.id}`, group.toJSON());
@@ -203,6 +204,7 @@ export const initializeSocket = (server: any) => {
           group.setStatus(OrderStatus.SENT);
           console.log(JSON.stringify(group.getItems()));
           console.log(group);
+          const observations = Array.from(group.orders.values()).map(order => order.observations).filter(observation => observation.length > 0).join('\n');
           const form = new FormData();
           form.append('idLieuLivraison', group.deliveryInfos.restaurant);
           if (group.deliveryInfos.sousLieux !== '') form.append('sousville', group.deliveryInfos.sousLieux);
@@ -216,7 +218,7 @@ export const initializeSocket = (server: any) => {
           form.append('email', group.host.email);
           form.append('adresse1', group.deliveryInfos.address);
           form.append('complementAdresse', group.deliveryInfos.address2);
-          form.append('observations', '');
+          form.append('observations', observations);
           form.append('heureLivraisonTexte', group.creneau.libelle);
           form.append('dateLivraisonTexte', group.date);
           form.append('contenuJson', JSON.stringify(group.getItems()));
@@ -234,8 +236,6 @@ export const initializeSocket = (server: any) => {
             }
           };
 
-          console.log(response);
-          console.log(response.data);
           if (response.data.resultat === 1) {
             group.setStatus(OrderStatus.SENT);
             for (const user of getOnlineUsersOfGroup(group)) {
@@ -286,7 +286,7 @@ export const initializeSocket = (server: any) => {
                 onlineUsers.splice(index, 1);
               }
             }
-          }, 5 * 60 * 1000 / 20);  // 5 minutes
+          }, 10 * 60 * 1000);  // 5 minutes
         } else {
           onlineUsers.splice(index, 1);
         }
