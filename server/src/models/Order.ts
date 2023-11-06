@@ -7,6 +7,7 @@ export class Order {
   email: string;
   date: Date;
   status: OrderStatus = OrderStatus.EN_COURS;
+  observations: string = '';
 
   constructor(email: string) {
     this.items = [];
@@ -202,6 +203,7 @@ const groupSchema = new mongoose.Schema({
     email: String,
     date: Date,
     status: String,
+    observations: String,
   }],
   status: String,
   deliveryInfos: {

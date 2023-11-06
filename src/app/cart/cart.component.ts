@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, Inject, OnDestroy, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Inject, OnDestroy, OnInit} from '@angular/core';
 import {OrderService} from '../order.service';
 import {OrderItem} from "../model/order-item.model";
 import {Order, OrderStatus} from "../model/order.model";
@@ -8,11 +8,13 @@ import {User} from "../model/user.model";
 import {TuiAlertService, TuiDialogService} from "@taiga-ui/core";
 import {TUI_PROMPT, TuiPromptData} from "@taiga-ui/kit";
 import {Router} from "@angular/router";
+import {FormControl} from "@angular/forms";
 
 @Component({
   selector: 'app-cart',
   templateUrl: './cart.component.html',
   styleUrls: ['./cart.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CartComponent implements OnInit, OnDestroy {
   orders: Order[] = [];
@@ -22,6 +24,8 @@ export class CartComponent implements OnInit, OnDestroy {
   private dialog: any;
   title = 'Panier';
   open = false;
+  observationsForm: FormControl = new FormControl('');
+  observationsForms: Map<string, FormControl> = new Map<string, FormControl>();
 
   constructor(
     public orderService: OrderService,
@@ -38,8 +42,10 @@ export class CartComponent implements OnInit, OnDestroy {
       this.orders = orders.filter(order => order.items.length !== 0 && order.email !== this.userService.userEmail);
       this._orders$.next(this.orders);
       this.loaded = true;
-      console.log(this.getDeliveryCost(), 'delivery cost by user | ', this.getDeliveryCost() * (this.getAllOrders().length - 1) + this.getDeliveryHostCost(), 'total delivery cost', this.getDeliveryHostCost(), 'delivery cost by host');
     });
+    if (this.orderService.getCurrentOrder()) {
+      this.observationsForm.setValue(this.orderService.getCurrentOrder()?.observations);
+    }
   }
 
   getOrders(): Observable<Order[]> {
@@ -106,11 +112,8 @@ export class CartComponent implements OnInit, OnDestroy {
   protected readonly OrderStatus = OrderStatus;
 
   confirmOrder() {
+    this.orderService.setObservation(this.observationsForm.value);
     this.orderService.confirmOrder();
-  }
-
-  resumeOrder() {
-    this.orderService.resumeOrder();
   }
 
   cancelOrder() {
@@ -214,5 +217,15 @@ export class CartComponent implements OnInit, OnDestroy {
   order() {
     this.orderService.order();
     this.router.navigate(['/orderPlaced']);
+  }
+
+  getObservationsByOrder(order: Order): FormControl {
+    if (this.observationsForms.has(order.email)) {
+      this.observationsForms.get(order.email)?.setValue(order.observations ?? '');
+      return this.observationsForms.get(order.email) as FormControl;
+    } else {
+      this.observationsForms.set(order.email, new FormControl(order.observations ?? ''));
+      return this.observationsForms.get(order.email) as FormControl;
+    }
   }
 }

@@ -28,6 +28,10 @@
                        [currency]="'EUR'"></tui-money>
           </div>
         </div>
+        <tui-textarea
+          [expandable]="true"
+          [formControl]="getObservationsByOrder(order)"
+          [readOnly]="true">Remarques et observations</tui-textarea>
       </ng-template>
     </tui-accordion-item>
   </tui-accordion>
