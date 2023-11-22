@@ -48,7 +48,7 @@ export class GroupChoiceComponent implements OnInit, OnDestroy {
     this.socketService.getGroups();
     this.orderService.getRestaurantAddress() ? this.restoForm.setValue(this.orderService.getRestaurantAddress()) : this.restoForm.setValue('');
     this.subscription = this.socketService.groupsUpdate.subscribe(groups => {
-      this.groups = groups;
+      this.groups = groups.filter(group => group.status === OrderStatus.EN_COURS);
       this._groups$.next(this.groups);
     });
     this.orderService.getRestaurantList().subscribe(restaurants => {
