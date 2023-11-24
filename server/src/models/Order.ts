@@ -65,12 +65,26 @@ export class GroupOrder {
     this.creneau = creneau;
     this.date = date;
     this.remise = remise;
-    this.orders.set(host.email, new Order(host.email)); // Initialize host order
+    let newOrder = new Order(host.email);
+    newOrder.items = [];
+    let codes = ['COMPLÉMENT-1', 'COMPLÉMENT-2', 'COMPLÉMENT-3'];
+    codes.forEach(code => {
+      let item = new OrderItem(code, 1);
+      newOrder.items.push(item);
+    });
+    this.orders.set(host.email, newOrder); // Initialize host order
   }
 
   addUser(user: User) {
     this.users.push(user);
-    this.orders.set(user.email, new Order(user.email)); // Initialize order for the new user
+    let newOrder = new Order(user.email);
+    newOrder.items = [];
+    let codes = ['COMPLÉMENT-1', 'COMPLÉMENT-2', 'COMPLÉMENT-3'];
+    codes.forEach(code => {
+      let item = new OrderItem(code, 1);
+      newOrder.items.push(item);
+    });
+    this.orders.set(user.email, newOrder); // Initialize order for the new user
   }
 
   removeUser(user: User) {
