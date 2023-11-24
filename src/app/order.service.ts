@@ -64,25 +64,33 @@ export class OrderService {
 
   private updateOrders(data: any): void {
     // L'adresse e-mail est maintenant la clé pour accéder à la commande dans 'orders'.
-    const orderEmails = Object.keys(data.orders);
 
     // Nouvelles commandes en ligne après mise à jour
     const updatedOrders: any[] = [];
 
-    for (const email of orderEmails) {
+    Object.entries(data.orders).forEach(([email, orderData]) => {
       let existingOrder = this._onlineOrders.find(order => order.email === email);
 
-      console.log('Update orders for email:', email, data.orders[email]);
+      console.log('Update orders for email:', email, orderData);
 
       if (existingOrder) {
         // Mettre à jour l'ordre existant
-        Object.assign(existingOrder, data.orders[email]);
+        Object.assign(existingOrder, orderData);
         updatedOrders.push(existingOrder);
       } else {
         // Ajouter le nouvel ordre
-        updatedOrders.push(data.orders[email]);
+        updatedOrders.push(orderData);
       }
-    }
+
+      if (email === this.userService.userEmail) {
+        // Vous pouvez choisir d'instancier un nouvel objet Order ou simplement de mettre à jour les champs.
+        if (this.currentOrder) {
+          Object.assign(this.currentOrder, orderData);
+        } else {
+          this.currentOrder = new Order(email, (orderData as any).items, (orderData as any).date, (orderData as any).status);
+        }
+      }
+    });
 
     // Attribuer la liste mise à jour à _onlineOrders
     this._onlineOrders = updatedOrders;
