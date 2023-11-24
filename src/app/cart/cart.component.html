@@ -91,7 +91,7 @@
     </tui-accordion-item>
   </tui-accordion>
 
-  <tui-block-status *ngIf="getTotalCost() === 0" [card]="true"
+  <!--<tui-block-status *ngIf="getTotalCost() === 0" [card]="true"
                     style="height: 100%; display: flex; justify-content: center; align-items: center">
     <img
       alt="not found"
@@ -103,10 +103,10 @@
     <h4>Panier vide</h4>
 
     Essayez d'ajouter des produits au panier
-  </tui-block-status>
+  </tui-block-status>-->
 </div>
 
-<div class="order-container" *ngIf="getTotalCost() > 0">
+<div class="order-container">
   <div class="total">
     <tui-money class="total-amount" [value]="getTotalCostWithRemise() + 0.99 || 0" [currency]="'EUR'"></tui-money>
   </div>
