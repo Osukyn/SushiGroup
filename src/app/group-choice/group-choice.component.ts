@@ -90,12 +90,11 @@ export class GroupChoiceComponent implements OnInit, OnDestroy {
   stringifyCreneaux: TuiStringHandler<any> = creneaux => creneaux.libelle;
 
   showDialog(): void {
-    //this.open = true;
-    this.manualDialog = true;
+    this.open = true;
+    //this.manualDialog = true;
   }
 
   createGroup(observer?: any): void {
-    console.log('Test');
     if (this.form.valid) {
       this.userService.isUserInGroup(this.userService.userEmail).subscribe(response => {
         console.log(response);
@@ -104,7 +103,7 @@ export class GroupChoiceComponent implements OnInit, OnDestroy {
           if (this.form.controls.date.value) date = this.form.controls.date.value.toLocalNativeDate().toLocaleDateString() || '';
           this.waiting = true;
           this.orderService.createGroup(this.restoForm.value, this.creneauxForm.value, date).subscribe(group => setTimeout(() => {
-            // observer.complete();
+            observer.complete();
             this.waiting = false;
             this.router.navigate(['/order']);
           }));
@@ -126,7 +125,7 @@ export class GroupChoiceComponent implements OnInit, OnDestroy {
               if (this.form.controls.date.value) date = this.form.controls.date.value.toLocalNativeDate().toLocaleDateString() || '';
               this.waiting = true;
               this.orderService.createGroup(this.restoForm.value, this.creneauxForm.value, date).subscribe(group => setTimeout(() => {
-                //observer.complete();
+                observer.complete();
                 this.waiting = false;
                 this.router.navigate(['/order']);
               }));
