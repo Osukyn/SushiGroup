@@ -1,6 +1,6 @@
 <div class="cart" *ngIf="userService.user && loaded">
   <tui-accordion class="container" [closeOthers]="false">
-    <tui-accordion-item *ngIf="orderService.getLocalOrder().items.length > 0" [open]="true" [disabled]="true">
+    <tui-accordion-item *ngIf="orderService.getLocalOrder().items.length > 0" [open]="true">
       <div class="order-header">
         <div class="order-pic">
           <tui-avatar class="order-icon" [round]="true"
@@ -20,7 +20,41 @@
         <div *ngFor="let product of orderService.getLocalOrder().items">
           <div class="product-info">
             <div class="product-details">
-              <span class="product-quantity"><strong>{{ product.qte }}</strong></span>
+              <div
+                tuiGroup
+                class="group"
+                [collapsed]="true"
+                [rounded]="true"
+                style="display: flex; flex-direction: row; justify-content: center; align-items: center; margin-right: 1rem">
+                <button
+                  tuiButton
+                  appearance="accent"
+                  type="button"
+                  size="s"
+
+                  (click)="orderService.remove(product.code)"
+                >-
+                </button>
+                <tui-input-number
+                  [tuiTextfieldSize]="'s'"
+                  [ngModel]="orderService.getQte(product.code)"
+                  [readOnly]="true">
+                  <input
+                    tuiTextfield
+                    style="text-align: center; display: flex; justify-content: center; align-items: center; padding: 0; font-weight: bold"
+                  />
+                </tui-input-number>
+                <button
+                  tuiButton
+                  appearance="primary"
+                  type="button"
+                  size="s"
+
+                  (click)="orderService.add(product.code)"
+                >+
+                </button>
+              </div>
+              <!--<span class="product-quantity"><strong>{{ product.qte }}</strong></span>-->
               <tui-line-clamp class="product-name" [content]="getName(product.code)"
                               [linesLimit]="1"></tui-line-clamp>
               <tui-money class="product-price" [value]="getTotalForProductWithRemise(product)"
@@ -86,7 +120,8 @@
         <tui-textarea
           [expandable]="true"
           [formControl]="getObservationsByOrder(order)"
-          [readOnly]="true">Remarques et observations</tui-textarea>
+          [readOnly]="true">Remarques et observations
+        </tui-textarea>
       </ng-template>
     </tui-accordion-item>
   </tui-accordion>
@@ -110,8 +145,16 @@
   <div class="total">
     <tui-money class="total-amount" [value]="getTotalCostWithRemise() + 0.99 || 0" [currency]="'EUR'"></tui-money>
   </div>
-  <button tuiButton appearance="outline" *ngIf="orderService.isHost() && orderService.getCurrentOrder()?.status === OrderStatus.CONFIRMEE && observationsForm.value === orderService.getCurrentOrder()?.observations" (click)="orderClick()" icon="tuiIconShoppingCartLarge">Commander</button>
-  <button tuiButton *ngIf="!orderService.isHost() || (orderService.isHost() && (observationsForm.value !== orderService.getCurrentOrder()?.observations || orderService.getCurrentOrder()?.status !== OrderStatus.CONFIRMEE))" (click)="confirmOrder()" [disabled]="orderService.getCurrentOrder()?.status === OrderStatus.CONFIRMEE && observationsForm.value === orderService.getCurrentOrder()?.observations">Confirmer</button>
+  <button tuiButton appearance="outline"
+          *ngIf="orderService.isHost() && orderService.getCurrentOrder()?.status === OrderStatus.CONFIRMEE && observationsForm.value === orderService.getCurrentOrder()?.observations"
+          (click)="orderClick()" icon="tuiIconShoppingCartLarge">Commander
+  </button>
+  <button tuiButton
+          *ngIf="!orderService.isHost() || (orderService.isHost() && (observationsForm.value !== orderService.getCurrentOrder()?.observations || orderService.getCurrentOrder()?.status !== OrderStatus.CONFIRMEE))"
+          (click)="confirmOrder()"
+          [disabled]="orderService.getCurrentOrder()?.status === OrderStatus.CONFIRMEE && observationsForm.value === orderService.getCurrentOrder()?.observations">
+    Confirmer
+  </button>
 </div>
 
 <ng-template
