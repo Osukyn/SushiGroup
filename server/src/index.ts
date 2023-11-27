@@ -12,6 +12,8 @@ import * as https from "https";
 import orderRoutes from "./routes/orderRoutes";
 import * as winston from 'winston';
 import DailyRotateFile from 'winston-daily-rotate-file';
+import * as dotenv from 'dotenv';
+dotenv.config();
 
 const logDir = 'logs';
 if (!fs.existsSync(logDir)) {
@@ -39,18 +41,23 @@ console.log = (message: any) => {
 const app = express();
 const PORT = 3000;
 
-const privateKey = fs.readFileSync(__dirname + '/certificates/privkey.pem', 'utf8');
-const certificate = fs.readFileSync(__dirname + '/certificates/fullchain.pem', 'utf8');
-const ca = fs.readFileSync(__dirname + '/certificates/chain.pem', 'utf8');  // This might not be necessary for self-signed certificates.
+let server;
 
-const credentials = {
+if (process.env.NODE_ENV === 'production') {
+  const privateKey = fs.readFileSync(__dirname + '/certificates/privkey.pem', 'utf8');
+  const certificate = fs.readFileSync(__dirname + '/certificates/fullchain.pem', 'utf8');
+  const ca = fs.readFileSync(__dirname + '/certificates/chain.pem', 'utf8');  // This might not be necessary for self-signed certificates.
+
+  const credentials = {
     key: privateKey,
     cert: certificate,
     ca: ca
-};
+  };
 
-const server = https.createServer(credentials, app);
-//const server = http.createServer(app);
+  server = https.createServer(credentials, app);
+} else {
+  server = http.createServer(app);
+}
 
 app.use(bodyParser.json());
 app.use(cors({ origin: '*' }));

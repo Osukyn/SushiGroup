@@ -42,3 +42,4 @@ server/src/certificates
 # System files
 .DS_Store
 Thumbs.db
+server/.env
