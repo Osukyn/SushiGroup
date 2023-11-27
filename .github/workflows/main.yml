@@ -76,11 +76,10 @@ jobs:
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
           port: ${{ secrets.PORT }}
-          source: |
-            ./server/dist/
-            ./server/docker-compose.yml
+          source: "./server/dist/*,./server/docker-compose.yml"
           target: "/var/www/sushi.lnicolas.fr/server/"
-          rm: true
+          overwrite: true
+          strip_components: 2
 
       - name: Start MongoDB Docker container
         uses: appleboy/ssh-action@master
