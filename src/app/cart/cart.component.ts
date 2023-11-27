@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, Inject, OnDestroy, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, OnDestroy, OnInit} from '@angular/core';
 import {OrderService} from '../order.service';
 import {OrderItem} from "../model/order-item.model";
 import {Order, OrderStatus} from "../model/order.model";
@@ -9,6 +9,7 @@ import {TuiAlertService, TuiDialogService} from "@taiga-ui/core";
 import {TUI_PROMPT, TuiPromptData} from "@taiga-ui/kit";
 import {Router} from "@angular/router";
 import {FormControl} from "@angular/forms";
+import * as _ from 'lodash';
 
 @Component({
   selector: 'app-cart',
@@ -20,7 +21,6 @@ export class CartComponent implements OnInit, OnDestroy {
   orders: Order[] = [];
   private subscription: Subscription | undefined;  // Pour garder une référence à la souscription
   public loaded = false;
-  private _orders$ = new BehaviorSubject<Order[]>([]); // Créer un BehaviorSubject pour les commandes
   private dialog: any;
   title = 'Panier';
   open = false;
@@ -32,24 +32,36 @@ export class CartComponent implements OnInit, OnDestroy {
     public userService: UserService,
     @Inject(TuiDialogService) private readonly dialogs: TuiDialogService,
     @Inject(TuiAlertService) private readonly alerts: TuiAlertService,
-    private router: Router
+    private router: Router,
+    private cdRef: ChangeDetectorRef
   ) {
   }
 
   ngOnInit(): void {
     this.subscription = this.orderService.ordersObservable().subscribe(orders => {
       console.log('orders', orders);
-      this.orders = orders.filter(order => order.items.length !== 0 && order.email !== this.userService.userEmail);
-      this._orders$.next(this.orders);
+      this.orders.forEach(order => {
+        const newOrder = orders.find(o => o.email === order.email);
+        if (newOrder && !_.isEqual(order.items, newOrder.items)) {
+          order.items = newOrder.items;
+          order.status = newOrder.status;
+          order.observations = newOrder.observations;
+        } else if (!newOrder) {
+          this.orders.splice(this.orders.indexOf(order), 1);
+        }
+      });
+      orders.forEach(order => {
+        if (!this.orders.find(o => o.email === order.email)) {
+          this.orders.push(order);
+        }
+      });
+      this.orders = this.orders.filter(order => order.items.length !== 0 && order.email !== this.userService.userEmail);
       this.loaded = true;
+      this.cdRef.detectChanges();
     });
     if (this.orderService.getCurrentOrder()) {
       this.observationsForm.setValue(this.orderService.getCurrentOrder()?.observations);
     }
-  }
-
-  getOrders(): Observable<Order[]> {
-    return this._orders$;
   }
 
   private findProductByCode(code: string) {

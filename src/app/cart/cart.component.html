@@ -80,7 +80,7 @@
       </ng-template>
 
     </tui-accordion-item>
-    <tui-accordion-item *ngFor="let order of getOrders() | async">
+    <tui-accordion-item *ngFor="let order of orders">
       <div class="order-header">
         <div class="order-pic">
           <tui-avatar class="order-icon" [round]="true"
