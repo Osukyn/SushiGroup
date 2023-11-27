@@ -39,6 +39,7 @@ testem.log
 /server/node_modules
 server/logs
 server/src/certificates
+server/dist
 # System files
 .DS_Store
 Thumbs.db
