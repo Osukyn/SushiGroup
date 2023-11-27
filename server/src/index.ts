@@ -10,6 +10,31 @@ import mongoose from "mongoose";
 import {initializeSocket} from "./controllers/socketController";
 import * as https from "https";
 import orderRoutes from "./routes/orderRoutes";
+import * as winston from 'winston';
+import DailyRotateFile from 'winston-daily-rotate-file';
+
+const logDir = 'logs';
+if (!fs.existsSync(logDir)) {
+  fs.mkdirSync(logDir);
+}
+
+const transport = new DailyRotateFile({
+  filename: `${logDir}/%DATE%.log`,
+  datePattern: 'DD-MM-YYYY',
+  zippedArchive: true,
+  maxSize: '20m',
+  maxFiles: '14d',
+  frequency: '7d'
+});
+
+const logger = winston.createLogger({
+  transports: [transport]
+});
+
+// Redéfinition de console.log pour utiliser winston
+console.log = (message: any) => {
+  logger.info(message);
+};
 
 const app = express();
 const PORT = 3000;
