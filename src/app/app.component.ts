@@ -70,8 +70,6 @@ export class AppComponent implements OnInit {
           .subscribe();
       }
     });
-    this.updateClient();
-    if (this.update.isEnabled) setInterval(() => this.update.checkForUpdate().then(() => console.log('Checking for update')), 1000 * 15);
   }
 
   ngOnInit() {
@@ -109,26 +107,5 @@ export class AppComponent implements OnInit {
           this.router.navigate(['/']);
         }
       });
-  }
-
-  showUpdateDialog(): void {
-    this.dialogs
-      .open(
-        'Une nouvelle version est disponible. Installation en cours... ',
-        {label: 'Mise à jour disponible', size: 's', closeable: false, dismissible: false},
-      )
-      .subscribe();
-    setTimeout(() => this.update.activateUpdate().then(() => document.location.reload()), 5000);
-  }
-
-  updateClient() {
-    if (!this.update.isEnabled) {
-      console.log('Not enabled');
-      return;
-    }
-    this.update.versionUpdates.subscribe(event => {
-      console.log('Event type', event.type);
-      if (event.type === "VERSION_DETECTED") this.showUpdateDialog();
-    });
   }
 }
