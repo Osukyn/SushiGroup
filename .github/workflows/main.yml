@@ -64,10 +64,10 @@ jobs:
             ${{ runner.os }}-node-
 
       - name: Install Node.js dependencies
-        run: npm install
+        run: cd server; npm install
 
       - name: Build Node server
-        run: npm run build
+        run: cd server; npm run build
 
       - name: Copy built server files and docker-compose file to production server
         uses: appleboy/scp-action@master
