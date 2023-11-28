@@ -228,30 +228,34 @@ export const initializeSocket = (server: any) => {
 
           console.log(form);
 
-          /*const response = {
-            data: {
-              resultat: 1,
-              message: "Votre commande est enregistrée, un email de confirmation vous a été envoyé sur <span style='color:#E30613'>7luca.nicolas@gmail.com</span>.",
-              facebook: "fba('track', 'Purchase', {currency: 'EUR', value: 39.693);"
-            }
-          };
+          if (process.env.NODE_ENV === 'production') {
+            axios.post('https://83.easysushi.fr/Commander.aspx', form).then((response) => {
+              console.log(response);
+              console.log(response.data);
+              if (response.data.resultat === 1) {
+                group.setStatus(OrderStatus.SENT);
+                for (const user of getOnlineUsersOfGroup(group)) {
+                  io.sockets.sockets.get(user.socketId)?.emit(`groupUpdate/${group.id}`, group.toJSON());
+                }
+                console.log(group.toPersistentObject());
+                const persistGroup = new Group(group.toPersistentObject());
+                persistGroup.save().then((savedGroup) => {
+                  console.log(savedGroup);
+                  console.log('persisted');
+                }).catch((reason) => console.log(reason));
+              }
+            }).catch((error) => {
+              console.log(error);
+            });
+          } else if (process.env.NODE_ENV === 'development') {
+            const response = {
+              data: {
+                resultat: 1,
+                message: "Votre commande est enregistrée, un email de confirmation vous a été envoyé sur <span style='color:#E30613'>7luca.nicolas@gmail.com</span>.",
+                facebook: "fba('track', 'Purchase', {currency: 'EUR', value: 39.693);"
+              }
+            };
 
-          if (response.data.resultat === 1) {
-            group.setStatus(OrderStatus.SENT);
-            for (const user of getOnlineUsersOfGroup(group)) {
-              io.sockets.sockets.get(user.socketId)?.emit(`groupUpdate/${group.id}`, group.toJSON());
-            }
-            console.log(group.toPersistentObject());
-            const persistGroup = new Group(group.toPersistentObject());
-            persistGroup.save().then((savedGroup) => {
-              console.log(savedGroup);
-              console.log('persisted');
-            }).catch((reason) => console.log(reason));
-          }*/
-
-          axios.post('https://83.easysushi.fr/Commander.aspx', form).then((response) => {
-            console.log(response);
-            console.log(response.data);
             if (response.data.resultat === 1) {
               group.setStatus(OrderStatus.SENT);
               for (const user of getOnlineUsersOfGroup(group)) {
@@ -264,10 +268,7 @@ export const initializeSocket = (server: any) => {
                 console.log('persisted');
               }).catch((reason) => console.log(reason));
             }
-          }).catch((error) => {
-            console.log(error);
-          });
-          //socket.broadcast.emit(`groupUpdate/${group.id}`, group.toJSON());
+          }
         }
       }
     });
