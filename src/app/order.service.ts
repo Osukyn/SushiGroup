@@ -18,7 +18,9 @@ import {Router} from "@angular/router";
 export class OrderService {
   private currentOrder: Order | null = null;
   private _sushiList$ = new BehaviorSubject<Categorie[]>([]);
+  private _lastOrder$ = new BehaviorSubject<any>([]);
   private _gotSushiList = false;
+  private _gotLastOrder = false;
   private _onlineOrders: Order[] = [];
   private orders: Order[] = [];
   private _orders$ = new BehaviorSubject<Order[]>([]); // Créer un BehaviorSubject pour les commandes
@@ -162,6 +164,24 @@ export class OrderService {
         });
     }
     return this._sushiList$.asObservable();
+  }
+
+  public getLastOrder(): Observable<any> {
+    if (!this._gotLastOrder) {
+      this.infosService.getLastOrder(this.userService.userEmail)
+        .pipe(
+          take(1),
+          catchError(error => {
+            console.error('Error fetching last order:', error);
+            return throwError(error);
+          })
+        )
+        .subscribe(data => {
+          this._lastOrder$.next(data);
+          this._gotLastOrder = true;
+        });
+    }
+    return this._lastOrder$.asObservable();
   }
 
   public getCurrentUserOrder(email: string): Order {
