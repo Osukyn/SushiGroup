@@ -81,6 +81,23 @@ jobs:
           overwrite: true
           strip_components: 2
 
+      - name: Create .env file for Node server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          port: ${{ secrets.PORT }}
+          script: |
+            echo "Creating .env file..."
+            ENV_FILE="/var/www/sushi.lnicolas.fr/server/.env"
+            echo "NODE_ENV=production" > $ENV_FILE
+            echo "PRIVATE_KEY_PATH=$(readlink -f /etc/letsencrypt/live/sushi.lnicolas.fr/privkey.pem)" >> $ENV_FILE
+            echo "CERTIFICATE_PATH=$(readlink -f /etc/letsencrypt/live/sushi.lnicolas.fr/fullchain.pem)" >> $ENV_FILE
+            echo "CA_PATH=$(readlink -f /etc/letsencrypt/live/sushi.lnicolas.fr/chain.pem)" >> $ENV_FILE
+            echo ".env file created successfully."
+
+
       - name: Start MongoDB Docker container
         uses: appleboy/ssh-action@master
         with:
