@@ -61,7 +61,7 @@ export const initializeSocket = (server: any) => {
   });
 
   io.on('connection', (socket: any) => {
-    console.log('A user connected:', socket.id);
+    console.log(`A user connected: ${socket.id}`);
 
     socket.on('setUser', async (data: any) => {
       let index = onlineUsers.findIndex(u => u.fullUser.email === data.email);
@@ -115,7 +115,7 @@ export const initializeSocket = (server: any) => {
       if (onlineUser) {
         const group = groups.find(group => group.host.email === onlineUser.fullUser.email || group.users.some(u => u.email === onlineUser.fullUser.email));
         if (group === undefined) {
-          console.log('Create group:', data);
+          console.log(`Create group: ${data}`);
           const newGroup = new GroupOrder(onlineUser.fullUser, data.deliveriesInfos, data.creneau, data.date, data.remise);
           groups.push(newGroup);
           socket.broadcast.emit('groupsUpdate', groups.map(g => g.toJSON()));
@@ -167,7 +167,7 @@ export const initializeSocket = (server: any) => {
           order.items = data.items;
           order.status = data.status;
           order.observations = data.observations;
-          console.log('Order updated:', order);
+          console.log(`Order updated: ${order}`);
           group.setUserOrder(onlineUser.fullUser.email, order);
           socket.broadcast.emit(`groupUpdate/${group.id}`, group.toJSON());
         }
@@ -175,7 +175,7 @@ export const initializeSocket = (server: any) => {
     });
 
     socket.on('kickUser', (data: any) => {
-      console.log('Kick user:', data);
+      console.log(`Kick user: ${data}`);
       const onlineUser = onlineUsers.find(u => u.fullUser.email === data.email);
       if (onlineUser) {
         // Search for the group where the user is a member
@@ -276,7 +276,7 @@ export const initializeSocket = (server: any) => {
       let index = onlineUsers.findIndex(u => u.socketId === socket.id);
       if (index !== -1) {
         if (onlineUsers[index].fullUser) {
-          console.log('User disconnected:', onlineUsers[index].fullUser.email);
+          console.log(`User disconnected: ${onlineUsers[index].fullUser.email}`);
           setTimeout(() => {
             index = onlineUsers.findIndex(user => user.socketId === socket.id);
             if (index !== -1) {
