@@ -44,9 +44,9 @@ const PORT = 3000;
 let server;
 
 if (process.env.NODE_ENV === 'production') {
-  const privateKey = fs.readFileSync(__dirname + '/certificates/privkey.pem', 'utf8');
-  const certificate = fs.readFileSync(__dirname + '/certificates/fullchain.pem', 'utf8');
-  const ca = fs.readFileSync(__dirname + '/certificates/chain.pem', 'utf8');  // This might not be necessary for self-signed certificates.
+  const privateKey = fs.readFileSync(process.env.PRIVATE_KEY_PATH as string, 'utf8');
+  const certificate = fs.readFileSync(process.env.CERTIFICATE_PATH as string, 'utf8');
+  const ca = fs.readFileSync(process.env.CA_PATH as string, 'utf8');  // This might not be necessary for self-signed certificates.
 
   const credentials = {
     key: privateKey,
