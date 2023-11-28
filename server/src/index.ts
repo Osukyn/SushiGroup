@@ -54,6 +54,8 @@ console.log = (message: any) => {
   logger.info(message);
 };
 
+console.log(`-------------------------------------------- ${(process.env.NODE_ENV as string).toUpperCase()} --------------------------------------------`);
+
 const app = express();
 const PORT = 3000;
 
