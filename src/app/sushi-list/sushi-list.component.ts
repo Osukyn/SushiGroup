@@ -25,6 +25,7 @@ import {tuiLoaderOptionsProvider} from "@taiga-ui/core";
 export class SushiListComponent implements OnInit {
   public indexes: number[] = [];
   public sushiList: Categorie[] = [];
+  public lastOrder: Categorie | null = null;
   protected readonly tuiIconPlus = tuiIconPlus;
   protected readonly tuiIconMinus = tuiIconMinus;
   public activeCategory: string = '';
@@ -93,6 +94,17 @@ export class SushiListComponent implements OnInit {
             clearInterval(interval);
           }
         }, 50); // Ajoutez 'displayedItemsLimit' éléments chaque seconde
+        this.orderService.getLastOrder().subscribe(lastOrder => {
+          if (lastOrder && lastOrder.order && lastOrder.order.items && lastOrder.order.items.length > 0) {
+            this.lastOrder = {
+              code: 'RÉCENTS',
+              complement: false,
+              produits: [
+                ...lastOrder.order.items
+              ]
+            };
+          }
+        });
       }
     });
   }
@@ -124,6 +136,19 @@ export class SushiListComponent implements OnInit {
 
   isProductAvailable(code: string): boolean {
     return this.orderService.getRuptures().some(rupture => rupture.produit === code);
+  }
+
+  get getItemsFromSushiList(): any[] {
+    const temp = new Array<any>();
+    this.sushiList.forEach(category => {
+      temp.push(...category.produits);
+    });
+    return temp.filter(item => this.lastOrder?.produits.some((item2: any) => item2.code === item.code)) || [];
+  }
+
+  get sushilistWithlastOrder(): any[] {
+    if (!this.lastOrder) return this.sushiList;
+    return [this.lastOrder, ...this.sushiList];
   }
 
   protected readonly Math = Math;

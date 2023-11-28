@@ -8,7 +8,7 @@
        [style.--tui-skeleton-radius.px]="10">
     <!-- Liste des catégories en haut -->
     <div class="category-list" id="categories-container">
-      <a tuiLink *ngFor="let item of sushiList" (click)="scrollToCategory(item.code, $event)" class="category-link"
+      <a tuiLink *ngFor="let item of sushilistWithlastOrder" (click)="scrollToCategory(item.code, $event)" class="category-link"
          [class.cat-active]="item.code === activeCategory" [class.tui-skeleton]="skeletonVisible" @fade>
         {{ item.code }}
       </a>
@@ -17,6 +17,76 @@
 
   <div style="position: fixed; top: 5rem; bottom: 4.5rem; overflow: auto" [style.--tui-skeleton-radius.px]="10" id="product-container">
     <!-- Liste des produits -->
+    <div  *ngIf="lastOrder" [id]="lastOrder.code" class="cat-container">
+      <div style="height: 1rem"></div>
+      <h2 style="padding-left: 1rem" [class.tui-skeleton]="skeletonVisible">{{ lastOrder.code }}</h2>
+      <div class="product" *ngFor="let sushi of getItemsFromSushiList" [class.tui-skeleton]="skeletonVisible" [class.gris]="isProductAvailable(sushi.code)">
+        <img [src]="'./assets/images/food/' + sushi.img" [alt]="sushi.nom">
+        <div class="product-details">
+          <h3 [innerHTML]="sushi.nom" style="margin: 0"></h3>
+          <div style="display: flex; flex-direction: column">
+            <span>{{ sushi.cdt }}</span>
+            <span>
+            Prix:
+            <tui-money [value]="orderService.remise ? Math.round((sushi.prix * (1 - orderService.remise.pourcentage / 100)) * 100) / 100 : sushi.prix" currency="EUR"></tui-money>
+            <tui-money [value]="sushi.prix" currency="EUR" style="text-decoration: line-through; margin-left: 0.5rem"
+                       *ngIf="orderService.remise"></tui-money>
+          </span>
+          </div>
+
+        </div>
+        <div class="product-action">
+          <button
+            tuiButton
+            appearance="primary"
+            type="button"
+            size="m"
+            style="width: 3rem"
+            *ngIf="orderService.getQte(sushi.code) === 0 && !isProductAvailable(sushi.code)"
+            (click)="orderService.add(sushi.code)"
+          >
+            +
+          </button>
+          <div
+            orientation="vertical"
+            tuiGroup
+            class="group"
+            [collapsed]="true"
+            [rounded]="true"
+            style="display: flex; flex-direction: column; justify-content: center; align-items: center; width: 3rem;"
+            *ngIf="orderService.getQte(sushi.code) > 0">
+            <button
+              tuiButton
+              appearance="primary"
+              type="button"
+              size="m"
+              style="width: 100%"
+              (click)="orderService.add(sushi.code)"
+            >+
+            </button>
+            <tui-input-number
+              [tuiTextfieldSize]="'m'"
+              [ngModel]="orderService.getQte(sushi.code)"
+              [readOnly]="true"
+              style="width: 100%">
+              <input
+                tuiTextfield
+                style="text-align: center; display: flex; justify-content: center; align-items: center; padding: 0; font-size: 1.5rem;"
+              />
+            </tui-input-number>
+            <button
+              tuiButton
+              appearance="accent"
+              type="button"
+              size="m"
+              style="width: 100%"
+              (click)="orderService.remove(sushi.code)"
+            >-
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
     <div *ngFor="let item of sushiList" [id]="item.code" class="cat-container">
       <div style="height: 1rem"></div>
       <h2 style="padding-left: 1rem" [class.tui-skeleton]="skeletonVisible">{{ item.code }}</h2>

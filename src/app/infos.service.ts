@@ -15,4 +15,8 @@ export class InfosService {
   getMenu(): Observable<Categorie[]> {
     return this.http.get<Categorie[]>(this.apiURL + '/api/menu');
   }
+
+  getLastOrder(email: string): Observable<any> {
+    return this.http.get<any>(this.apiURL + '/api/getLastOrder?email=' + email);
+  }
 }
