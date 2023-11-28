@@ -2,7 +2,7 @@
   <tui-accordion>
     <tui-accordion-item *ngFor="let order of getOrders() | async">
       <div class="order-header">
-        <div class="order-date">{{ order.order.date | date:'dd/MM/y, hh:mm' }}</div>
+        <div class="order-date">{{ order.order.date | date:'dd/MM/y, HH:mm' }}</div>
         <tui-money class="order-amount" [value]="getTotalForOrderWithRemise(order)"
                    [currency]="'EUR'"></tui-money>
       </div>
