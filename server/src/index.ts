@@ -1,7 +1,7 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
-import { connectToDatabase } from './config/database';
+import {connectToDatabase} from './config/database';
 import userRoutes from './routes/userRoutes';
 import menuRoutes from './routes/menuRoutes';
 import * as fs from "fs";
@@ -13,6 +13,7 @@ import orderRoutes from "./routes/orderRoutes";
 import * as winston from 'winston';
 import DailyRotateFile from 'winston-daily-rotate-file';
 import * as dotenv from 'dotenv';
+
 dotenv.config();
 
 const logDir = 'logs';
@@ -29,8 +30,23 @@ const transport = new DailyRotateFile({
   frequency: '7d'
 });
 
+const {combine, timestamp, printf} = winston.format;
+
+const myFormat = printf(({level, message, timestamp}) => {
+  return `[${timestamp}] ${level}: ${message}`;
+});
+
 const logger = winston.createLogger({
-  transports: [transport]
+  format: combine(
+    timestamp({format: 'DD-MM-YYYY HH:mm:ss'}), // Format de date personnalisé
+    myFormat
+  ),
+  transports: [
+    transport,
+  ],
+  exceptionHandlers: [
+    transport,
+  ],
 });
 
 // Redéfinition de console.log pour utiliser winston
@@ -60,7 +76,7 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 app.use(bodyParser.json());
-app.use(cors({ origin: '*' }));
+app.use(cors({origin: '*'}));
 
 app.use('/api', userRoutes);
 app.use('/api', menuRoutes);
@@ -69,11 +85,11 @@ app.use('/api', orderRoutes);
 initializeSocket(server);
 
 server.listen(PORT, () => {
-    console.log(`Server started on http://localhost:${PORT}`);
-    connectToDatabase().then(() => {
-        console.log('Connected to database');
-        mongoose.models.FullUser.find().then((users) => {
-            console.log(users);
-        });
+  console.log(`Server started on http://localhost:${PORT}`);
+  connectToDatabase().then(() => {
+    console.log('Connected to database');
+    mongoose.models.FullUser.find().then((users) => {
+      console.log(users);
     });
+  });
 });
